@@ -3,6 +3,7 @@ import { Routes,Route,useNavigate } from "react-router-dom";
 import Login from './pages/Login';
 import Home from './pages/Home';
 import NotFoud from './pages/NotFoud';
+import { TaskContextProvider } from "./context/TaskContext";
 import { supabase } from "./supabase/client";
 function App() {
   const navigate = useNavigate();
@@ -16,14 +17,16 @@ function App() {
       }
     });
   }, [navigate]);
-  
+
   return (
     <div className="App">
-      <Routes>
-        <Route path="/" element = {<Home/>}/>
-        <Route path="/login" element = {<Login/>}/>
-        <Route path="/*" element = {<NotFoud/>}/>
-      </Routes>
+      <TaskContextProvider>
+        <Routes>
+          <Route path="/" element = {<Home/>}/>
+          <Route path="/login" element = {<Login/>}/>
+          <Route path="/*" element = {<NotFoud/>}/>
+        </Routes>
+      </TaskContextProvider>
     </div>
   );
 }

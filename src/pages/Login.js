@@ -27,6 +27,8 @@ const Login = () => {
   useEffect(() => {
     if (supabase.auth.getUser()) {
       navigate("/");
+    }else{
+        navigate("/login");
     }
   }, [navigate]);
 

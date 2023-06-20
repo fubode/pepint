@@ -22,8 +22,8 @@ function App() {
     <div className="App">
       <TaskContextProvider>
         <Routes>
-          <Route path="/" element = {<Home/>}/>
           <Route path="/login" element = {<Login/>}/>
+          <Route path="/" element = {<Home/>}/>
           <Route path="/*" element = {<NotFoud/>}/>
         </Routes>
       </TaskContextProvider>

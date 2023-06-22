@@ -25,10 +25,13 @@ const Login = () => {
     }
   };
   useEffect(() => {
+    console.log(supabase.auth.getSession());
     if (supabase.auth.getUser()) {
-      navigate("/");
+      console.log("login - login");
+      navigate("/login");
     }else{
-        navigate("/login");
+      console.log("login - home");
+      navigate("/");
     }
   }, [navigate]);
 

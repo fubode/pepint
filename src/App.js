@@ -5,6 +5,7 @@ import Home from './pages/Home';
 import NotFoud from './pages/NotFoud';
 import { TaskContextProvider } from "./context/TaskContext";
 import { supabase } from "./supabase/client";
+import { Consultor } from './pages/Consultor/Consultor';
 function App() {
   const navigate = useNavigate();
 
@@ -23,7 +24,7 @@ function App() {
       <TaskContextProvider>
         <Routes>
           <Route path="/login" element = {<Login/>}/>
-          <Route path="/" element = {<Home/>}/>
+          <Route path="/" element = {<Consultor/>}/>
           <Route path="/*" element = {<NotFoud/>}/>
         </Routes>
       </TaskContextProvider>

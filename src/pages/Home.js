@@ -11,6 +11,10 @@ const Home = () => {
   useEffect(() => {
     if(!supabase.auth.getUser()){
       navigate('/login')
+      console.log("home - login");
+    }else{
+      console.log("home - home");
+      //navigate('/login')
     }
   }, [navigate])
   

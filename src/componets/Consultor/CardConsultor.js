@@ -44,9 +44,7 @@ export const CardConsultor = ({data}) => {
           <Modal.Title>Datos del funcionario</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-            <p className="mb-0">{data.usuario.nombre}</p>
-            <p className="mb-0">{data.usuario.agencia}</p>
-            <p className="mb-0">{data.usuario.correo}</p>
+            
         </Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" onClick={handleClose}>

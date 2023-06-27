@@ -1,8 +1,6 @@
 import React from "react";
 
 const ModalFuncionario = ({show}) => {
-
- 
   return (
     <>
     <Modal show={show} onHide={handleClose}>

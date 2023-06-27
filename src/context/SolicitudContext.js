@@ -12,34 +12,39 @@ export const SolicitudContextProvider = ({ children }) => {
     const [solicitudes, setSolicitudes] = useState([]);
     const [adding, setAdding] = useState(false);
     const [loading, setLoading] = useState(false);
+    const [caedec, setCaedec] = useState([]);
 
     const getSolicitudes = async () => {
-      setLoading(true);
       const user = (await supabase.auth.getUser()).data.user.id;
       const { error, data } = await supabase
-        .from("uif_solicitud")
-        .select()
-        .eq("userId", user)
-        //.eq("done",done)
-        .order("created_at", { ascending: true });
-  
-      console.log(data);
-      if (error) throw error;
-      setSolicitudes(data);
-      setLoading(false);
+      .from("uif_solicitudes")
+      .select()
+      .eq("id_usuario", user)
+      .order("id", { ascending: true });
+      console.log(error, data );
+    };
+
+    const getCaedec = async ()=>{
+      const { error, data } = await supabase
+      .from("conf_caedec")
+      .select()
+      setCaedec(data);
+      console.log(caedec);
     };
   
-    const createSolicitudes = async (ci,extencion,nombre,producto,caedecDesc,caedecNro,tipo) => {
+    const createSolicitudes = async (cod_caedec,tipo,numero_doc,nombre_completo,producto) => {      
       setAdding(true);
       try {
         const user = (await supabase.auth.getUser()).data.user.id;
-        const { error } = await supabase.from("uif_solicitud").insert({
-            userId: user,
-            ci: ci,
-            ext: extencion,
-            producto:producto,
-            caedec:caedecNro,
-            tipo:tipo,                        
+        const { error } = await supabase.from("uif_solicitudes").insert({
+          id_usuario: user,              
+          cod_caedec: cod_caedec,
+          tipo: tipo,
+          descripcion: 'NINGUNO',
+          numero_doc: numero_doc,
+          nombre_completo: nombre_completo,
+          producto: producto,
+          estado: 'PENDIENTE',
         });
         if (error) throw error;
         getSolicitudes();
@@ -52,10 +57,9 @@ export const SolicitudContextProvider = ({ children }) => {
   
     return (
       <SolicitudContext.Provider
-        value={{solicitudes, getSolicitudes,loading,createSolicitudes }}
+        value={{solicitudes, getSolicitudes,loading,createSolicitudes,getCaedec,caedec }}
       >
         {children}
       </SolicitudContext.Provider>
     );
-  };
-  
+  };  

@@ -1,33 +1,54 @@
-import React, { useEffect, useState } from "react";
+import React, { Component, useEffect, useState } from "react";
+import { supabase } from "../../supabase/client";
 import { NavFubode } from "../../componets/NavFubode";
 import { CardConsultor } from "../../componets/Consultor/CardConsultor";
 import { Button, Modal } from "react-bootstrap";
 import { useSolicitud } from "../../context/SolicitudContext";
 import { TextAutoSugerenias } from "../../componets/Consultor/TextAutoSugerenias";
+import { useNavigate } from "react-router-dom";
 
 export const Consultor = () => {
+  const navigate = useNavigate();
   const [show, setShow] = useState(false);
   const [showMessage, setShowMesagge] = useState(false);
+
   const {
     solicitudes,
     getSolicitudes,
     loading,
     createSolicitudes,
     getCaedec,
+    caedec,
     caedecSeleccionado,
     setCaedecSeleccionado,
     getUsuarioIFD,
+    getFuncionario,
+    funcionario,
   } = useSolicitud();
 
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
-  const handleEjemplo = () => getUsuarioIFD();
+
+  const handleSalir = async () => {
+    const { error } = await supabase.auth.signOut();
+    if(error) throw error
+    navigate("/login");
+  };
+
+  const handleEjemplo = () => {
+    
+    getFuncionario()
+
+    console.log(funcionario);
+  };
 
   const handleCloseMessage = () => setShowMesagge(false);
 
   useEffect(() => {
     getSolicitudes();
     getCaedec();
+    getFuncionario();
+    console.log(solicitudes);
   }, []);
 
   const handleSubmit = (e) => {
@@ -37,19 +58,19 @@ export const Consultor = () => {
     const producto = e.target[2].value;
     const tipo = e.target[4].value;
     setShow(false);
-    const solicitud =
-    {
+    const solicitud = {
       tipo: tipo,
-      descripcion: 'NINGUNO',
+      descripcion: "NINGUNO",
       numero_doc: numero_doc,
       nombre_completo: nombre_completo,
       producto: producto,
-      cod_caedec:caedecSeleccionado.cod_caedec,
-      estado: 'PENDIENTE',
-    }    
+      cod_caedec: caedecSeleccionado.cod_caedec,
+      estado: "PENDIENTE",
+    };
     setCaedecSeleccionado({});
     createSolicitudes(solicitud);
     setShowMesagge(true);
+    console.log(solicitudes);
   };
 
   return (
@@ -57,6 +78,7 @@ export const Consultor = () => {
       <div>
         <NavFubode />
         <Button onClick={handleEjemplo}>ejemplo</Button>
+        <Button onClick={handleSalir}>SALIR</Button>
         <div className="container-fluid h-100">
           <div className="row w-100 align-items-center">
             <div className="col text-center">
@@ -69,12 +91,12 @@ export const Consultor = () => {
             </div>
           </div>
         </div>
+        <div></div>
         <div className="container d-flex justify-content-center align-items-center h-100">
           <div className="row m-1">
-            {solicitudes.map((data) => (
-              <div className="col-md-4">
-                <CardConsultor data={data} key={data.id} />
-              </div>
+            {solicitudes.map((soli, key) => (
+              //<h1 key={key}>{soli.producto}</h1>
+              <CardConsultor soli={soli} funcionario = {funcionario} key={key} />
             ))}
           </div>
         </div>

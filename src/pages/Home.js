@@ -1,8 +1,8 @@
 import React, { useContext, useEffect } from 'react'
 import { supabase } from "../supabase/client";
 import {useNavigate} from "react-router-dom";
-import TaskForm from "../componets/TaskForm";
-import TaskList from "../componets/TaskList";
+import TaskForm from "../componets/ejemplos/TaskForm";
+import TaskList from "../componets/ejemplos/TaskForm";
 
 
 const Home = () => {

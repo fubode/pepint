@@ -3,12 +3,12 @@ import { supabase } from "../supabase/client";
 import { useNavigate } from "react-router-dom";
 import { NavFubode } from "../componets/NavFubode";
 import { Button, Modal } from "react-bootstrap";
-
 const Login = () => {
   const navigate = useNavigate();
   const [show, setShow] = useState(false);
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     const em = e.target.email.value;
@@ -18,6 +18,11 @@ const Login = () => {
         email: em,
         password: pas,
       });
+
+      if (error) {
+        throw new Error(error.message);
+      }
+
       console.log(em, pas);
       console.log(data, error);
       console.log(supabase.auth.getUser());
@@ -35,7 +40,7 @@ const Login = () => {
 
   const handleRegistrar = async () => {
     const { data, error } = await supabase.auth.signUp({
-      email: "201400076@est.umss.edu",
+      email: "doris_sagardia@fubode.org",
       password: "fubode123*",
     });
     console.log(data, error);
@@ -111,7 +116,9 @@ const Login = () => {
         </Modal.Header>
         <Modal.Body>El usuario o la contraseña son incorrectos</Modal.Body>
         <Modal.Footer>
-          <Button variant="secondary" onClick={handleClose}>Cerrar</Button>
+          <Button variant="secondary" onClick={handleClose}>
+            Cerrar
+          </Button>
         </Modal.Footer>
       </Modal>
     </>

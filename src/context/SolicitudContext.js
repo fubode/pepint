@@ -15,31 +15,66 @@ export const SolicitudContextProvider = ({ children }) => {
   const [caedec, setCaedec] = useState([]);
   const [caedecSeleccionado, setCaedecSeleccionado] = useState({});
   const [userUIF, setUserUIF] = useState({});
+  const [funcionario, setFuncionario] = useState({});
+
+  const getFuncionario = async () => {
+    const user = (await supabase.auth.getUser()).data.user.id;
+    const { data, error } = await supabase.rpc("obtener_usuarios", {
+      usuario: user,
+    });
+    if (error) throw error;
+    
+    setFuncionario(data);
+    console.log(funcionario);
+  };
 
   const getUsuarioIFD = async () => {
     const user = (await supabase.auth.getUser()).data.user.id;
-    
-    const { data, error } = await supabase.rpc('echo', { say: '👋' });
-    const { data1, error1 } = await supabase.rpc('myFuncion2', { variable: 1 });
-
-
-    if (error) {
-      console.error("Error al ejecutar la consulta SQL:", error.message);
-      return;
+    //const { data, error } = await supabase.rpc("obtener_usuarios");
+    const storedData = {};
+    const localStorageLength = localStorage.length;
+    for (let i = 0; i < localStorageLength; i++) {
+      const key = localStorage.key(i);
+      const value = localStorage.getItem(key);
+      storedData[key] = JSON.parse(value);
     }
+    console.log(storedData);
+    console.log(localStorage.getItem("sb-vspemsodlumlsrzolwuj-auth-token"));
 
-    console.log("Resultados de la consulta:", data,error);
-    console.log("Resultados de la consulta:", data1,error1);
-    setUserUIF(data);
+    // Verificar si se encontraron datos en el localStorage
+    if (Object.keys(storedData).length > 0) {
+      // Iterar sobre los datos almacenados
+      Object.keys(storedData).forEach((key) => {
+        const data = storedData[key];
+
+        // Agregar un atributo adicional a los datos
+        if (data) {
+          const nuevoAtributo = "valor"; // Reemplaza 'nuevoAtributo' y 'valor' con tus propios valores
+          data.nuevoAtributo = nuevoAtributo;
+          storedData[key].nuevoAtributo = nuevoAtributo;
+        }
+      });
+
+      // Actualizar los datos en el localStorage
+      Object.keys(storedData).forEach((key) => {
+        const value = JSON.stringify(storedData[key]);
+        localStorage.setItem(key, value);
+      });
+    } else {
+      // Manejo para cuando no hay datos almacenados en el localStorage
+    }
+    getFuncionario();
   };
 
   const getSolicitudes = async () => {
     const user = (await supabase.auth.getUser()).data.user.id;
-    const { error, data } = await supabase
-      .from("uif_solicitudes")
-      .select()
-      .eq("id_usuario", user)
-      .order("id", { ascending: true });
+    const { data, error } = await supabase.rpc("solicitudes_uif", {
+      usuario: user,
+    });
+    if (error) throw error;
+    console.log(data, error);
+    setSolicitudes(data);
+    console.log(data);
   };
 
   const getCaedec = async () => {
@@ -49,13 +84,18 @@ export const SolicitudContextProvider = ({ children }) => {
 
   const createSolicitudes = async (solicitud) => {
     setAdding(true);
+    const codigo = funcionario[0].cod_usuario+"-"+solicitud.tipo+"-"+(solicitudes.length+1);
+    var today = new Date();
     try {
       const user = (await supabase.auth.getUser()).data.user.id;
       solicitud.id_usuario = user;
+      //solicitud.fecha_registro = today;
+      solicitud.codigo_solicitud = codigo;
+      solicitud.correo_usuario_uif = "uif@fubode.org";
+
       const { error } = await supabase
         .from("uif_solicitudes")
         .insert(solicitud);
-      if (error) throw error;
       getSolicitudes();
     } catch (error) {
       console.log(error);
@@ -68,14 +108,16 @@ export const SolicitudContextProvider = ({ children }) => {
     <SolicitudContext.Provider
       value={{
         solicitudes,
-        getSolicitudes,
+        funcionario,
         loading,
-        createSolicitudes,
-        getCaedec,
         caedec,
         caedecSeleccionado,
+        getSolicitudes,
+        createSolicitudes,
+        getCaedec,
         setCaedecSeleccionado,
         getUsuarioIFD,
+        getFuncionario,
       }}
     >
       {children}

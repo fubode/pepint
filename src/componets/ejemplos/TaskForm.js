@@ -1,6 +1,6 @@
 import { useState } from "react"
 import React from 'react'
-import {useTasks} from "../context/TaskContext";
+import {useTasks} from "../../context/TaskContext";
 
 const TaskForm = () => {
     const [taskName, setTaskName] = useState("");

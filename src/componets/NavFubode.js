@@ -9,7 +9,7 @@ export const NavFubode = () => {
           <div className="col-10">
             <div className="text-center">
             <h3>
-              SISTEMA DE AUTOMATIZACION DE AUTORIZACION DE CLIENTES ESPCIALES
+              SISTEMA DE AUTOMATIZACION DE AUTORIZACION DE CLIENTES ESPECIALES
             </h3>
             </div>
             </div>

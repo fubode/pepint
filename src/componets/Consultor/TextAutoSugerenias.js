@@ -27,7 +27,9 @@ export const TextAutoSugerenias = () => {
 
     // Filtrar los países que coincidan con el valor ingresado
     const coincidencias = caedec.filter((info) =>
-        (info.cod_caedec+"-"+info.caedec).toLowerCase().includes(valor.toLowerCase())
+      (info.cod_caedec + "-" + info.caedec)
+        .toLowerCase()
+        .includes(valor.toLowerCase())
     );
 
     setSugerencias(coincidencias);
@@ -51,16 +53,18 @@ export const TextAutoSugerenias = () => {
       <ul>
         {sugerencias.map((caedecInfo, index) => (
           <li key={index} onClick={() => handleSuggestionClick(caedecInfo)}>
-            {caedecInfo.cod_caedec+" - "+caedecInfo.caedec}
+            {caedecInfo.cod_caedec + " - " + caedecInfo.caedec}
           </li>
         ))}
       </ul>
-      {caedecSeleccionado && (
-        <div>
-          <p>CODIGO: {caedecSeleccionado.cod_caedec}</p>
-          <p>NOMBRE: {caedecSeleccionado.caedec}</p>
-        </div>
-      )}
+      <div>
+      {Object.keys(caedecSeleccionado).length !== 0 && (
+          <>
+            <p>CODIGO: {caedecSeleccionado.cod_caedec}</p>
+            <p>NOMBRE: {caedecSeleccionado.caedec}</p>
+          </>
+        )}
+      </div>
     </div>
   );
 };

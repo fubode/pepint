@@ -14,14 +14,12 @@ export const Consultor = () => {
 
   const {
     solicitudes,
-    getSolicitudes,
     loading,
     createSolicitudes,
     getCaedec,
     caedec,
     caedecSeleccionado,
     setCaedecSeleccionado,
-    getUsuarioIFD,
     getFuncionario,
     funcionario,
   } = useSolicitud();
@@ -37,17 +35,14 @@ export const Consultor = () => {
 
   const handleEjemplo = () => {
     
-    getFuncionario()
-
-    console.log(funcionario);
+    getFuncionario();
+    //console.log(funcionario);
   };
 
   const handleCloseMessage = () => setShowMesagge(false);
 
   useEffect(() => {
-    getSolicitudes();
     getCaedec();
-    getFuncionario();
     console.log(solicitudes);
   }, []);
 

@@ -10,9 +10,11 @@ import {
   SolicitudContext,
   SolicitudContextProvider,
 } from "./context/SolicitudContext";
+import Uif from "./pages/Uif/Uif";
+import Redireccion from "./pages/Redireccion";
 function App() {
   const navigate = useNavigate();
-
+/*
   useEffect(() => {
     supabase.auth.onAuthStateChange((_event, session) => {
       if (!session) {
@@ -22,14 +24,17 @@ function App() {
       }
     });
   }, [navigate]);
-
+*/
   return (
     <div className="App">
       <TaskContextProvider>
         <SolicitudContextProvider>
           <Routes>
             <Route path="/login" element={<Login />} />
-            <Route path="/" element={<Consultor />} />
+            <Route path="/consultor" element={<Consultor />} />
+            <Route path="/" element={<Redireccion />} />
+            <Route path="/uif" element={<Uif />} />
+            <Route path="/gerencia" element={<Consultor />} />
             <Route path="/*" element={<NotFoud />} />
           </Routes>
         </SolicitudContextProvider>

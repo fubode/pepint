@@ -1,9 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { supabase } from "../supabase/client";
 import { useNavigate } from "react-router-dom";
+import { useSolicitud } from "../context/SolicitudContext";
 import { NavFubode } from "../componets/NavFubode";
 import { Button, Modal } from "react-bootstrap";
 const Login = () => {
+  const { getFuncionario, funcionario } = useSolicitud();
+
   const navigate = useNavigate();
   const [show, setShow] = useState(false);
   const handleClose = () => setShow(false);
@@ -20,20 +23,23 @@ const Login = () => {
       });
 
       if (error) {
+        setShow(!show);
         throw new Error(error.message);
       }
-
-      console.log(em, pas);
-      console.log(data, error);
-      console.log(supabase.auth.getUser());
-      if (!supabase.auth.getUser()) {
-        console.log("if");
-      } else {
-        console.log("else");
-        setShow(!show);
+      getFuncionario();
+      console.log(funcionario);
+      const rol7 = funcionario.roles.find((rol) => rol.id_rol === 7);
+      const idRol7 = rol7 ? rol7.id_rol : null;
+      if(rol7!=null){
+        if(idRol7===7){
+          console.log(idRol7);
+          navigate("/uif");
+        }else{
+          navigate("/consultor");
+        }
       }
-      console.log(data, error);
     } catch (error) {
+      setShow(!show);
       console.log(error);
     }
   };
@@ -53,7 +59,7 @@ const Login = () => {
       navigate("/login");
     } else {
       console.log("login - home");
-      navigate("/");
+      navigate("/consultor");
     }
   }, [navigate]);
   return (

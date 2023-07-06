@@ -20,20 +20,44 @@ export const SolicitudContextProvider = ({ children }) => {
   const getFuncionario = async () => {
     const usuario_supa = (await supabase.auth.getUser()).data.user.id;
 
-    const { data, error } = await supabase.from("conf_caedec").select();
-    if (error) throw error;
-    console.log(data, error);
+    let { data, error } = await supabase.rpc("obtener_usuario", {
+      usuario_supa,
+    });
+    if (error) console.error(error);
+    setFuncionario(data);
+    console.log(funcionario)
   };
 
   const getCaedec = async () => {
-    //const { error, data } = await supabase.from("conf_caedec").select();
-    //setCaedec(data);
+    const { error, data } = await supabase.from("conf_caedec").select();
+    setCaedec(data);
+  };
+
+  const getSolicitudes = async () => {
+    const usuario_supa = (await supabase.auth.getUser()).data.user.id;
+    let { data, error } = await supabase.rpc("uif_solicitudes", {
+      usuario_supa,
+    });
+
+    if (error) console.error(error);
+    setSolicitudes(data);
+  };
+
+  const getSolicitudesUIF = async () => {
+    const correo = funcionario.correo;
+    let { data, error } = await supabase.rpc("uif_solicitudesUIF", {
+      correo,
+    });
+
+    if (error) console.error(error);
+    setSolicitudes(data);
   };
 
   const createSolicitudes = async (solicitud) => {
+    console.log(funcionario);
     setAdding(true);
     const codigo =
-      funcionario[0].cod_usuario +
+      funcionario.cod_usuario +
       "-" +
       solicitud.tipo +
       "-" +
@@ -42,9 +66,8 @@ export const SolicitudContextProvider = ({ children }) => {
     try {
       const user = (await supabase.auth.getUser()).data.user.id;
       solicitud.id_usuario = user;
-      //solicitud.fecha_registro = today;
       solicitud.codigo_solicitud = codigo;
-      solicitud.correo_usuario_uif = "uif@fubode.org";
+      solicitud.correo_usuario_uif = "unidad_cumplimiento@fubode.org";
 
       const { error } = await supabase
         .from("uif_solicitudes")
@@ -53,6 +76,7 @@ export const SolicitudContextProvider = ({ children }) => {
       console.log(error);
     } finally {
       setAdding(false);
+      getSolicitudes();
     }
   };
 
@@ -68,6 +92,8 @@ export const SolicitudContextProvider = ({ children }) => {
         getCaedec,
         setCaedecSeleccionado,
         getFuncionario,
+        getSolicitudes,
+        getSolicitudesUIF
       }}
     >
       {children}

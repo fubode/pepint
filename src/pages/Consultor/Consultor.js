@@ -22,6 +22,7 @@ export const Consultor = () => {
     setCaedecSeleccionado,
     getFuncionario,
     funcionario,
+    getSolicitudes,
   } = useSolicitud();
 
   const handleClose = () => setShow(false);
@@ -43,7 +44,8 @@ export const Consultor = () => {
 
   useEffect(() => {
     getCaedec();
-    console.log(solicitudes);
+    getFuncionario()
+    getSolicitudes();
   }, []);
 
   const handleSubmit = (e) => {

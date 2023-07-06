@@ -1,19 +1,6 @@
 import React, { useState } from "react";
 import { useSolicitud } from "../../context/SolicitudContext";
 
-const paises = [
-  { nombre: "Argentina", codigo: "0549" },
-  { nombre: "Bolivia", codigo: "0591" },
-  { nombre: "Colombia", codigo: "0578" },
-  { nombre: "Chile", codigo: "0563" },
-  { nombre: "Ecuador", codigo: "0593" },
-  { nombre: "España", codigo: "0349" },
-  { nombre: "Estados Unidos", codigo: "001" },
-  { nombre: "México", codigo: "0522" },
-  { nombre: "Perú", codigo: "0514" },
-  { nombre: "Uruguay", codigo: "0598" },
-  { nombre: "Venezuela", codigo: "0582" },
-];
 
 export const TextAutoSugerenias = () => {
   const [inputValue, setInputValue] = useState("");
@@ -23,16 +10,19 @@ export const TextAutoSugerenias = () => {
 
   const handleInputChange = (e) => {
     const valor = e.target.value;
+    
     setInputValue(valor);
 
-    // Filtrar los países que coincidan con el valor ingresado
+    // Filtrar caedec por codigo y descripcion
     const coincidencias = caedec.filter((info) =>
       (info.cod_caedec + "-" + info.caedec)
         .toLowerCase()
         .includes(valor.toLowerCase())
     );
-
     setSugerencias(coincidencias);
+    if(valor===""){
+      setSugerencias([]);
+    }
   };
 
   const handleSuggestionClick = (caedecInfo) => {

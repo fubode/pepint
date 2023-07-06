@@ -45,12 +45,11 @@ export const CardConsultor = ({ soli,funcionario }) => {
                     : "bg-warning"
                 }`}
               >
-                <FaUser onClick={handleShow} />
               </div>
               <div className="col-9">
                 <p className="mb-0">{soli.codigo_solicitud}</p>
                 <p className="mb-0">
-                  {soli.numero_doc + " - " + soli.nombre_completo}
+                  {soli.numero_doc + " - " + soli.nombre}
                 </p>
                 <p className="mb-0">{soli.producto}</p>
                 <p className="mb-0">{soli.cod_caedec + " - " + soli.caedec}</p>

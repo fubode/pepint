@@ -30,21 +30,48 @@ export const Consultor = () => {
 
   const handleSalir = async () => {
     const { error } = await supabase.auth.signOut();
-    if(error) throw error
+    if (error) throw error;
     navigate("/login");
   };
 
   const handleEjemplo = () => {
-    
     getFuncionario();
     //console.log(funcionario);
   };
 
   const handleCloseMessage = () => setShowMesagge(false);
+  let rol = null;
+  let idRol = 0;
 
   useEffect(() => {
+    try {
+      rol = funcionario.roles.find((rol) => rol.id_rol === 6);
+      idRol = rol ? rol.id_rol : null;
+    } catch (error) {
+      idRol = 0;
+    }
+
+    console.log(idRol);
+    console.log(rol);
+    if (rol != null) {
+      switch (idRol) {
+        case 6:
+          navigate("/consultor");
+          break;
+        case 7:
+          navigate("/uif");
+          break;
+        case 8:
+          break;
+        default:
+          navigate("/login");
+          break;
+      }
+    }else{
+      navigate("/login");
+    }
     getCaedec();
-    getFuncionario()
+    getFuncionario();
     getSolicitudes();
   }, []);
 
@@ -93,7 +120,7 @@ export const Consultor = () => {
           <div className="row m-1">
             {solicitudes.map((soli, key) => (
               //<h1 key={key}>{soli.producto}</h1>
-              <CardConsultor soli={soli} funcionario = {funcionario} key={key} />
+              <CardConsultor soli={soli} funcionario={funcionario} key={key} />
             ))}
           </div>
         </div>

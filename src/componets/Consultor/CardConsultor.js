@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Button, Modal } from "react-bootstrap";
-import { FaCommentDots, FaEye, FaPrint, FaUser } from "react-icons/fa";
+import { FaCheck, FaCommentDots, FaEye, FaPrint, FaTimes, FaUser } from "react-icons/fa";
 import { useSolicitud } from "../../context/SolicitudContext";
 
 function formatFechaHora(fecha) {
@@ -17,17 +17,24 @@ function formatFechaHora(fecha) {
   return `${day}-${month}-${year} ${hours}:${minutes}:${seconds}`;
 }
 
-export const CardConsultor = ({ soli,funcionario }) => {
+export const CardConsultor = ({ soli, funcionario }) => {
   const [show, setShow] = useState(false);
   const [showFuncionario, setShowFuncionario] = useState(false);
   const handleClose = () => setShow(false);
+  const {
+    aceptarSolicitud,
+    rechazarSolicitud,
+  } = useSolicitud();
+
   const handleShow = () => {
     //console.log(funcionario);
     setShow(true);
   };
 
-
   const handleComentario = () => {};
+  const handleAceptarSolicitud = () =>  aceptarSolicitud(soli.codigo_solicitud);
+  const handleRechazarSolicitud = () =>  rechazarSolicitud(soli.codigo_solicitud);
+
   return (
     <>
       <div className="card">
@@ -35,7 +42,7 @@ export const CardConsultor = ({ soli,funcionario }) => {
           <div className="container">
             <div className="row">
               <div
-                className={`col-2 ${
+                className={`col-1 ${
                   soli.estado === "ACEPTADO"
                     ? "bg-success"
                     : soli.estado === "GERENCIA"
@@ -44,13 +51,10 @@ export const CardConsultor = ({ soli,funcionario }) => {
                     ? "bg-danger"
                     : "bg-warning"
                 }`}
-              >
-              </div>
+              ></div>
               <div className="col-9">
                 <p className="mb-0">{soli.codigo_solicitud}</p>
-                <p className="mb-0">
-                  {soli.numero_doc + " - " + soli.nombre}
-                </p>
+                <p className="mb-0">{soli.numero_doc + " - " + soli.nombre}</p>
                 <p className="mb-0">{soli.producto}</p>
                 <p className="mb-0">{soli.cod_caedec + " - " + soli.caedec}</p>
                 <p className="mb-0">{soli.correo_usuario_uif}</p>
@@ -62,13 +66,16 @@ export const CardConsultor = ({ soli,funcionario }) => {
                 )}
               </div>
               {soli.estado !== "PENDIENTE" ? (
-                <div className="col-1">
-                  <FaCommentDots onClick={handleComentario} />
-                  <FaEye />
+                <div className="col-2">
+                  <FaCommentDots className="m-1" onClick={handleComentario} />
+                  <FaEye className="m-1"/>
                   <FaPrint />
                 </div>
               ) : (
-                <div></div>
+                <div className="col-1">
+                  <FaCheck className="m-2" onClick={handleAceptarSolicitud} />
+                  <FaTimes onClick={handleRechazarSolicitud}/>
+                </div>
               )}
             </div>
           </div>

@@ -19,6 +19,8 @@ const Uif = () => {
   } = useSolicitud();
   
   useEffect(() => {
+    console.log("uif");
+    getFuncionario();
     getSolicitudes();
   }, []);
   return (

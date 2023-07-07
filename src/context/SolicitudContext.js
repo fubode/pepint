@@ -25,7 +25,7 @@ export const SolicitudContextProvider = ({ children }) => {
     });
     if (error) console.error(error);
     setFuncionario(data);
-    console.log(funcionario)
+    console.log(funcionario);
   };
 
   const getCaedec = async () => {
@@ -52,6 +52,29 @@ export const SolicitudContextProvider = ({ children }) => {
     if (error) console.error(error);
     setSolicitudes(data);
   };
+
+  const aceptarSolicitud = async (codigoSolicitud) => {
+    console.log(codigoSolicitud);
+    const descripcion = "La solicitud fue aceptada";
+    const estado = "ACEPTADO";
+    const fechaModificacion = new Date();
+    const correoFinal = funcionario.correo;
+    
+    const { data, error } = await supabase
+      .from("uif_solicitudes")
+      .update({
+        descripcion: descripcion,
+        estado: estado,
+        fecha_modificacion: fechaModificacion,
+        correo_final: correoFinal,
+      })
+      .eq("codigo_solicitud", codigoSolicitud);
+      console.log(data,error)
+  };
+  
+  const rechazarSolicitud = (codigoSolicitud) =>{
+    console.log(codigoSolicitud);
+  }
 
   const createSolicitudes = async (solicitud) => {
     console.log(funcionario);
@@ -93,7 +116,8 @@ export const SolicitudContextProvider = ({ children }) => {
         setCaedecSeleccionado,
         getFuncionario,
         getSolicitudes,
-        getSolicitudesUIF
+        getSolicitudesUIF,
+        aceptarSolicitud,
       }}
     >
       {children}

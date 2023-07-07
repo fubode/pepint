@@ -14,7 +14,7 @@ const Login = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const em = e.target.email.value;
+    const em = e.target.email.value+'@fubode.org';
     const pas = e.target.password.value;
     try {
       const { data, error } = await supabase.auth.signInWithPassword({
@@ -28,14 +28,21 @@ const Login = () => {
       }
       getFuncionario();
       console.log(funcionario);
-      const rol7 = funcionario.roles.find((rol) => rol.id_rol === 7);
-      const idRol7 = rol7 ? rol7.id_rol : null;
+      const rol7 = funcionario.roles.find((rol) => rol.id_rol === 6);
+      const idRol = rol7 ? rol7.id_rol : null;
       if(rol7!=null){
-        if(idRol7===7){
-          console.log(idRol7);
-          navigate("/uif");
-        }else{
-          navigate("/consultor");
+        switch (idRol) {
+          case 6:
+            navigate("/consultor");
+            break;
+          case 7:
+            navigate("/uif");
+            break;
+          case 8:
+            break;
+          default:
+            navigate("/login");
+            break;
         }
       }
     } catch (error) {
@@ -79,7 +86,7 @@ const Login = () => {
                     <h3 className="mb-5">INGRESAR</h3>
                     <div className="form-outline mb-4">
                       <input
-                        type="email"
+                        type="text"
                         name="email"
                         placeholder="example@fubode.org"
                         id="typeEmailX-2"

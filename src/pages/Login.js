@@ -4,8 +4,12 @@ import { useNavigate } from "react-router-dom";
 import { useSolicitud } from "../context/SolicitudContext";
 import { NavFubode } from "../componets/NavFubode";
 import { Button, Modal } from "react-bootstrap";
+import axios from "axios";
 const Login = () => {
-  const { getFuncionario, funcionario,navegacion,setRol } = useSolicitud();
+  const { getFuncionario, funcionario, navegacion, setRol } = useSolicitud();
+  const EMISOR = "fubode.vacaciones@gmail.com";
+  const CONTRASENA = "fpooxdsoatymykzn";
+  const ENDPOINT_CORREO = "http://192.168.10.6:8096/correo"; // IP público
 
   const navigate = useNavigate();
   const [show, setShow] = useState(false);
@@ -14,7 +18,7 @@ const Login = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const em = e.target.email.value+'@fubode.org';
+    const em = e.target.email.value + "@fubode.org";
     const pas = e.target.password.value;
     try {
       const { data, error } = await supabase.auth.signInWithPassword({
@@ -40,30 +44,39 @@ const Login = () => {
       password: "fubode123*",
     });
     console.log(data, error);*/
-    const roles = [
-  { nombre_rol: 'Unidad de Cumplimiento', id_rol: 7 },
-  { nombre_rol: 'Otro Rol', id_rol: 5 },
-  { nombre_rol: 'Administrador', id_rol: 9 }
-];
 
-const rolesPermitidos = [6, 7, 8];
-
-const encontrado = roles.find(rol => rolesPermitidos.includes(rol.id_rol));
-
-if (encontrado) {
-  const idRolEncontrado = encontrado.id_rol;
-  console.log('Se encontró el id_rol:', idRolEncontrado);
-} else {
-  console.log('No se encontraron los roles en el arreglo');
-}
-
+    enviarCorreo('juan_montecinos@fubode.org','PRUEBA REACT','funciono');
   };
 
+  const enviarCorreo = async(remitente, asunto, detalle) =>{
+
+    const data = {
+      emisor: EMISOR,
+      contrasenaEmisor: CONTRASENA,
+      remitente: remitente,
+      asunto: asunto,
+      detalle: detalle
+    };
+  
+    let mensaje = "";
+  
+    try {
+      await axios.post(ENDPOINT_CORREO, data);
+      // Haz algo con la respuesta del servidor
+      mensaje = "Correo enviado";
+  
+      // Ejemplo de navegación a otra página después de enviar el correo
+    } catch (error) {
+      mensaje = `Correo no enviado, ${error.message}`;
+    }
+  
+    console.log(mensaje);
+  }
   useEffect(() => {
     //console.log(supabase.auth.getSession());
     if (supabase.auth.getUser()) {
       console.log("login - login");
-      navigate("/login");
+      navigate("/");
     } else {
       console.log("login - home");
       navigate("/consultor");

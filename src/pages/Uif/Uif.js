@@ -25,7 +25,7 @@ const Uif = () => {
   const handleSalir = async () => {
     const { error } = await supabase.auth.signOut();
     if (error) throw error;
-    navigate("/login");
+    navigate("/");
   };
   
   useEffect(() => {

@@ -11,28 +11,71 @@ export const Consultor = () => {
   const navigate = useNavigate();
   const [show, setShow] = useState(false);
   const [showMessage, setShowMesagge] = useState(false);
+  const [textCI, setTextCI] = useState("");
+  const [textNombre, setNombre] = useState("");
+  const [textProducto, setProducto] = useState("NINGUNO");
+  const [textTipo, setTipo] = useState("NINGUNO");
+  const [validacionCi, setValidacionCi] = useState(true);
+  const [validacionNombre, setValidacionNombre] = useState(true);
+  const [validacionTipo, setValidacionTipo] = useState(true);
+  const [validacionProducto, setValidacionProducto] = useState(true);
+  const [validacion, setValidacion] = useState({
+    ci: true,
+    nombre: true,
+    tipo: true,
+    producto: true,
+    caedec: true,
+  });
 
   const {
     solicitudes,
-    loading,
     createSolicitudes,
     getCaedec,
-    caedec,
     caedecSeleccionado,
     setCaedecSeleccionado,
     getFuncionario,
     funcionario,
     getSolicitudes,
-    navegacion
+    navegacion,
   } = useSolicitud();
 
-  const handleClose = () => setShow(false);
+  const handleClose = () => {
+    setShow(false);
+    setTextCI("");
+    setNombre("");
+    setProducto("");
+    setTipo("");
+
+    setValidacionCi(true);
+    setValidacionNombre(true);
+    setValidacionProducto(true);
+    setValidacionTipo(true);
+  };
+
   const handleShow = () => setShow(true);
 
   const handleSalir = async () => {
     const { error } = await supabase.auth.signOut();
     if (error) throw error;
-    navigate("/login");
+    navigate("/");
+  };
+
+  const handleTextCi = (event) => {
+    setTextCI(event.target.value);
+    console.log(event.target.value);
+  };
+  const handleNombre = (event) => {
+    setNombre(event.target.value);
+    console.log(event.target.value);
+  };
+  const handleTipo = (event) => {
+    setTipo(event.target.value);
+    console.log(event.target.value);
+  };
+
+  const handleProducto = (event) => {
+    setProducto(event.target.value);
+    console.log(event.target.value);
   };
 
   const handleEjemplo = () => {
@@ -42,8 +85,6 @@ export const Consultor = () => {
   };
 
   const handleCloseMessage = () => setShowMesagge(false);
-  let rol = null;
-  let idRol = 0;
 
   useEffect(() => {
     getFuncionario();
@@ -52,8 +93,38 @@ export const Consultor = () => {
     getSolicitudes();
   }, []);
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
+  const handleSubmit = () => {
+    if (textCI.toString().length <= 5) {
+      setValidacionCi(false);
+      return;
+    } else {
+      setValidacionCi(true);
+    }
+    if (textNombre.length <= 0) {
+      setValidacionNombre(false);
+      return;
+    } else {
+      setValidacionNombre(true);
+    }
+
+    if (textProducto === "NINGUNO") {
+      console.log('as')
+      setValidacionProducto(false);
+      return;
+    } else {
+      setValidacionProducto(true);
+    }
+
+    if (textTipo === "NINGUNO") {
+      setValidacionTipo(false);
+      return;
+    } else {
+      setValidacionTipo(true);
+    }
+
+    
+    console.log(textCI, textNombre, textProducto, textTipo, caedecSeleccionado);
+    /*
     const numero_doc = e.target[0].value;
     const nombre_completo = e.target[1].value;
     const producto = e.target[2].value;
@@ -71,7 +142,7 @@ export const Consultor = () => {
     setCaedecSeleccionado({});
     createSolicitudes(solicitud);
     setShowMesagge(true);
-    console.log(solicitudes);
+    console.log(solicitudes);*/
   };
 
   return (
@@ -97,7 +168,6 @@ export const Consultor = () => {
         <div className="container d-flex justify-content-center align-items-center h-100">
           <div className="row m-1">
             {solicitudes.map((soli, key) => (
-              //<h1 key={key}>{soli.producto}</h1>
               <CardConsultor soli={soli} funcionario={funcionario} key={key} />
             ))}
           </div>
@@ -108,7 +178,7 @@ export const Consultor = () => {
           <Modal.Title>NUEVA SOLICITUD</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <form onSubmit={handleSubmit}>
+          <form>
             <div className="mb-3">
               <label className="form-label">Cedula de identidad</label>
               <div className="mb-3">
@@ -119,7 +189,15 @@ export const Consultor = () => {
                     id="ci"
                     name="ci"
                     placeholder="Introduzca su nro de ci"
+                    onChange={handleTextCi}
                   />
+                  {!validacionCi ? (
+                    <p className="text-danger">
+                      El ci debe tener mas de 5 digitos
+                    </p>
+                  ) : (
+                    <></>
+                  )}
                 </div>
               </div>
             </div>
@@ -134,7 +212,13 @@ export const Consultor = () => {
                 type="text"
                 className="form-control text-uppercase"
                 id="exampleInputPassword1"
+                onChange={handleNombre}
               />
+              {!validacionNombre ? (
+                <p className="text-danger">El nombre no puede estar vacio</p>
+              ) : (
+                <></>
+              )}
             </div>
             <div className="mb-3">
               <label htmlFor="exampleInputPassword1" className="form-label">
@@ -143,6 +227,7 @@ export const Consultor = () => {
               <select
                 className="form-select"
                 aria-label="Default select example"
+                onChange={handleProducto}
               >
                 <option value="NINGUNO">Selecciones un producto</option>
                 <option value="CAJA DE AHORRO">CAJA DE AHORRO</option>
@@ -152,6 +237,11 @@ export const Consultor = () => {
                 <option value="BANCA COMUNAL">BANCA COMUNAL</option>
                 <option value="CREDITO INDIVIDUAL">CREDITO INDIVIDUAL</option>
               </select>
+              {!validacionProducto ? (
+                <p className="text-danger">Debe seleccionar un producto</p>
+              ) : (
+                <></>
+              )}
             </div>
             <div className="mb-3">
               <label className="form-label">CAEDEC</label>
@@ -164,14 +254,24 @@ export const Consultor = () => {
               <select
                 className="form-select"
                 aria-label="Default select example"
+                onChange={handleTipo}
               >
                 <option value="NINGUNO">Selecciones un tipo</option>
                 <option value="INT">INT</option>
                 <option value="PEP">PEP</option>
                 <option value="CAEDEC">CAEDEC</option>
               </select>
+              {!validacionTipo ? (
+                <p className="text-danger">Debe seleccionar un tipo</p>
+              ) : (
+                <></>
+              )}
             </div>
-            <button type="submit" className="btn btn-primary">
+            <button
+              type="button"
+              className="btn btn-primary"
+              onClick={handleSubmit}
+            >
               Enviar solicitud
             </button>
           </form>

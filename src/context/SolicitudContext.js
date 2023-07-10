@@ -1,6 +1,6 @@
 import { Context, createContext, useContext, useState } from "react";
 import { supabase } from "../supabase/client";
-import { useNavigate } from "react-router-dom";
+import { useNavigate  } from "react-router-dom";
 export const SolicitudContext = createContext();
 
 export const useSolicitud = () => {
@@ -80,10 +80,10 @@ export const SolicitudContextProvider = ({ children }) => {
   };
 
   const getSolicitudesUIF = async () => {
-    const correo = 'unidad_cumplimiento@fubode.org';//funcionario.correo;
+    const correo_solicitud = 'unidad_cumplimiento@fubode.org';//funcionario.correo;
     let { data, error } = await supabase
-      .rpc('uif_solicitudesuif', {
-        correo
+      .rpc('solicitudes_correo', {
+        correo_solicitud
       })
 
     if (error) console.error(error)
@@ -92,10 +92,10 @@ export const SolicitudContextProvider = ({ children }) => {
     setSolicitudesUIF(data);
   };
 
-  const aceptarSolicitud = async (codigoSolicitud) => {
+  const modificarSolicitud = async (codigoSolicitud,detalle,estadoSolicitud) => {
     console.log(codigoSolicitud);
-    const descripcion = "La solicitud fue aceptada";
-    const estado = "ACEPTADO";
+    const descripcion = detalle;
+    const estado = estadoSolicitud;
     const fechaModificacion = new Date();
     const correoFinal = funcionario.correo;
 
@@ -157,7 +157,7 @@ export const SolicitudContextProvider = ({ children }) => {
         case 8:
           break;
         default:
-          navigate("/login");
+          navigate("/");
           break;
       }
     } else {
@@ -213,7 +213,7 @@ export const SolicitudContextProvider = ({ children }) => {
         getFuncionario,
         getSolicitudes,
         getSolicitudesUIF,
-        aceptarSolicitud,
+        modificarSolicitud,
         navegacion,
         setFuncionario,
         solicitudesUIF,

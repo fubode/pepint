@@ -23,6 +23,7 @@ export const Consultor = () => {
     getFuncionario,
     funcionario,
     getSolicitudes,
+    navegacion
   } = useSolicitud();
 
   const handleClose = () => setShow(false);
@@ -35,8 +36,9 @@ export const Consultor = () => {
   };
 
   const handleEjemplo = () => {
-    getFuncionario();
-    //console.log(funcionario);
+    //getFuncionario();
+    //navegacion();
+    console.log(funcionario);
   };
 
   const handleCloseMessage = () => setShowMesagge(false);
@@ -44,34 +46,9 @@ export const Consultor = () => {
   let idRol = 0;
 
   useEffect(() => {
-    try {
-      rol = funcionario.roles.find((rol) => rol.id_rol === 6);
-      idRol = rol ? rol.id_rol : null;
-    } catch (error) {
-      idRol = 0;
-    }
-
-    console.log(idRol);
-    console.log(rol);
-    if (rol != null) {
-      switch (idRol) {
-        case 6:
-          navigate("/consultor");
-          break;
-        case 7:
-          navigate("/uif");
-          break;
-        case 8:
-          break;
-        default:
-          navigate("/login");
-          break;
-      }
-    }else{
-      navigate("/login");
-    }
-    getCaedec();
     getFuncionario();
+    navegacion();
+    getCaedec();
     getSolicitudes();
   }, []);
 
@@ -101,6 +78,7 @@ export const Consultor = () => {
     <>
       <div>
         <NavFubode />
+        <h1>{funcionario.correo}</h1>
         <Button onClick={handleEjemplo}>ejemplo</Button>
         <Button onClick={handleSalir}>SALIR</Button>
         <div className="container-fluid h-100">

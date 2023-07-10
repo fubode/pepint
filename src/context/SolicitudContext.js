@@ -1,5 +1,6 @@
 import { Context, createContext, useContext, useState } from "react";
 import { supabase } from "../supabase/client";
+import { useNavigate } from "react-router-dom";
 export const SolicitudContext = createContext();
 
 export const useSolicitud = () => {
@@ -14,8 +15,11 @@ export const SolicitudContextProvider = ({ children }) => {
   const [loading, setLoading] = useState(false);
   const [caedec, setCaedec] = useState([]);
   const [caedecSeleccionado, setCaedecSeleccionado] = useState({});
-  const [userUIF, setUserUIF] = useState({});
   const [funcionario, setFuncionario] = useState({});
+  const [rol, setRol] = useState(0);
+  const [solicitudesUIF, setSolicitudesUIF] = useState([]);
+
+  const navigate = useNavigate();
 
   const getFuncionario = async () => {
     const usuario_supa = (await supabase.auth.getUser()).data.user.id;
@@ -26,6 +30,38 @@ export const SolicitudContextProvider = ({ children }) => {
     if (error) console.error(error);
     setFuncionario(data);
     console.log(funcionario);
+    let rolEncontrado = 0
+    if (data && data.roles) {
+      console.log(data.roles);
+      let roles = data.roles;
+      const rolesPermitidos = [6, 7, 8];
+      const encontrado = roles.find(rol => rolesPermitidos.includes(rol.id_rol));
+      if (encontrado) {
+        rolEncontrado = encontrado.id_rol;
+        setRol(rolEncontrado);
+        console.log(rolEncontrado);
+      }
+    }
+    console.log("navegacion")
+    console.log(rol)
+    if (rolEncontrado !== 0) {
+      console.log(rolEncontrado)
+      switch (rolEncontrado) {
+        case 6:
+          navigate("/consultor");
+          break;
+        case 7:
+          navigate("/uif");
+          break;
+        case 8:
+          break;
+        default:
+          navigate("/login");
+          break;
+      }
+    } else {
+    }
+
   };
 
   const getCaedec = async () => {
@@ -44,13 +80,16 @@ export const SolicitudContextProvider = ({ children }) => {
   };
 
   const getSolicitudesUIF = async () => {
-    const correo = funcionario.correo;
-    let { data, error } = await supabase.rpc("uif_solicitudesUIF", {
-      correo,
-    });
+    const correo = 'unidad_cumplimiento@fubode.org';//funcionario.correo;
+    let { data, error } = await supabase
+      .rpc('uif_solicitudesuif', {
+        correo
+      })
 
-    if (error) console.error(error);
-    setSolicitudes(data);
+    if (error) console.error(error)
+    else console.log(data)
+    console.log(data)
+    setSolicitudesUIF(data);
   };
 
   const aceptarSolicitud = async (codigoSolicitud) => {
@@ -59,7 +98,7 @@ export const SolicitudContextProvider = ({ children }) => {
     const estado = "ACEPTADO";
     const fechaModificacion = new Date();
     const correoFinal = funcionario.correo;
-    
+
     const { data, error } = await supabase
       .from("uif_solicitudes")
       .update({
@@ -69,10 +108,11 @@ export const SolicitudContextProvider = ({ children }) => {
         correo_final: correoFinal,
       })
       .eq("codigo_solicitud", codigoSolicitud);
-      console.log(data,error)
+    console.log(data, error)
+    getSolicitudesUIF();
   };
-  
-  const rechazarSolicitud = (codigoSolicitud) =>{
+
+  const rechazarSolicitud = (codigoSolicitud) => {
     console.log(codigoSolicitud);
   }
 
@@ -103,6 +143,62 @@ export const SolicitudContextProvider = ({ children }) => {
     }
   };
 
+  const navegacion = () => {
+    console.log("navegacion")
+    if (rol !== 0) {
+      console.log(rol)
+      switch (rol) {
+        case 6:
+          navigate("/consultor");
+          break;
+        case 7:
+          navigate("/uif");
+          break;
+        case 8:
+          break;
+        default:
+          navigate("/login");
+          break;
+      }
+    } else {
+    }
+    /*
+    const usuario_supa = (await supabase.auth.getUser()).data.user.id;
+    const { data, error } = await supabase.rpc("obtener_usuario", {
+      usuario_supa,
+    });
+
+    if (error) console.error(error);
+    console.log(data);
+
+    if (data && data.roles) {
+      console.log(data.roles);
+      let roles = data.roles;
+      let rolEncontrado = 0;
+      const rolesPermitidos = [6, 7, 8];
+        
+      const encontrado = roles.find(rol => rolesPermitidos.includes(rol.id_rol));
+      if (encontrado) {
+        rolEncontrado = encontrado.id_rol;
+      }
+      switch (rolEncontrado) {
+        case 6:
+          navigate("/consultor");
+          break;
+        case 7:
+          navigate("/uif");
+          break;
+        case 8:
+          break;
+        default:
+          navigate("/login");
+          break;
+      }
+    } else {
+      console.log('No se encontraron roles en los datos');
+    }*/
+  }
+
   return (
     <SolicitudContext.Provider
       value={{
@@ -118,6 +214,10 @@ export const SolicitudContextProvider = ({ children }) => {
         getSolicitudes,
         getSolicitudesUIF,
         aceptarSolicitud,
+        navegacion,
+        setFuncionario,
+        solicitudesUIF,
+        rol
       }}
     >
       {children}

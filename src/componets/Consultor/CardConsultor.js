@@ -24,6 +24,7 @@ export const CardConsultor = ({ soli, funcionario }) => {
   const {
     aceptarSolicitud,
     rechazarSolicitud,
+    rol
   } = useSolicitud();
 
   const handleShow = () => {
@@ -51,7 +52,9 @@ export const CardConsultor = ({ soli, funcionario }) => {
                     ? "bg-danger"
                     : "bg-warning"
                 }`}
-              ></div>
+              >
+                <FaUser />
+              </div>
               <div className="col-9">
                 <p className="mb-0">{soli.codigo_solicitud}</p>
                 <p className="mb-0">{soli.numero_doc + " - " + soli.nombre}</p>
@@ -72,10 +75,14 @@ export const CardConsultor = ({ soli, funcionario }) => {
                   <FaPrint />
                 </div>
               ) : (
+                rol === 7?(
                 <div className="col-1">
                   <FaCheck className="m-2" onClick={handleAceptarSolicitud} />
                   <FaTimes onClick={handleRechazarSolicitud}/>
                 </div>
+                ):(
+                  <div></div>
+                )
               )}
             </div>
           </div>

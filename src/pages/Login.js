@@ -5,7 +5,7 @@ import { useSolicitud } from "../context/SolicitudContext";
 import { NavFubode } from "../componets/NavFubode";
 import { Button, Modal } from "react-bootstrap";
 const Login = () => {
-  const { getFuncionario, funcionario } = useSolicitud();
+  const { getFuncionario, funcionario,navegacion,setRol } = useSolicitud();
 
   const navigate = useNavigate();
   const [show, setShow] = useState(false);
@@ -24,27 +24,10 @@ const Login = () => {
 
       if (error) {
         setShow(!show);
-        throw new Error(error.message);
+        throw error.message;
       }
       getFuncionario();
-      console.log(funcionario);
-      const rol7 = funcionario.roles.find((rol) => rol.id_rol === 6);
-      const idRol = rol7 ? rol7.id_rol : null;
-      if(rol7!=null){
-        switch (idRol) {
-          case 6:
-            navigate("/consultor");
-            break;
-          case 7:
-            navigate("/uif");
-            break;
-          case 8:
-            break;
-          default:
-            navigate("/login");
-            break;
-        }
-      }
+      navegacion();
     } catch (error) {
       setShow(!show);
       console.log(error);
@@ -52,11 +35,28 @@ const Login = () => {
   };
 
   const handleRegistrar = async () => {
-    const { data, error } = await supabase.auth.signUp({
+    /*const { data, error } = await supabase.auth.signUp({
       email: "doris_sagardia@fubode.org",
       password: "fubode123*",
     });
-    console.log(data, error);
+    console.log(data, error);*/
+    const roles = [
+  { nombre_rol: 'Unidad de Cumplimiento', id_rol: 7 },
+  { nombre_rol: 'Otro Rol', id_rol: 5 },
+  { nombre_rol: 'Administrador', id_rol: 9 }
+];
+
+const rolesPermitidos = [6, 7, 8];
+
+const encontrado = roles.find(rol => rolesPermitidos.includes(rol.id_rol));
+
+if (encontrado) {
+  const idRolEncontrado = encontrado.id_rol;
+  console.log('Se encontró el id_rol:', idRolEncontrado);
+} else {
+  console.log('No se encontraron los roles en el arreglo');
+}
+
   };
 
   useEffect(() => {

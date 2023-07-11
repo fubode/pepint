@@ -5,6 +5,7 @@ import { TaskContextProvider } from "./context/TaskContext";
 import {Consultor} from "./pages/Consultor/Consultor";
 import { SolicitudContextProvider } from "./context/SolicitudContext";
 import Uif from "./pages/Uif/Uif";
+import Gerencia from "./pages/Gerencia/Gerencia";
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 
 function App() {
@@ -27,6 +28,7 @@ function App() {
             <Route path="/*" element={<NotFoud />} />
           </Routes>
 */
+
   return (
     <div className="App">
       <TaskContextProvider>
@@ -35,7 +37,7 @@ function App() {
             <Route path="/" element={<Login />} />
             <Route path="/consultor" element={<Consultor />} />
             <Route path="/uif" element={<Uif />} />
-            <Route path="/gerencia" element={<Consultor />} />
+            <Route path="/gerencia" element={<Gerencia/>} />
             <Route path="/*" element={<NotFoud />} />
           </Routes>
         </SolicitudContextProvider>

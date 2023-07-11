@@ -1,4 +1,4 @@
-import React, {useState } from "react";
+import React, { useState } from "react";
 import { Button, Modal } from "react-bootstrap";
 import {
   FaCheck,
@@ -7,7 +7,9 @@ import {
   FaPrint,
   FaTimes,
   FaUser,
+  FaMailBulk,
 } from "react-icons/fa";
+import { IconName } from "react-icons/fc";
 import { useSolicitud } from "../../context/SolicitudContext";
 
 function formatFechaHora(fecha) {
@@ -29,20 +31,28 @@ export const CardConsultor = ({ soli, funcionario }) => {
   const [showAceptar, setShowAceptar] = useState(false);
   const [showFuncionario, setShowFuncionario] = useState(false);
   const [showRechazar, setShowRechazar] = useState(false);
-  const [showComentario, setShowComentario] = useState(false)
+  const [showComentario, setShowComentario] = useState(false);
+  const [showEnviar, setShowEnviar] = useState(false);
+  const [textGerencia, setTextGerencia] = useState("NINGUNO");
+  const [textDescripcion, setTextDescripcion] = useState("");
   const handleClose = () => {
     setShowFuncionario(false);
     setShowAceptar(false);
     setShow(false);
     setShowRechazar(false);
     setShowComentario(false);
+    setShowEnviar(false);
   };
-  const [textareaValue, setTextareaValue] = useState('');
+  const [textareaValue, setTextareaValue] = useState("");
 
   const handleTextareaChange = (event) => {
     setTextareaValue(event.target.value);
   };
-  const { modificarSolicitud, rol } = useSolicitud();
+  const handleTextareaGerencia = (event) => {
+    setTextDescripcion(event.target.value);
+  };
+  const { modificarSolicitud, rol, correosAltaGerencia, enviarAltaGerencia } =
+    useSolicitud();
 
   const handleShow = () => {
     //console.log(funcionario);
@@ -55,14 +65,33 @@ export const CardConsultor = ({ soli, funcionario }) => {
   const handleShowUsuario = () => setShowFuncionario(!showFuncionario);
   const handleComentario = () => setShowComentario(!showComentario);
   const handleAceptarSolicitud = () => {
-    const detalle = 'Realizada la debida diligencia no se tienen observaciones para realizar la operacion comercial';
-    modificarSolicitud(soli.codigo_solicitud,detalle,'ACEPTADO');
+    const detalle =
+      "Realizada la debida diligencia no se tienen observaciones para realizar la operacion comercial";
+    modificarSolicitud(soli.codigo_solicitud, detalle, "ACEPTADO");
     setShowAceptar(!showAceptar);
   };
-  const handleRechazarSolicitud = () =>{
-    modificarSolicitud(soli.codigo_solicitud,textareaValue,'RECHAZADO');
+  const handleRechazarSolicitud = () => {
+    modificarSolicitud(soli.codigo_solicitud, textareaValue, "RECHAZADO");
     setShowRechazar(!showRechazar);
-  }
+  };
+
+  const handleAltaGerencia = () => {
+    setShowEnviar(true);
+  };
+
+  const handleEnviar = () => {
+    enviarAltaGerencia(
+      soli.codigo_solicitud,
+      textDescripcion,
+      textGerencia,
+      "GERENCIA"
+    );
+    setShowEnviar(false);
+  };
+
+  const handleTextGerencia = (event) => {
+    setTextGerencia(event.target.value);
+  };
 
   return (
     <>
@@ -81,7 +110,13 @@ export const CardConsultor = ({ soli, funcionario }) => {
                     : "bg-warning"
                 }`}
               >
-                <FaUser onClick={handleShowUsuario} />
+                {
+                  rol !== 6?(
+                    <FaUser onClick={handleShowUsuario} />
+                  ):(
+                    <></>
+                  ) 
+                }
               </div>
               <div className="col-9">
                 <p className="mb-0">{soli.codigo_solicitud}</p>
@@ -108,23 +143,52 @@ export const CardConsultor = ({ soli, funcionario }) => {
                     </p>
                     <p className="mb-0 text-danger">{soli.correo_final}</p>
                   </div>
+                ) : soli.estado === "GERENCIA" ? (
+                  <div>
+                    <p className="mb-0 text-info">
+                      {formatFechaHora(soli.fecha_modificacion)}
+                    </p>
+                    <p className="mb-0 text-info">{soli.correo_usuario_ag}</p>
+                  </div>
                 ) : (
                   <div></div>
                 )}
-              </div>
-              {soli.estado !== "PENDIENTE" ? (
+              </div>             
+              {soli.estado === "PENDIENTE" ? (
+                rol === 7 ? (
+                  <div className="col-1">
+                    <FaCheck className="m-2" onClick={handleAceptar} />
+                    <FaTimes onClick={handleRechazar} />
+                    <FaMailBulk onClick={handleAltaGerencia} />
+                  </div>
+                ) : (
+                  <></>
+                )
+              ) : soli.estado === "ACEPTADO" ? (
                 <div className="col-2">
                   <FaCommentDots className="m-1" onClick={handleComentario} />
                   <FaEye className="m-1" />
-                  <FaPrint />
+                  <FaPrint className="m-1" />
                 </div>
-              ) : rol === 7 ? (
-                <div className="col-1">
-                  <FaCheck className="m-2" onClick={handleAceptar} />
-                  <FaTimes onClick={handleRechazar} />
+              ) : soli.estado === "RECHAZADO" ? (
+                <div className="col-2">
+                  <FaCommentDots className="m-1" onClick={handleComentario} />
+                  <FaEye className="m-1" />
+                  <FaPrint className="m-1" />
                 </div>
+              ) : soli.estado === "GERENCIA" ? (
+                rol === 8 ? (
+                  <div className="col-1">
+                    <FaCheck className="m-2" onClick={handleAceptar} />
+                    <FaTimes onClick={handleRechazar} />
+                  </div>
+                ) : (
+                  <div className="col-2">
+                    <FaCommentDots className="m-1" onClick={handleComentario} />
+                  </div>
+                )
               ) : (
-                <div></div>
+                <></>
               )}
             </div>
           </div>
@@ -143,7 +207,7 @@ export const CardConsultor = ({ soli, funcionario }) => {
         </Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" onClick={handleClose}>
-            Close
+            CERRAR
           </Button>
         </Modal.Footer>
       </Modal>
@@ -153,7 +217,11 @@ export const CardConsultor = ({ soli, funcionario }) => {
           <Modal.Title>ACEPTAR SOLICITUD</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <p>{"Realizada la debida diligencia no se tienen observaciones para realizar la operacion comercial"}</p>
+          <p>
+            {
+              "Realizada la debida diligencia no se tienen observaciones para realizar la operacion comercial"
+            }
+          </p>
           <p>{"Esta seguro de aceptar la solicitud?"}</p>
         </Modal.Body>
         <Modal.Footer>
@@ -161,7 +229,7 @@ export const CardConsultor = ({ soli, funcionario }) => {
             ACEPTAR
           </Button>
           <Button variant="secondary" onClick={handleClose}>
-            Close
+            CERRAR
           </Button>
         </Modal.Footer>
       </Modal>
@@ -172,11 +240,11 @@ export const CardConsultor = ({ soli, funcionario }) => {
         </Modal.Header>
         <Modal.Body>
           <div>
-            <textarea 
-            style={{ width: "100%" }}
-            rows="4" 
-            placeholder="Ingrese comentario"
-            onChange={handleTextareaChange}
+            <textarea
+              style={{ width: "100%" }}
+              rows="4"
+              placeholder="Ingrese comentario"
+              onChange={handleTextareaChange}
             ></textarea>
           </div>
         </Modal.Body>
@@ -185,7 +253,7 @@ export const CardConsultor = ({ soli, funcionario }) => {
             RECHAZAR
           </Button>
           <Button variant="secondary" onClick={handleClose}>
-            Close
+            CERRAR
           </Button>
         </Modal.Footer>
       </Modal>
@@ -200,6 +268,44 @@ export const CardConsultor = ({ soli, funcionario }) => {
         <Modal.Footer>
           <Button variant="secondary" onClick={handleClose}>
             Close
+          </Button>
+        </Modal.Footer>
+      </Modal>
+
+      <Modal show={showEnviar} onHide={handleClose}>
+        <Modal.Header className="bg-info text-white" closeButton>
+          <Modal.Title>ENVIAR SOLICITUD ALTA GERENCIA</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <div>
+            <select
+              className="form-select"
+              aria-label="Default select example"
+              onChange={handleTextGerencia}
+            >
+              <option value="NINGUNO">Seleccione un destino</option>
+              {correosAltaGerencia.map((altaGerencia, key) => (
+                <option value={altaGerencia.correo}>
+                  {altaGerencia.correo}
+                </option>
+              ))}
+            </select>
+            <div className="mt-3">
+              <textarea
+                style={{ width: "100%" }}
+                rows="4"
+                placeholder="Ingrese comentario"
+                onChange={handleTextareaGerencia}
+              ></textarea>
+            </div>
+          </div>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="info" onClick={handleEnviar}>
+            ENVIAR
+          </Button>
+          <Button variant="danger" onClick={handleClose}>
+            CERRAR
           </Button>
         </Modal.Footer>
       </Modal>

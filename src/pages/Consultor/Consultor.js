@@ -6,6 +6,7 @@ import { Button, Modal } from "react-bootstrap";
 import { useSolicitud } from "../../context/SolicitudContext";
 import { TextAutoSugerenias } from "../../componets/Consultor/TextAutoSugerenias";
 import { useNavigate } from "react-router-dom";
+import Paginacion from "../../componets/Paginacion";
 
 export const Consultor = () => {
   const navigate = useNavigate();
@@ -16,6 +17,7 @@ export const Consultor = () => {
   const [textProducto, setProducto] = useState("NINGUNO");
   const [textTipo, setTipo] = useState("NINGUNO");
   const [validacionCi, setValidacionCi] = useState(true);
+  const [validacionCaedec, setValidacionCaedec] = useState(true);
   const [validacionNombre, setValidacionNombre] = useState(true);
   const [validacionTipo, setValidacionTipo] = useState(true);
   const [validacionProducto, setValidacionProducto] = useState(true);
@@ -37,6 +39,7 @@ export const Consultor = () => {
     funcionario,
     getSolicitudes,
     navegacion,
+    setRol,
   } = useSolicitud();
 
   const handleClose = () => {
@@ -50,37 +53,33 @@ export const Consultor = () => {
     setValidacionNombre(true);
     setValidacionProducto(true);
     setValidacionTipo(true);
+    setValidacionCaedec(true);
+    setCaedecSeleccionado({});
   };
 
   const handleShow = () => setShow(true);
-
   const handleSalir = async () => {
     const { error } = await supabase.auth.signOut();
     if (error) throw error;
+    setRol(0);
     navigate("/");
   };
 
   const handleTextCi = (event) => {
     setTextCI(event.target.value);
-    console.log(event.target.value);
   };
   const handleNombre = (event) => {
     setNombre(event.target.value);
-    console.log(event.target.value);
   };
   const handleTipo = (event) => {
     setTipo(event.target.value);
-    console.log(event.target.value);
   };
 
   const handleProducto = (event) => {
     setProducto(event.target.value);
-    console.log(event.target.value);
   };
 
   const handleEjemplo = () => {
-    //getFuncionario();
-    //navegacion();
     console.log(funcionario);
   };
 
@@ -121,28 +120,22 @@ export const Consultor = () => {
     } else {
       setValidacionTipo(true);
     }
-
     
     console.log(textCI, textNombre, textProducto, textTipo, caedecSeleccionado);
-    /*
-    const numero_doc = e.target[0].value;
-    const nombre_completo = e.target[1].value;
-    const producto = e.target[2].value;
-    const tipo = e.target[4].value;
     setShow(false);
     const solicitud = {
-      tipo: tipo,
+      tipo: textTipo,
       descripcion: "NINGUNO",
-      numero_doc: numero_doc,
-      nombre_completo: nombre_completo,
-      producto: producto,
+      numero_doc: textCI,
+      nombre_completo: textNombre,
+      producto: textProducto,
       cod_caedec: caedecSeleccionado.cod_caedec,
       estado: "PENDIENTE",
     };
     setCaedecSeleccionado({});
     createSolicitudes(solicitud);
     setShowMesagge(true);
-    console.log(solicitudes);*/
+    setCaedecSeleccionado({});
   };
 
   return (
@@ -172,6 +165,7 @@ export const Consultor = () => {
             ))}
           </div>
         </div>
+        <Paginacion/>
       </div>
       <Modal show={show} onHide={handleClose}>
         <Modal.Header closeButton className="bg-warning text-center">
@@ -246,6 +240,11 @@ export const Consultor = () => {
             <div className="mb-3">
               <label className="form-label">CAEDEC</label>
               <TextAutoSugerenias></TextAutoSugerenias>
+              {!validacionCaedec ? (
+                <p className="text-danger">Debe introducir un caedec</p>
+              ) : (
+                <></>
+              )}
             </div>
             <div className="mb-3">
               <label htmlFor="exampleInputPassword1" className="form-label">

@@ -62,7 +62,7 @@ export const CardConsultor = ({ soli, funcionario }) => {
   const handleAceptarSolicitud = () => {
     const detalle = 'Realizada la debida diligencia no se tienen observaciones para realizar la operacion comercial';
     modificarSolicitud(soli.codigo_solicitud, detalle, 'ACEPTADO');
-    setShowAceptar(!showAceptar);
+    setShowAceptar(false);
   };
   const handleRechazarSolicitud = () => {
     modificarSolicitud(soli.codigo_solicitud, textareaValue, 'RECHAZADO');
@@ -115,6 +115,7 @@ export const CardConsultor = ({ soli, funcionario }) => {
               <p className="mb-0">{soli.codigo_solicitud}</p>
               <p className="mb-0">{soli.numero_doc + " - " + soli.nombre}</p>
               <p className="mb-0">{soli.producto}</p>
+              <p className="mb-0">{'CAJA DE AHORRO'}</p>
               <p className="mb-0">{soli.cod_caedec + " - " + soli.caedec}</p>
               <p className="mb-0">{formatFechaHora(soli.created_at)}</p>
 
@@ -176,6 +177,7 @@ export const CardConsultor = ({ soli, funcionario }) => {
                   <div className="col-1">
                     <FaCheck className="m-2" onClick={handleAceptar} />
                     <FaTimes onClick={handleRechazar} />
+                    <FaCommentDots className="m-1" onClick={handleComentario} />
                   </div>
                 ) : (
                   <div className="col-1">

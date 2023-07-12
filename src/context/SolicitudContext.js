@@ -1,4 +1,4 @@
-import { Context, createContext, useContext, useState } from "react";
+import { Context, createContext, useContext, useEffect, useState } from "react";
 import { supabase } from "../supabase/client";
 import { useNavigate } from "react-router-dom";
 export const SolicitudContext = createContext();
@@ -27,9 +27,8 @@ export const SolicitudContextProvider = ({ children }) => {
       paginas: 0,
       datos: 17,
     },
-    correos:[],
+    correos: [],
   };
-
 
   const [solicitudes, setSolicitudes] = useState(initialState.solicitudes);
   const [adding, setAdding] = useState(initialState.adding);
@@ -40,7 +39,9 @@ export const SolicitudContextProvider = ({ children }) => {
   );
   const [funcionario, setFuncionario] = useState(initialState.funcionario);
   const [rol, setRol] = useState(initialState.rol);
-  const [solicitudesUIF, setSolicitudesUIF] = useState(initialState.solicitudesUIF);
+  const [solicitudesUIF, setSolicitudesUIF] = useState(
+    initialState.solicitudesUIF
+  );
   const [correosAltaGerencia, setCorreosAltaGerencia] = useState(
     initialState.correosAltaGerencia
   );
@@ -60,23 +61,28 @@ export const SolicitudContextProvider = ({ children }) => {
     });
     if (error) console.error(error);
     setFuncionario(data);
-    console.log(funcionario);
-    let rolEncontrado = 0
-    if (data && data.roles) {
-      console.log(data.roles);
-      let roles = data.roles;
+    console.log(data);
+  };
+
+  useEffect(() => {
+    let rolEncontrado = 0;
+    if (funcionario && funcionario.roles) {
+      console.log(funcionario.roles);
+      let roles = funcionario.roles;
       const rolesPermitidos = [6, 7, 8];
-      const encontrado = roles.find(rol => rolesPermitidos.includes(rol.id_rol));
+      const encontrado = roles.find((rol) =>
+        rolesPermitidos.includes(rol.id_rol)
+      );
       if (encontrado) {
         rolEncontrado = encontrado.id_rol;
         setRol(rolEncontrado);
         console.log(rolEncontrado);
       }
     }
-    console.log("navegacion")
-    console.log(rol)
+    console.log("navegacion");
+    console.log(rol);
     if (rolEncontrado !== 0) {
-      console.log(rolEncontrado)
+      console.log(rolEncontrado);
       switch (rolEncontrado) {
         case 6:
           navigate("/consultor");
@@ -85,6 +91,7 @@ export const SolicitudContextProvider = ({ children }) => {
           navigate("/uif");
           break;
         case 8:
+          navigate("/gerencia");
           break;
         default:
           navigate("/login");
@@ -92,8 +99,7 @@ export const SolicitudContextProvider = ({ children }) => {
       }
     } else {
     }
-
-  };
+  }, [funcionario]);
 
   const getCaedec = async () => {
     const { error, data } = await supabase.from("conf_caedec").select();
@@ -115,32 +121,47 @@ export const SolicitudContextProvider = ({ children }) => {
     let { data, error } = await supabase.rpc("solicitudes_correo", {
       correo_solicitud: correo_solicitud,
       limit_value: paginacion.limit,
-      offset_value: paginacion.offset
+      offset_value: paginacion.offset,
     });
-  
+
     if (error) {
       console.error(error);
     } else {
       console.log(data);
-      const nuevasPaginas = Math.round(paginacion.datos/paginacion.limit);
-      setPaginacion(prevPaginacion => ({
+      const nuevasPaginas = Math.round(paginacion.datos / paginacion.limit);
+      setPaginacion((prevPaginacion) => ({
         ...prevPaginacion,
-        paginas: nuevasPaginas
+        paginas: nuevasPaginas,
       }));
       setSolicitudesUIF(data);
     }
   };
-  
-  const getCorreos = () =>{
-    const nuevosCorreos =[
-      {correo:'marco_avendano@fubode.org'},
-      {correo:'juan_montecinos@fubode.org'},
-      {correo:'roberto_rios@fubode.org'},
+
+  const getSolicitudesGerencia = async () => {
+    const correo_solicitud = funcionario.correo;
+    let { data, error } = await supabase.rpc("solicitudes_gerencia", {
+      correo_solicitud: correo_solicitud,
+    });
+
+    if (error) return;
+      console.log(data);
+      setSolicitudesGerencia(data);
+  };
+
+  const getCorreos = () => {
+    const nuevosCorreos = [
+      { correo: "marco_avendano@fubode.org" },
+      { correo: "juan_montecinos@fubode.org" },
+      { correo: "roberto_rios@fubode.org" },
     ];
     setCorreos(nuevosCorreos);
-  }
+  };
 
-  const modificarSolicitud = async (codigoSolicitud, detalle, estadoSolicitud) => {
+  const modificarSolicitud = async (
+    codigoSolicitud,
+    detalle,
+    estadoSolicitud
+  ) => {
     console.log(codigoSolicitud);
     const descripcion = detalle;
     const estado = estadoSolicitud;
@@ -156,11 +177,21 @@ export const SolicitudContextProvider = ({ children }) => {
         correo_final: correoFinal,
       })
       .eq("codigo_solicitud", codigoSolicitud);
-    console.log(data, error)
-    getSolicitudesUIF();
+    console.log(data, error);
+    if(rol==7){
+      getSolicitudesUIF();
+    }
+    if(rol==8){
+      getSolicitudesGerencia();
+    }
   };
 
-  const enviarSolicitudGerecia = async (codigoSolicitud, detalle, corroGerencia,estado) => {
+  const enviarSolicitudGerecia = async (
+    codigoSolicitud,
+    detalle,
+    corroGerencia,
+    estado
+  ) => {
     console.log(codigoSolicitud);
 
     const { data, error } = await supabase
@@ -168,17 +199,17 @@ export const SolicitudContextProvider = ({ children }) => {
       .update({
         descripcion: detalle,
         estado: estado,
-        fecha_modificacion:  new Date(),
+        fecha_modificacion: new Date(),
         correo_usuario_ag: corroGerencia,
       })
       .eq("codigo_solicitud", codigoSolicitud);
-    console.log(data, error)
+    console.log(data, error);
     getSolicitudesUIF();
   };
 
   const rechazarSolicitud = (codigoSolicitud) => {
     console.log(codigoSolicitud);
-  }
+  };
 
   const createSolicitudes = async (solicitud) => {
     console.log(funcionario);
@@ -208,9 +239,9 @@ export const SolicitudContextProvider = ({ children }) => {
   };
 
   const navegacion = () => {
-    console.log("navegacion")
+    console.log("navegacion");
     if (rol !== 0) {
-      console.log(rol)
+      console.log(rol);
       switch (rol) {
         case 6:
           navigate("/consultor");
@@ -226,10 +257,10 @@ export const SolicitudContextProvider = ({ children }) => {
           break;
       }
     } else {
-    }    
+    }
   };
 
-  const salir = async()=>{
+  const salir = async () => {
     const { error } = await supabase.auth.signOut();
     if (error) throw error;
     setSolicitudes(initialState.solicitudes);
@@ -244,8 +275,7 @@ export const SolicitudContextProvider = ({ children }) => {
     setSolicitudesGerencia(initialState.solicitudesGerencia);
     setPaginacion(initialState.paginacion);
     navigate("/");
-  }
-
+  };
 
   return (
     <SolicitudContext.Provider
@@ -270,7 +300,9 @@ export const SolicitudContextProvider = ({ children }) => {
         setPaginacion,
         salir,
         getCorreos,
-        enviarSolicitudGerecia
+        enviarSolicitudGerecia,
+        solicitudesGerencia,
+        getSolicitudesGerencia
       }}
     >
       {children}

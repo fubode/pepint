@@ -31,7 +31,7 @@ const Login = () => {
         throw error.message;
       }
       getFuncionario();
-      navegacion();
+      //navegacion();
     } catch (error) {
       setShow(!show);
       console.log(error);
@@ -44,34 +44,39 @@ const Login = () => {
       password: "fubode123*",
     });
     console.log(data, error);*/
+    const usuario_supa = '186b61ff-1dc1-469e-9b8e-d3e33e1136e2';
+    let { data, error } = await supabase.rpc("obtener_usuario", {
+      usuario_supa,
+    });
 
-    enviarCorreo('juan_montecinos@fubode.org','PRUEBA REACT','funciono');
+    if (error) console.error(error);
+    else console.log(data);
+    //enviarCorreo("juan_montecinos@fubode.org", "PRUEBA REACT", "funciono");
   };
 
-  const enviarCorreo = async(remitente, asunto, detalle) =>{
-
+  const enviarCorreo = async (remitente, asunto, detalle) => {
     const data = {
       emisor: EMISOR,
       contrasenaEmisor: CONTRASENA,
       remitente: remitente,
       asunto: asunto,
-      detalle: detalle
+      detalle: detalle,
     };
-  
+
     let mensaje = "";
-  
+
     try {
       await axios.post(ENDPOINT_CORREO, data);
       // Haz algo con la respuesta del servidor
       mensaje = "Correo enviado";
-  
+
       // Ejemplo de navegación a otra página después de enviar el correo
     } catch (error) {
       mensaje = `Correo no enviado, ${error.message}`;
     }
-  
+
     console.log(mensaje);
-  }
+  };
   useEffect(() => {
     //console.log(supabase.auth.getSession());
     if (supabase.auth.getUser()) {
@@ -100,7 +105,7 @@ const Login = () => {
                       <input
                         type="text"
                         name="email"
-                        placeholder="example@fubode.org"
+                        placeholder="fubode_ifd"
                         id="typeEmailX-2"
                         className="form-control form-control-lg"
                       />
@@ -128,6 +133,7 @@ const Login = () => {
             </div>
           </div>
         </form>
+
         <button
           className="btn btn-primary btn-lg btn-block"
           onClick={handleRegistrar}

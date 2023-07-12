@@ -30,7 +30,7 @@ function NavFubode() {
               </Navbar.Brand>
             </div>
             <div className="flex-grow-1 text-center">
-              <h5 className="m-0">SISTEMA DE AUTOMATICACION DE CLIENTES ESPECIALES</h5>
+              <h5 className="m-0">SISTEMA DE AUTOMATIZACION DE CLIENTES ESPECIALES</h5>
             </div>
             {Object.keys(funcionario).length > 0 && (
               <div className="ms-auto">

@@ -10,14 +10,45 @@ export const useSolicitud = () => {
 };
 
 export const SolicitudContextProvider = ({ children }) => {
-  const [solicitudes, setSolicitudes] = useState([]);
-  const [adding, setAdding] = useState(false);
-  const [loading, setLoading] = useState(false);
-  const [caedec, setCaedec] = useState([]);
-  const [caedecSeleccionado, setCaedecSeleccionado] = useState({});
-  const [funcionario, setFuncionario] = useState({});
-  const [rol, setRol] = useState(0);
-  const [solicitudesUIF, setSolicitudesUIF] = useState([]);
+  const initialState = {
+    solicitudes: [],
+    adding: false,
+    loading: false,
+    caedec: [],
+    caedecSeleccionado: {},
+    funcionario: {},
+    rol: 0,
+    solicitudesUIF: [],
+    correosAltaGerencia: [],
+    solicitudesGerencia: [],
+    paginacion: {
+      limit: 3,
+      offset: 0,
+      paginas: 0,
+      datos: 17,
+    },
+    correos:[],
+  };
+
+
+  const [solicitudes, setSolicitudes] = useState(initialState.solicitudes);
+  const [adding, setAdding] = useState(initialState.adding);
+  const [loading, setLoading] = useState(initialState.loading);
+  const [caedec, setCaedec] = useState(initialState.caedec);
+  const [caedecSeleccionado, setCaedecSeleccionado] = useState(
+    initialState.caedecSeleccionado
+  );
+  const [funcionario, setFuncionario] = useState(initialState.funcionario);
+  const [rol, setRol] = useState(initialState.rol);
+  const [solicitudesUIF, setSolicitudesUIF] = useState(initialState.solicitudesUIF);
+  const [correosAltaGerencia, setCorreosAltaGerencia] = useState(
+    initialState.correosAltaGerencia
+  );
+  const [solicitudesGerencia, setSolicitudesGerencia] = useState(
+    initialState.solicitudesGerencia
+  );
+  const [paginacion, setPaginacion] = useState(initialState.paginacion);
+  const [correos, setCorreos] = useState(initialState.correos);
 
   const navigate = useNavigate();
 
@@ -30,24 +61,22 @@ export const SolicitudContextProvider = ({ children }) => {
     if (error) console.error(error);
     setFuncionario(data);
     console.log(funcionario);
-    let rolEncontrado = 0;
+    let rolEncontrado = 0
     if (data && data.roles) {
       console.log(data.roles);
       let roles = data.roles;
       const rolesPermitidos = [6, 7, 8];
-      const encontrado = roles.find((rol) =>
-        rolesPermitidos.includes(rol.id_rol)
-      );
+      const encontrado = roles.find(rol => rolesPermitidos.includes(rol.id_rol));
       if (encontrado) {
         rolEncontrado = encontrado.id_rol;
         setRol(rolEncontrado);
         console.log(rolEncontrado);
       }
     }
-    console.log("navegacion");
-    console.log(rol);
+    console.log("navegacion")
+    console.log(rol)
     if (rolEncontrado !== 0) {
-      console.log(rolEncontrado);
+      console.log(rolEncontrado)
       switch (rolEncontrado) {
         case 6:
           navigate("/consultor");
@@ -63,13 +92,7 @@ export const SolicitudContextProvider = ({ children }) => {
       }
     } else {
     }
-  };
 
-  const getCorreosAltaGerencia = async () => {
-    let { data, error } = await supabase.rpc("obtener_alta_gerencia");
-
-    if (error) console.error(error);
-    setCorreosAltaGerencia(data);
   };
 
   const getCaedec = async () => {
@@ -87,34 +110,37 @@ export const SolicitudContextProvider = ({ children }) => {
     setSolicitudes(data);
   };
 
-  const getSolicitudesAltaGerencia = async() =>{
-    const correo_solicitud = funcionario.correo;
-    console.log(correo_solicitud,funcionario.correo);
-    let { data, error } = await supabase.rpc("solicitudes_gerencia", {
-      correo_solicitud,
-    });
-
-    if (error){
-      setSolicitudesGerencia([]);
-      return;
-    } 
-    setSolicitudesGerencia(data);
-  };
-
   const getSolicitudesUIF = async () => {
-    const correo = 'unidad_cumplimiento@fubode.org';//funcionario.correo;
-    let { data, error } = await supabase
-      .rpc('uif_solicitudesuif', {
-        correo
-      })
-
-    if (error) console.error(error)
-    else console.log(data)
-    console.log(data)
-    setSolicitudesUIF(data);
+    const correo_solicitud = "unidad_cumplimiento@fubode.org"; //funcionario.correo;
+    let { data, error } = await supabase.rpc("solicitudes_correo", {
+      correo_solicitud: correo_solicitud,
+      limit_value: paginacion.limit,
+      offset_value: paginacion.offset
+    });
+  
+    if (error) {
+      console.error(error);
+    } else {
+      console.log(data);
+      const nuevasPaginas = Math.round(paginacion.datos/paginacion.limit);
+      setPaginacion(prevPaginacion => ({
+        ...prevPaginacion,
+        paginas: nuevasPaginas
+      }));
+      setSolicitudesUIF(data);
+    }
   };
+  
+  const getCorreos = () =>{
+    const nuevosCorreos =[
+      {correo:'marco_avendano@fubode.org'},
+      {correo:'juan_montecinos@fubode.org'},
+      {correo:'roberto_rios@fubode.org'},
+    ];
+    setCorreos(nuevosCorreos);
+  }
 
-  const aceptarSolicitud = async (codigoSolicitud) => {
+  const modificarSolicitud = async (codigoSolicitud, detalle, estadoSolicitud) => {
     console.log(codigoSolicitud);
     const descripcion = detalle;
     const estado = estadoSolicitud;
@@ -130,20 +156,23 @@ export const SolicitudContextProvider = ({ children }) => {
         correo_final: correoFinal,
       })
       .eq("codigo_solicitud", codigoSolicitud);
-    console.log(data, error);
+    console.log(data, error)
     getSolicitudesUIF();
   };
-  const enviarAltaGerencia = async (codigo, descripcion, gerencia, estado) => {
+
+  const enviarSolicitudGerecia = async (codigoSolicitud, detalle, corroGerencia,estado) => {
+    console.log(codigoSolicitud);
+
     const { data, error } = await supabase
       .from("uif_solicitudes")
       .update({
-        descripcion: descripcion,
+        descripcion: detalle,
         estado: estado,
-        fecha_modificacion: new Date(),
-        correo_usuario_ag: gerencia,
+        fecha_modificacion:  new Date(),
+        correo_usuario_ag: corroGerencia,
       })
-      .eq("codigo_solicitud", codigo);
-    console.log(data, error);
+      .eq("codigo_solicitud", codigoSolicitud);
+    console.log(data, error)
     getSolicitudesUIF();
   };
 
@@ -179,9 +208,9 @@ export const SolicitudContextProvider = ({ children }) => {
   };
 
   const navegacion = () => {
-    console.log("navegacion");
+    console.log("navegacion")
     if (rol !== 0) {
-      console.log(rol);
+      console.log(rol)
       switch (rol) {
         case 6:
           navigate("/consultor");
@@ -197,43 +226,26 @@ export const SolicitudContextProvider = ({ children }) => {
           break;
       }
     } else {
-    }
-    /*
-    const usuario_supa = (await supabase.auth.getUser()).data.user.id;
-    const { data, error } = await supabase.rpc("obtener_usuario", {
-      usuario_supa,
-    });
+    }    
+  };
 
-    if (error) console.error(error);
-    console.log(data);
-
-    if (data && data.roles) {
-      console.log(data.roles);
-      let roles = data.roles;
-      let rolEncontrado = 0;
-      const rolesPermitidos = [6, 7, 8];
-        
-      const encontrado = roles.find(rol => rolesPermitidos.includes(rol.id_rol));
-      if (encontrado) {
-        rolEncontrado = encontrado.id_rol;
-      }
-      switch (rolEncontrado) {
-        case 6:
-          navigate("/consultor");
-          break;
-        case 7:
-          navigate("/uif");
-          break;
-        case 8:
-          break;
-        default:
-          navigate("/login");
-          break;
-      }
-    } else {
-      console.log('No se encontraron roles en los datos');
-    }*/
+  const salir = async()=>{
+    const { error } = await supabase.auth.signOut();
+    if (error) throw error;
+    setSolicitudes(initialState.solicitudes);
+    setAdding(initialState.adding);
+    setLoading(initialState.loading);
+    setCaedec(initialState.caedec);
+    setCaedecSeleccionado(initialState.caedecSeleccionado);
+    setFuncionario(initialState.funcionario);
+    setRol(initialState.rol);
+    setSolicitudesUIF(initialState.solicitudesUIF);
+    setCorreosAltaGerencia(initialState.correosAltaGerencia);
+    setSolicitudesGerencia(initialState.solicitudesGerencia);
+    setPaginacion(initialState.paginacion);
+    navigate("/");
   }
+
 
   return (
     <SolicitudContext.Provider
@@ -253,7 +265,12 @@ export const SolicitudContextProvider = ({ children }) => {
         navegacion,
         setFuncionario,
         solicitudesUIF,
-        rol
+        rol,
+        paginacion,
+        setPaginacion,
+        salir,
+        getCorreos,
+        enviarSolicitudGerecia
       }}
     >
       {children}

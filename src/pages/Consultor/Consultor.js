@@ -5,11 +5,28 @@ import { Button, Modal } from "react-bootstrap";
 import { useSolicitud } from "../../context/SolicitudContext";
 import { TextAutoSugerenias } from "../../componets/Consultor/TextAutoSugerenias";
 import { useNavigate } from "react-router-dom";
+import Paginacion from "../../componets/Paginacion";
+import NavFubode from "../../componets/NavFubode";
 
 export const Consultor = () => {
   const navigate = useNavigate();
   const [show, setShow] = useState(false);
   const [showMessage, setShowMesagge] = useState(false);
+  const [textCI, setTextCI] = useState("");
+  const [textNombre, setNombre] = useState("");
+  const [textProducto, setProducto] = useState("NINGUNO");
+  const [textTipo, setTipo] = useState("NINGUNO");
+  const [validacionCi, setValidacionCi] = useState(true);
+  const [validacionNombre, setValidacionNombre] = useState(true);
+  const [validacionTipo, setValidacionTipo] = useState(true);
+  const [validacionProducto, setValidacionProducto] = useState(true);
+  const [validacion, setValidacion] = useState({
+    ci: true,
+    nombre: true,
+    tipo: true,
+    producto: true,
+    caedec: true,
+  });
 
   const {
     solicitudes,
@@ -20,19 +37,45 @@ export const Consultor = () => {
     getFuncionario,
     funcionario,
     getSolicitudes,
-    navegacion
+    navegacion,
   } = useSolicitud();
 
-  const handleClose = () => setShow(false);
+  const handleClose = () => {
+    setShow(false);
+    setTextCI("");
+    setNombre("");
+    setProducto("");
+    setTipo("");
+
+    setValidacionCi(true);
+    setValidacionNombre(true);
+    setValidacionProducto(true);
+    setValidacionTipo(true);
+  };
+
   const handleShow = () => setShow(true);
 
-  const handleSalir = async () => {
-    const { error } = await supabase.auth.signOut();
-    if (error) throw error;
-    navigate("/login");
+  const handleTextCi = (event) => {
+    setTextCI(event.target.value);
+    console.log(event.target.value);
+  };
+  const handleNombre = (event) => {
+    setNombre(event.target.value);
+    console.log(event.target.value);
+  };
+  const handleTipo = (event) => {
+    setTipo(event.target.value);
+    console.log(event.target.value);
+  };
+
+  const handleProducto = (event) => {
+    setProducto(event.target.value);
+    console.log(event.target.value);
   };
 
   const handleEjemplo = () => {
+    //getFuncionario();
+    //navegacion();
     console.log(funcionario);
   };
 
@@ -45,12 +88,38 @@ export const Consultor = () => {
     getSolicitudes();
   }, []);
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    const numero_doc = e.target[0].value;
-    const nombre_completo = e.target[1].value;
-    const producto = e.target[2].value;
-    const tipo = e.target[4].value;
+  const handleSubmit = () => {
+    if (textCI.toString().length <= 5) {
+      setValidacionCi(false);
+      return;
+    } else {
+      setValidacionCi(true);
+    }
+    if (textNombre.length <= 0) {
+      setValidacionNombre(false);
+      return;
+    } else {
+      setValidacionNombre(true);
+    }
+
+    if (textProducto === "NINGUNO") {
+      console.log('as')
+      setValidacionProducto(false);
+      return;
+    } else {
+      setValidacionProducto(true);
+    }
+
+    if (textTipo === "NINGUNO") {
+      setValidacionTipo(false);
+      return;
+    } else {
+      setValidacionTipo(true);
+    }
+
+    
+    console.log(textCI, textNombre, textProducto, textTipo, caedecSeleccionado);
+    
     setShow(false);
     const solicitud = {
       tipo: textTipo,
@@ -64,7 +133,7 @@ export const Consultor = () => {
     setCaedecSeleccionado({});
     createSolicitudes(solicitud);
     setShowMesagge(true);
-    setCaedecSeleccionado({});
+    console.log(solicitudes);
   };
 
   return (
@@ -91,6 +160,7 @@ export const Consultor = () => {
             ))}
           </div>
         </div>
+        
       </div>
       <Modal show={show} onHide={handleClose}>
         <Modal.Header closeButton className="bg-warning text-center">
@@ -165,11 +235,6 @@ export const Consultor = () => {
             <div className="mb-3">
               <label className="form-label">CAEDEC</label>
               <TextAutoSugerenias></TextAutoSugerenias>
-              {!validacionCaedec ? (
-                <p className="text-danger">Debe introducir un caedec</p>
-              ) : (
-                <></>
-              )}
             </div>
             <div className="mb-3">
               <label htmlFor="exampleInputPassword1" className="form-label">

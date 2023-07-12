@@ -1,14 +1,6 @@
 import React, { useState } from "react";
 import { Button, Modal } from "react-bootstrap";
-import {
-  FaCheck,
-  FaCommentDots,
-  FaEye,
-  FaPrint,
-  FaTimes,
-  FaUser,
-  FaEnvelope
-} from "react-icons/fa";
+import { FaCheck, FaCommentDots, FaEye, FaPrint, FaTimes, FaUser } from "react-icons/fa";
 import { useSolicitud } from "../../context/SolicitudContext";
 
 function formatFechaHora(fecha) {
@@ -29,58 +21,21 @@ export const CardConsultor = ({ soli, funcionario }) => {
   const [show, setShow] = useState(false);
   const [showAceptar, setShowAceptar] = useState(false);
   const [showFuncionario, setShowFuncionario] = useState(false);
-  const [showRechazar, setShowRechazar] = useState(false);
-  const [showComentario, setShowComentario] = useState(false)
-  const [showEnviar, setShowEnviar] = useState(false)
-  const handleClose = () => {
-    setShowFuncionario(false);
-    setShowAceptar(false);
-    setShow(false);
-    setShowRechazar(false);
-    setShowComentario(false);
-    setShowEnviar(false);
-  };
-  const [textareaValue, setTextareaValue] = useState('');
-  const [textDestino, setTextDestino] = useState('NINGUNO');
-  const [textGerencia, setTextGerencia] = useState('');
-
-  const handleTextareaChange = (event) => {
-    setTextareaValue(event.target.value);
-  };
-  const { modificarSolicitud, rol, correos, enviarSolicitudGerecia } = useSolicitud();
+  const handleClose = () => setShow(false);
+  const {
+    aceptarSolicitud,
+    rechazarSolicitud,
+    rol
+  } = useSolicitud();
 
   const handleShow = () => {
     //console.log(funcionario);
     setShow(true);
   };
 
-  const handleAceptar = () => setShowAceptar(!showAceptar);
-  const handleRechazar = () => setShowRechazar(!showRechazar);
-
-  const handleShowUsuario = () => setShowFuncionario(!showFuncionario);
-  const handleComentario = () => setShowComentario(!showComentario);
-  const handleAceptarSolicitud = () => {
-    const detalle = 'Realizada la debida diligencia no se tienen observaciones para realizar la operacion comercial';
-    modificarSolicitud(soli.codigo_solicitud, detalle, 'ACEPTADO');
-    setShowAceptar(!showAceptar);
-  };
-  const handleRechazarSolicitud = () => {
-    modificarSolicitud(soli.codigo_solicitud, textareaValue, 'RECHAZADO');
-    setShowRechazar(!showRechazar);
-  }
-  const handleDestino = (event) => {
-    setTextDestino(event.target.value);
-    console.log(event.target.value);
-  };
-
-  const handleEnviar = () => {
-    setShowEnviar(true);
-  }
-
-  const handleTextareaGerencia = (event) => {
-    setTextGerencia(event.target.value);
-    console.log(event.target.value);
-  }
+  const handleComentario = () => {};
+  const handleAceptarSolicitud = () =>  aceptarSolicitud(soli.codigo_solicitud);
+  const handleRechazarSolicitud = () =>  rechazarSolicitud(soli.codigo_solicitud);
 
   const handleSolicitudGerencia = () => {
     enviarSolicitudGerecia(soli.codigo_solicitud, textGerencia, textDestino, 'GERENCIA');
@@ -208,39 +163,17 @@ export const CardConsultor = ({ soli, funcionario }) => {
                       : "bg-warning"
                   }`}
               >
-                {
-                  rol === 7 ? (
-                    <FaUser onClick={handleShowUsuario} />
-                  ) : (
-                    <></>
-                  )
-                }
+                <FaUser />
               </div>
               <div className="col-10">
                 <p className="mb-0">{soli.codigo_solicitud}</p>
                 <p className="mb-0">{soli.numero_doc + " - " + soli.nombre}</p>
                 <p className="mb-0">{soli.producto}</p>
                 <p className="mb-0">{soli.cod_caedec + " - " + soli.caedec}</p>
-                <p className="mb-0">{formatFechaHora(soli.created_at)}</p>
-
-                {soli.estado === "PENDIENTE" ? (
-                  <div>
-                    <p className="mb-0">{soli.correo_usuario_uif}</p>
-                  </div>
-                ) : soli.estado === "ACEPTADO" ? (
-                  <div>
-                    <p className="mb-0 text-success">
-                      {formatFechaHora(soli.fecha_modificacion)}
-                    </p>
-                    <p className="mb-0 text-success">{soli.correo_final}</p>
-                  </div>
-                ) : soli.estado === "RECHAZADO" ? (
-                  <div>
-                    <p className="mb-0 text-danger">
-                      {formatFechaHora(soli.fecha_modificacion)}
-                    </p>
-                    <p className="mb-0 text-danger">{soli.correo_final}</p>
-                  </div>
+                <p className="mb-0">{soli.correo_usuario_uif}</p>
+                <p className="mb-0">{formatFechaHora(soli.fecha_registro)}</p>
+                {soli.estado !== "PENDIENTE" ? (
+                  <p className="mb-0">13/06/2023 15:45:00</p>
                 ) : (
                   soli.estado === 'GERENCIA' ? (
                     <div>
@@ -254,55 +187,33 @@ export const CardConsultor = ({ soli, funcionario }) => {
                   )
                 )}
               </div>
-              {soli.estado === "PENDIENTE" ? (
-                rol === 7 ? (
-                  <div className="col-1">
-                    <FaCheck className="m-2" onClick={handleAceptar} />
-                    <FaTimes onClick={handleRechazar} />
-                    <FaEnvelope onClick={handleEnviar} />
-                  </div>
-                ) : (<></>)
-              ) : soli.estado === 'ACEPTADO' ? (
-                <div className="col-1">
+              {soli.estado !== "PENDIENTE" ? (
+                <div className="col-2">
                   <FaCommentDots className="m-1" onClick={handleComentario} />
-                  <FaEye className="m-1" />
+                  <FaEye className="m-1"/>
                   <FaPrint />
                 </div>
-              ) : soli.estado === 'RECHAZADO' ? (
-                <div className="col-1">
-                  <FaCommentDots className="m-1" onClick={handleComentario} />
-                  <FaEye className="m-1" />
-                  <FaPrint />
-                </div>
-              ) : soli.estado === 'GERENCIA' ? (
-                rol === 8 ? (
-                  <div className="col-1">
-                    <FaCheck className="m-2" onClick={handleAceptar} />
-                    <FaTimes onClick={handleRechazar} />
-                  </div>
-                ) : (
-                  <div className="col-1">
-                    <FaCommentDots className="m-1" onClick={handleComentario} />
-                  </div>
-                )
               ) : (
-                <></>
-              )
-              }
+                rol === 7?(
+                <div className="col-1">
+                  <FaCheck className="m-2" onClick={handleAceptarSolicitud} />
+                  <FaTimes onClick={handleRechazarSolicitud}/>
+                </div>
+                ):(
+                  <div></div>
+                )
+              )}
             </div>
           </div>
         </div>
-      </div >
-*/}
-      <Modal show={showFuncionario} onHide={handleClose}>
+      </div>
+      <Modal show={show} onHide={handleClose}>
         <Modal.Header className="bg-black text-white" closeButton>
           <Modal.Title>Datos del funcionario</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <p>{"FUNCIONARIO: " + soli.nombre_completo}</p>
-          <p>{"CORREO: " + soli.correo}</p>
-          <p>{"AGENCIA: " + soli.nombre_agencia}</p>
-          <p>{"CARGO: " + soli.nombre_cargo}</p>
+          <p>{funcionario.nombre}</p>
+          <p>{funcionario.correo}</p>
         </Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" onClick={handleClose}>
@@ -310,96 +221,6 @@ export const CardConsultor = ({ soli, funcionario }) => {
           </Button>
         </Modal.Footer>
       </Modal>
-
-      <Modal show={showAceptar} onHide={handleClose}>
-        <Modal.Header className="bg-black text-white" closeButton>
-          <Modal.Title>ACEPTAR SOLICITUD</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          <p>{"Realizada la debida diligencia no se tienen observaciones para realizar la operacion comercial"}</p>
-          <p>{"Esta seguro de aceptar la solicitud?"}</p>
-        </Modal.Body>
-        <Modal.Footer>
-          <Button variant="secondary" onClick={handleAceptarSolicitud}>
-            ACEPTAR
-          </Button>
-          <Button variant="secondary" onClick={handleClose}>
-            Close
-          </Button>
-        </Modal.Footer>
-      </Modal>
-
-      <Modal show={showRechazar} onHide={handleClose}>
-        <Modal.Header className="bg-black text-white" closeButton>
-          <Modal.Title>RECHAZAR SOLICITUD</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          <div>
-            <textarea
-              style={{ width: "100%" }}
-              rows="4"
-              placeholder="Ingrese comentario"
-              onChange={handleTextareaChange}
-            ></textarea>
-          </div>
-        </Modal.Body>
-        <Modal.Footer>
-          <Button variant="secondary" onClick={handleRechazarSolicitud}>
-            RECHAZAR
-          </Button>
-          <Button variant="secondary" onClick={handleClose}>
-            Close
-          </Button>
-        </Modal.Footer>
-      </Modal>
-
-      <Modal show={showComentario} onHide={handleClose}>
-        <Modal.Header className="bg-black text-white" closeButton>
-          <Modal.Title>SOLICITUD ACEPTADA</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          <p>{soli.descripcion}</p>
-        </Modal.Body>
-        <Modal.Footer>
-          <Button variant="secondary" onClick={handleClose}>
-            Close
-          </Button>
-        </Modal.Footer>
-      </Modal>
-
-      <Modal show={showEnviar} onHide={handleClose}>
-        <Modal.Header className="bg-black text-white" closeButton>
-          <Modal.Title>ENVIAR SOLICITUD A ALTA GERENCIA</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          <div>
-            <select
-              className="form-select mb-2"
-              aria-label="Default select example"
-              onChange={handleDestino}
-            >
-              <option value="NINGUNO">Seleccione el destino</option>
-              <option value="marko_avendano@fubode.org">marko_avendano@fubode.org</option>
-              <option value="juan_montecinos@fubode.org">juan_montecinos@fubode.org</option>
-              <option value="roberto_rios@fubode.org">mroberto_riosfubode.org</option>
-            </select>
-            <textarea
-              style={{ width: "100%" }}
-              rows="4"
-              placeholder="Ingrese comentario"
-              onChange={handleTextareaGerencia}
-            ></textarea>
-          </div>
-        </Modal.Body >
-        <Modal.Footer>
-          <Button variant="secondary" onClick={handleSolicitudGerencia}>
-            ENVIAR
-          </Button>
-          <Button variant="secondary" onClick={handleClose}>
-            Close
-          </Button>
-        </Modal.Footer>
-      </Modal >
     </>
 
 

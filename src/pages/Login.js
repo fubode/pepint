@@ -3,8 +3,6 @@ import { supabase } from "../supabase/client";
 import { useNavigate } from "react-router-dom";
 import { useSolicitud } from "../context/SolicitudContext";
 import { Button, Modal } from "react-bootstrap";
-import axios from "axios";
-import NavFubode from "../componets/NavFubode";
 const Login = () => {
   const { getFuncionario, funcionario, navegacion, setRol } = useSolicitud();
   const EMISOR = "fubode.vacaciones@gmail.com";

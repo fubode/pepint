@@ -1,20 +1,79 @@
-import React from "react";
-import logo from "../assets/img/fubode-768x450.webp";
-export const NavFubode = () => {
+import Button from 'react-bootstrap/Button';
+import Container from 'react-bootstrap/Container';
+import Form from 'react-bootstrap/Form';
+import Nav from 'react-bootstrap/Nav';
+import Navbar from 'react-bootstrap/Navbar';
+import NavDropdown from 'react-bootstrap/NavDropdown';
+import Offcanvas from 'react-bootstrap/Offcanvas';
+import Card from 'react-bootstrap/Card';
+import { FaUser } from 'react-icons/fa';
+import logo from '../assets/img/fubode-768x450.webp';
+import { useSolicitud } from "../context/SolicitudContext";
+
+function NavFubode() {
+  const expand = false;
+
+  const {
+    funcionario,
+    salir
+  } = useSolicitud();
+
+
   return (
-    <div>      
-      <div className="container-fluid">      
-        <div className="row">
-          <div className="col-2"><img src={logo} alt="Fubode logo" style={{ width: '150px' }}/></div>
-          <div className="col-10">
-            <div className="text-center">
-            <h3>
-              SISTEMA DE AUTOMATIZACION DE AUTORIZACION DE CLIENTES ESPECIALES
-            </h3>
+    <>
+      <Navbar key={expand} expand={expand} className="bg-body-tertiary mb-3">
+        <Container fluid>
+          <div className="container-fluid d-flex">
+            <div>
+              <Navbar.Brand href="#">
+                <img src={logo} alt="Navbar Logo" style={{ width: '100px' }} />
+              </Navbar.Brand>
             </div>
+            <div className="flex-grow-1 text-center">
+              <h5 className="m-0">SISTEMA DE AUTOMATICACION DE CLIENTES ESPECIALES</h5>
             </div>
-        </div>
-      </div>
-    </div>
+            {Object.keys(funcionario).length > 0 && (
+              <div className="ms-auto">
+                <Navbar.Toggle aria-controls={`offcanvasNavbar-expand-${expand}`}>
+                  <FaUser size={20} />
+                </Navbar.Toggle>
+                <Navbar.Offcanvas
+                  id={`offcanvasNavbar-expand-${expand}`}
+                  aria-labelledby={`offcanvasNavbarLabel-expand-${expand}`}
+                  placement="end"
+                >
+                  <Offcanvas.Header closeButton>
+                    <Offcanvas.Title id={`offcanvasNavbarLabel-expand-${expand}`}>
+                      Usuario
+                    </Offcanvas.Title>
+                  </Offcanvas.Header>
+                  <Offcanvas.Body>
+                    <Nav className="justify-content-end flex-grow-1 pe-3">
+                      <Card className="text-center">
+                        <Card.Body>
+                          <Card.Title>{funcionario.nombre_asesor}</Card.Title>
+                          <Card.Text>{funcionario.correo}</Card.Text>
+                          <Card.Text>{funcionario.nombre_cargo}</Card.Text>
+                          <Card.Text>{funcionario.nombre_agencia}</Card.Text>
+                        </Card.Body>
+                      </Card>
+                      <Button
+                        onClick={salir}
+                        variant="primary"
+                        className="mt-3">
+                        Salir
+                      </Button>
+                    </Nav>
+                  </Offcanvas.Body>
+                </Navbar.Offcanvas>
+              </div>
+            )}
+          </div>
+        </Container>
+      </Navbar>
+      <hr className="my-4" />
+    </>
   );
-};
+}
+
+export default NavFubode;

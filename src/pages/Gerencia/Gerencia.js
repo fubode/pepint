@@ -7,8 +7,9 @@ import { TextAutoSugerenias } from "../../componets/Consultor/TextAutoSugerenias
 import { useNavigate } from "react-router-dom";
 import Paginacion from "../../componets/Paginacion";
 import NavFubode from "../../componets/NavFubode";
+import { FaUser } from "react-icons/fa";
 
-export const Consultor = () => {
+export const Gerencia = () => {
   const navigate = useNavigate();
   const [show, setShow] = useState(false);
   const [showMessage, setShowMesagge] = useState(false);
@@ -117,9 +118,9 @@ export const Consultor = () => {
       setValidacionTipo(true);
     }
 
-    
+
     console.log(textCI, textNombre, textProducto, textTipo, caedecSeleccionado);
-    
+
     setShow(false);
     const solicitud = {
       tipo: textTipo,
@@ -140,6 +141,7 @@ export const Consultor = () => {
     <>
       <div>
         <NavFubode />
+        <h1>Gren</h1>
         <div className="container-fluid h-100">
           <div className="row w-100 align-items-center">
             <div className="col text-center">
@@ -160,8 +162,33 @@ export const Consultor = () => {
             ))}
           </div>
         </div>
-        
+
       </div>
+
+      <div className="container">
+      <div className="card border">
+        <div className="row">
+          <div className="col-1 d-flex align-items-center justify-content-center  bg-success">
+            <div className="card-body">
+              <FaUser />
+            </div>
+          </div>
+          <div className="col-10">
+            <div>
+              <p>funcionario.correo</p>
+            </div>
+          </div>
+          <div className="col-1 d-flex align-items-center justify-content-center">
+            <div className="d-flex flex-column align-items-center">
+              <FaUser className="m-1"/>
+              <FaUser className="m-1"/>
+              <FaUser className="m-1"/>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
       <Modal show={show} onHide={handleClose}>
         <Modal.Header closeButton className="bg-warning text-center">
           <Modal.Title>NUEVA SOLICITUD</Modal.Title>

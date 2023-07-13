@@ -135,10 +135,35 @@ export const Consultor = () => {
     setShowMesagge(true);
     console.log(solicitudes);
   };
+  const handleRegistrar = async () => {
+    /*const { data, error } = await supabase.auth.signUp({
+      email: "doris_sagardia@fubode.org",
+      password: "fubode123*",
+    });
+    console.log(data, error);*/
+    const correo_solicitud = 'unidad_cumplimiento@fubode.org'
+    const limit_value = 3;
+    const offset_value = 0;
+    let { data, error } = await supabase.rpc("solicitudes_correo", {
+      correo_solicitud,
+      limit_value,
+      offset_value,
+    });
+
+    if (error) console.error(error);
+    else console.log(data);
+    //enviarCorreo("juan_montecinos@fubode.org", "PRUEBA REACT", "funciono");
+  };
 
   return (
     <>
       <div>
+      <button
+          className="btn btn-primary btn-lg btn-block"
+          onClick={handleRegistrar}
+        >
+          Registrar usuarios
+        </button>
         <NavFubode />
         <div className="container-fluid h-100">
           <div className="row w-100 align-items-center">

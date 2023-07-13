@@ -44,9 +44,13 @@ const Login = () => {
       password: "fubode123*",
     });
     console.log(data, error);*/
-    const usuario_supa = '186b61ff-1dc1-469e-9b8e-d3e33e1136e2';
-    let { data, error } = await supabase.rpc("obtener_usuario", {
-      usuario_supa,
+    const correo_solicitud = 'unidad_cumplimiento@fubode.org'
+    const limit_value = 3;
+    const offset_value = 0;
+    let { data, error } = await supabase.rpc("solicitudes_correo", {
+      correo_solicitud,
+      limit_value,
+      offset_value,
     });
 
     if (error) console.error(error);

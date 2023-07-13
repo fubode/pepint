@@ -113,13 +113,14 @@ export const SolicitudContextProvider = ({ children }) => {
     });
 
     if (error) console.error(error);
-    setSolicitudes(data);
+    const newData = [{soluciones : 'ssss'}];
+    setSolicitudes(newData);
   };
 
   const getSolicitudesUIF = async () => {
-    const correo_solicitud = "unidad_cumplimiento@fubode.org"; //funcionario.correo;
+    const supa_correo = "unidad_cumplimiento@fubode.org"; //funcionario.correo;
     let { data, error } = await supabase.rpc("solicitudes_correo", {
-      correo_solicitud: correo_solicitud,
+      supa_correo: supa_correo,
       limit_value: paginacion.limit,
       offset_value: paginacion.offset,
     });

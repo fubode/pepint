@@ -40,23 +40,7 @@ const Login = () => {
   };
 
   const handleRegistrar = async () => {
-    /*const { data, error } = await supabase.auth.signUp({
-      email: "doris_sagardia@fubode.org",
-      password: "fubode123*",
-    });
-    console.log(data, error);*/
-    const correo_solicitud = 'unidad_cumplimiento@fubode.org'
-    const limit_value = 3;
-    const offset_value = 0;
-    let { data, error } = await supabase.rpc("solicitudes_correo", {
-      correo_solicitud,
-      limit_value,
-      offset_value,
-    });
-
-    if (error) console.error(error);
-    else console.log(data);
-    //enviarCorreo("juan_montecinos@fubode.org", "PRUEBA REACT", "funciono");
+    
   };
 
   const enviarCorreo = async (remitente, asunto, detalle) => {
@@ -167,9 +151,6 @@ const Login = () => {
           </Button>
         </Modal.Footer>
       </Modal>
-
-      <button onClick={handleOpenModal}>Abrir modal</button>
-      <CustomModal show={modalOpen} onHide={handleCloseModal} content="Contenido del modal" />
     </>
   );
 };

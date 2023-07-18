@@ -11,6 +11,7 @@ import {
   FaEnvelope,
 } from "react-icons/fa";
 import { useSolicitud } from "../../context/SolicitudContext";
+import CustomModal from "../CustomModal ";
 
 function formatFechaHora(fecha) {
   const date = new Date(fecha);
@@ -33,6 +34,7 @@ export const CardConsultor = ({ soli, funcionario }) => {
   const [showRechazar, setShowRechazar] = useState(false);
   const [showComentario, setShowComentario] = useState(false);
   const [showEnviar, setShowEnviar] = useState(false);
+  const [modalOpen, setModalOpen] = useState(false);
   const handleClose = () => {
     setShowFuncionario(false);
     setShowAceptar(false);
@@ -40,6 +42,10 @@ export const CardConsultor = ({ soli, funcionario }) => {
     setShowRechazar(false);
     setShowComentario(false);
     setShowEnviar(false);
+  };
+
+  const handleCloseModal = () => {
+    setModalOpen(false);
   };
   const [textareaValue, setTextareaValue] = useState("");
   const [textDestino, setTextDestino] = useState("NINGUNO");
@@ -88,21 +94,25 @@ export const CardConsultor = ({ soli, funcionario }) => {
       "GERENCIA"
     );
   };
+
+  const handleVista = () => {
+    setModalOpen(true);
+  }
   return (
     <>
+
       <div className="container">
         <div className="card border">
           <div className="row">
             <div
-              className={`col-1 d-flex align-items-center justify-content-center  ${
-                soli.estado === "ACEPTADO"
+              className={`col-1 d-flex align-items-center justify-content-center  ${soli.estado === "ACEPTADO"
                   ? "bg-success"
                   : soli.estado === "GERENCIA"
-                  ? "bg-info"
-                  : soli.estado === "RECHAZADO"
-                  ? "bg-danger"
-                  : "bg-warning"
-              }`}
+                    ? "bg-info"
+                    : soli.estado === "RECHAZADO"
+                      ? "bg-danger"
+                      : "bg-warning"
+                }`}
             >
               <div className="card-body">
                 {rol === 7 ? (
@@ -164,13 +174,13 @@ export const CardConsultor = ({ soli, funcionario }) => {
                 ) : soli.estado === "ACEPTADO" ? (
                   <div className="col-1">
                     <FaCommentDots className="mb-1" onClick={handleComentario} />
-                    <FaEye className="mb-1" />
+                    <FaEye className="mb-1" onClick={handleVista} />
                     <FaPrint />
                   </div>
                 ) : soli.estado === "RECHAZADO" ? (
                   <div className="col-1">
                     <FaCommentDots className="mb-1" onClick={handleComentario} />
-                    <FaEye className="mb-1" />
+                    <FaEye className="mb-1" onClick={handleVista} />
                     <FaPrint />
                   </div>
                 ) : soli.estado === "GERENCIA" ? (
@@ -199,7 +209,14 @@ export const CardConsultor = ({ soli, funcionario }) => {
           </div>
         </div>
       </div>
-
+      <CustomModal
+        show={modalOpen}
+        onHide={handleCloseModal}
+        content="Contenido del modal"
+        fecha={formatFechaHora(new Date)}
+        soli ={soli}
+        formatFechaHora ={formatFechaHora}
+        />
       <Modal show={showFuncionario} onHide={handleClose}>
         <Modal.Header className="bg-black text-white" closeButton>
           <Modal.Title>Datos del funcionario</Modal.Title>
@@ -265,15 +282,14 @@ export const CardConsultor = ({ soli, funcionario }) => {
 
       <Modal show={showComentario} onHide={handleClose}>
         <Modal.Header
-          className={`text-white ${
-            soli.estado === "ACEPTADO"
+          className={`text-white ${soli.estado === "ACEPTADO"
               ? "bg-success"
               : soli.estado === "GERENCIA"
-              ? "bg-info"
-              : soli.estado === "RECHAZADO"
-              ? "bg-danger"
-              : "bg-warning"
-          }`}
+                ? "bg-info"
+                : soli.estado === "RECHAZADO"
+                  ? "bg-danger"
+                  : "bg-warning"
+            }`}
           closeButton
         >
           <Modal.Title>{soli.estado}</Modal.Title>

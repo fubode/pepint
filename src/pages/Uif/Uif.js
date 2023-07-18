@@ -11,7 +11,7 @@ const Uif = () => {
 
   const navigate = useNavigate();
   const {
-    solicitudesUIF,
+    solicitudes,
     loading,
     createSolicitudes,
     getCaedec,
@@ -36,7 +36,7 @@ const Uif = () => {
     <>
       <NavFubode />
       <div>
-        {solicitudesUIF.map((soli, key) => (
+        {solicitudes.map((soli, key) => (
           <CardConsultor soli={soli} funcionario={funcionario} key={key} />
         ))}
       </div>

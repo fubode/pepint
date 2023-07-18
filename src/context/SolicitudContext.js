@@ -24,7 +24,7 @@ export const SolicitudContextProvider = ({ children }) => {
     paginacion: {
       limit: 3,
       offset: 0,
-      paginas: 0,
+      paginas: 6,
       datos: 17,
     },
     correos: [],
@@ -110,11 +110,12 @@ export const SolicitudContextProvider = ({ children }) => {
     const usuario_supa = (await supabase.auth.getUser()).data.user.id;
     let { data, error } = await supabase.rpc("uif_solicitudes", {
       usuario_supa,
+      limit_value: paginacion.limit,
+      offset_value: paginacion.offset,
     });
 
     if (error) console.error(error);
-    const newData = [{soluciones : 'ssss'}];
-    setSolicitudes(newData);
+    setSolicitudes(data);
   };
 
   const getSolicitudesUIF = async () => {
@@ -134,7 +135,7 @@ export const SolicitudContextProvider = ({ children }) => {
         ...prevPaginacion,
         paginas: nuevasPaginas,
       }));
-      setSolicitudesUIF(data);
+      setSolicitudes(data);
     }
   };
 
@@ -142,18 +143,19 @@ export const SolicitudContextProvider = ({ children }) => {
     const correo_solicitud = funcionario.correo;
     let { data, error } = await supabase.rpc("solicitudes_gerencia", {
       correo_solicitud: correo_solicitud,
+      limit_value: paginacion.limit,
+      offset_value: paginacion.offset,
     });
 
     if (error) return;
       console.log(data);
-      setSolicitudesGerencia(data);
+      setSolicitudes(data);
   };
 
   const getCorreos = () => {
     const nuevosCorreos = [
       { correo: "marco_avendano@fubode.org" },
       { correo: "juan_montecinos@fubode.org" },
-      { correo: "roberto_rios@fubode.org" },
     ];
     setCorreos(nuevosCorreos);
   };

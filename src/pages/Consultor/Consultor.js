@@ -181,6 +181,7 @@ export const Consultor = () => {
           </div>
         </div>
       </div>
+      <Paginacion />
       <Modal show={show} onHide={handleClose}>
         <Modal.Header closeButton className="bg-warning text-center">
           <Modal.Title>NUEVA SOLICITUD</Modal.Title>

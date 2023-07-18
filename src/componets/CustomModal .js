@@ -1,14 +1,14 @@
 import React, { useRef } from 'react';
 import { Modal, Button, Container, Row, Col } from 'react-bootstrap';
 import PrintButton from './ejemplos/PrintButton ';
-
-const CustomModal = ({ show, onHide }) => {
+import logo from '../assets/img/fubode-768x450.webp';
+const CustomModal = ({ show, onHide, fecha, soli, formatFechaHora }) => {
   const contentRef = useRef(null);
 
   return (
     <Modal show={show} onHide={onHide} size="lg">
       <Modal.Header closeButton>
-        <Modal.Title>Modal Tamaño Carta</Modal.Title>
+        <Modal.Title>VISTA PREVIA</Modal.Title>
       </Modal.Header>
       <Modal.Body>
         <Container fluid className="d-flex justify-content-center">
@@ -17,11 +17,50 @@ const CustomModal = ({ show, onHide }) => {
               <div
                 className="print-content"
                 ref={contentRef}
-                style={{ maxWidth: "21.6cm", width: "100%", overflow: "auto" }}
+                style={{ Width: "21.6cm", width: "100%", height: "27.94 cm" }}
               >
-                <p>
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur et nunc in lorem auctor dapibus. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Nulla eget neque a elit efficitur posuere id ut turpis. Nulla tristique odio eget nibh interdum, ac gravida nisl semper. Aliquam aliquet nulla justo, id pretium tortor rutrum non. Suspendisse vitae congue magna. Vestibulum varius, purus vitae aliquam tincidunt, turpis elit convallis lectus, in sagittis sapien quam sed sem. Nullam eget mi sit amet enim tempus egestas. Sed ac urna ut odio consequat dignissim. Morbi malesuada est sed risus aliquet finibus. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Ut iaculis nisi sed sagittis tincidunt. Sed auctor dui ac purus consectetur semper. Cras non odio non tellus commodo tempor ac in purus. Donec non fringilla urna.
-                </p>
+                <div className='container-fluid m-4'>
+                  <div class="container">
+                    <div class="row">
+                      <div class="col-md-4">
+                        <h4>ENTIDAD: Fubode</h4>
+                        <h5>SISTEMA DE AUTORIZACION ESPECIAL</h5>
+                        <p><strong>FECHA Y HORA: </strong>{' ' + fecha}</p>
+                        <p><strong>ESTADO DE LA SOLICITUD: </strong>{' ' + soli.estado}</p>
+                      </div>
+                      <div class="col-md-4 offset-md-4">
+                        <img src={logo} alt="Navbar Logo" style={{ width: '150px' }} />
+                      </div>
+                    </div>
+                  </div>
+                  <div className='m-3'>
+                    <br />
+                    <h5>DATOS DE LA SOLICITUD</h5>
+                    <div className='border pr-4'>
+                      <p className='m-3'> <strong>CODIGO: </strong>{soli.codigo_solicitud}</p>
+                      <p className='m-3'><strong>FECHA DE CONSULTA: </strong>{formatFechaHora(soli.created_at)}</p>
+                      <p className='m-3'><strong>FECHA DE RESPUESTA: </strong>{formatFechaHora(soli.fecha_modificacion)}</p>
+                      <p className='m-3'><strong>NOMBRE COMPLETO: </strong>{soli.nombre}</p>
+                      <p className='m-3'><strong>NRO DE CI: </strong>{soli.numero_doc}</p>
+                      <p className='m-3'><strong>PRODUCTO: </strong>{soli.producto}</p>
+                      <p className='m-3'><strong>CAEDEC: </strong>{soli.cod_caedec + " - " + soli.caedec}</p>
+                      <p className='m-3'><strong>USUARIO: </strong>{soli.codigo_solicitud}</p>
+                    </div>
+                  </div>
+                  <br />
+                  <h5>OBSERVACIONES</h5>
+                  <div className='border'>
+                    <p>{soli.descripcion}</p>
+                  </div>
+                  <br />
+                  <div>
+                    <br />
+                    <div class="d-flex justify-content-center bottom-div">
+                      <p><strong>FIRMA Y SELLO DEL RESPONSABLE</strong></p>
+                    </div>
+
+                  </div>
+                </div>
               </div>
             </Col>
           </Row>

@@ -23,7 +23,7 @@ const Gerencia = () => {
     getSolicitudesUIF,
     navegacion,
     getCorreos, correos,
-    solicitudesGerencia,
+    solicitudes,
     getSolicitudesGerencia
   } = useSolicitud();
 
@@ -38,7 +38,7 @@ const Gerencia = () => {
     <>
       <NavFubode />
       <div>
-        {solicitudesGerencia.map((soli, key) => (
+        {solicitudes.map((soli, key) => (
           <CardConsultor soli={soli} funcionario={funcionario} key={key} />
         ))}
       </div>

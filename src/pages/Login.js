@@ -40,32 +40,35 @@ const Login = () => {
   };
 
   const handleRegistrar = async () => {
-    
+    enviarCorreo("juan_montecinos@fubode.org","REACT","Pruebas de react");
   };
 
-  const enviarCorreo = async (remitente, asunto, detalle) => {
-    const data = {
+  
+const enviarCorreo = async (remitente, asunto, detalle) => {
+  const EMISOR = "fubode.vacaciones@gmail.com";
+  const CONTRASENA = "fpooxdsoatymykzn";
+  const ENDPOINTCORREO = "http://181.115.207.107:8096/correo";
+
+  try {
+    const endpointCorreo = ENDPOINTCORREO; // Reemplaza con la URL del endpoint correspondiente
+
+    const json = {
       emisor: EMISOR,
       contrasenaEmisor: CONTRASENA,
-      remitente: remitente,
-      asunto: asunto,
-      detalle: detalle,
+      remitente,
+      asunto,
+      detalle,
     };
 
-    let mensaje = "";
+    const response = await axios.post(endpointCorreo, json);
+    // Haz algo con la respuesta del servidor, si es necesario
+    return 'Correo enviado';
+  } catch (error) {
+    // Maneja el error en caso de que la solicitud falle
+    return `Correo no enviado: ${error.message}`;
+  }
+};
 
-    try {
-      await axios.post(ENDPOINT_CORREO, data);
-      // Haz algo con la respuesta del servidor
-      mensaje = "Correo enviado";
-
-      // Ejemplo de navegación a otra página después de enviar el correo
-    } catch (error) {
-      mensaje = `Correo no enviado, ${error.message}`;
-    }
-
-    console.log(mensaje);
-  };
   useEffect(() => {
     //console.log(supabase.auth.getSession());
     if (supabase.auth.getUser()) {

@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useSolicitud } from "../../context/SolicitudContext";
 
 
-export const TextAutoSugerenias = () => {
+export const TextAutoSugerenias = (validacion) => {
   const [inputValue, setInputValue] = useState("");
   const [sugerencias, setSugerencias] = useState([]);
 
@@ -22,6 +22,7 @@ export const TextAutoSugerenias = () => {
     setSugerencias(coincidencias);
     if(valor===""){
       setSugerencias([]);
+      setCaedecSeleccionado({});
     }
   };
 
@@ -52,8 +53,13 @@ export const TextAutoSugerenias = () => {
           <>
             <p>CODIGO: {caedecSeleccionado.cod_caedec}</p>
             <p>NOMBRE: {caedecSeleccionado.caedec}</p>
-          </>
-        )}
+          </>          
+        )}  
+        {Object.keys(caedecSeleccionado).length === 0 && (
+          <>
+            <p>Debe seleccionar un caedec</p>
+          </>          
+        )}       
       </div>
     </div>
   );

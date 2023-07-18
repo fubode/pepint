@@ -16,10 +16,6 @@ export const Consultor = () => {
   const [textNombre, setNombre] = useState("");
   const [textProducto, setProducto] = useState("NINGUNO");
   const [textTipo, setTipo] = useState("NINGUNO");
-  const [validacionCi, setValidacionCi] = useState(true);
-  const [validacionNombre, setValidacionNombre] = useState(true);
-  const [validacionTipo, setValidacionTipo] = useState(true);
-  const [validacionProducto, setValidacionProducto] = useState(true);
   const [validacion, setValidacion] = useState({
     ci: true,
     nombre: true,
@@ -46,11 +42,13 @@ export const Consultor = () => {
     setNombre("");
     setProducto("");
     setTipo("");
-
-    setValidacionCi(true);
-    setValidacionNombre(true);
-    setValidacionProducto(true);
-    setValidacionTipo(true);
+    setValidacion({
+      ci: true,
+      nombre: true,
+      tipo: true,
+      producto: true,
+      caedec: true,
+    });
   };
 
   const handleShow = () => setShow(true);
@@ -89,59 +87,56 @@ export const Consultor = () => {
   }, []);
 
   const handleSubmit = () => {
-    if (textCI.toString().length <= 5) {
-      setValidacionCi(false);
-      return;
-    } else {
-      setValidacionCi(true);
-    }
-    if (textNombre.length <= 0) {
-      setValidacionNombre(false);
-      return;
-    } else {
-      setValidacionNombre(true);
-    }
-
-    if (textProducto === "NINGUNO") {
-      console.log('as')
-      setValidacionProducto(false);
-      return;
-    } else {
-      setValidacionProducto(true);
-    }
-
-    if (textTipo === "NINGUNO") {
-      setValidacionTipo(false);
-      return;
-    } else {
-      setValidacionTipo(true);
-    }
-
-    
-    console.log(textCI, textNombre, textProducto, textTipo, caedecSeleccionado);
-    
-    setShow(false);
-    const solicitud = {
-      tipo: textTipo,
-      descripcion: "NINGUNO",
-      numero_doc: textCI,
-      nombre_completo: textNombre,
-      producto: textProducto,
-      cod_caedec: caedecSeleccionado.cod_caedec,
-      estado: "PENDIENTE",
+    // Validar campos
+    const validaciones = {
+      ci: textCI > 0 && textCI.toString().length >= 5,
+      nombre: textNombre.trim() !== "",
+      tipo: textTipo !== "NINGUNO",
+      producto: textProducto !== "NINGUNO",
+      caedec: Object.keys(caedecSeleccionado).length > 0
     };
-    setCaedecSeleccionado({});
-    createSolicitudes(solicitud);
-    setShowMesagge(true);
-    console.log(solicitudes);
+
+    setValidacion(validaciones);
+
+    // Verificar si todos los campos son válidos
+    const camposValidos = Object.values(validaciones).every(
+      (validacion) => validacion
+    );
+
+    if (camposValidos) {
+      // Todos los campos son válidos, enviar solicitud
+      console.log(
+        textCI,
+        textNombre,
+        textProducto,
+        textTipo,
+        caedecSeleccionado
+      );
+
+      setShow(false);
+      const solicitud = {
+        tipo: textTipo,
+        descripcion: "NINGUNO",
+        numero_doc: textCI,
+        nombre_completo: textNombre,
+        producto: textProducto,
+        cod_caedec: caedecSeleccionado.cod_caedec,
+        estado: "PENDIENTE",
+      };
+      setCaedecSeleccionado({});
+      createSolicitudes(solicitud);
+      setShowMesagge(true);
+      console.log(solicitudes);
+    }
   };
+
   const handleRegistrar = async () => {
     /*const { data, error } = await supabase.auth.signUp({
       email: "doris_sagardia@fubode.org",
       password: "fubode123*",
     });
     console.log(data, error);*/
-    const correo_solicitud = 'unidad_cumplimiento@fubode.org'
+    const correo_solicitud = "unidad_cumplimiento@fubode.org";
     const limit_value = 3;
     const offset_value = 0;
     let { data, error } = await supabase.rpc("solicitudes_correo", {
@@ -158,7 +153,7 @@ export const Consultor = () => {
   return (
     <>
       <div>
-      <button
+        <button
           className="btn btn-primary btn-lg btn-block"
           onClick={handleRegistrar}
         >
@@ -185,7 +180,6 @@ export const Consultor = () => {
             ))}
           </div>
         </div>
-        
       </div>
       <Modal show={show} onHide={handleClose}>
         <Modal.Header closeButton className="bg-warning text-center">
@@ -199,18 +193,17 @@ export const Consultor = () => {
                 <div className="col-12">
                   <input
                     type="number"
-                    className="form-control"
+                    className={`form-control ${!validacion.ci ? "is-invalid" : ""
+                      }`}
                     id="ci"
                     name="ci"
                     placeholder="Introduzca su nro de ci"
                     onChange={handleTextCi}
                   />
-                  {!validacionCi ? (
-                    <p className="text-danger">
-                      El ci debe tener mas de 5 digitos
-                    </p>
-                  ) : (
-                    <></>
+                  {!validacion.ci && (
+                    <div className="invalid-feedback">
+                      El número de CI debe ser numérico y tener al menos 5 dígitos.
+                    </div>
                   )}
                 </div>
               </div>
@@ -224,14 +217,15 @@ export const Consultor = () => {
               </label>
               <input
                 type="text"
-                className="form-control text-uppercase"
+                className={`form-control text-uppercase ${!validacion.nombre ? "is-invalid" : ""
+                  }`}
                 id="exampleInputPassword1"
                 onChange={handleNombre}
               />
-              {!validacionNombre ? (
-                <p className="text-danger">El nombre no puede estar vacio</p>
-              ) : (
-                <></>
+              {!validacion.nombre && (
+                <div className="invalid-feedback">
+                  El nombre completo es obligatorio.
+                </div>
               )}
             </div>
             <div className="mb-3">
@@ -239,7 +233,8 @@ export const Consultor = () => {
                 Producto
               </label>
               <select
-                className="form-select"
+                className={`form-select ${!validacion.producto ? "is-invalid" : ""
+                  }`}
                 aria-label="Default select example"
                 onChange={handleProducto}
               >
@@ -251,22 +246,23 @@ export const Consultor = () => {
                 <option value="BANCA COMUNAL">BANCA COMUNAL</option>
                 <option value="CREDITO INDIVIDUAL">CREDITO INDIVIDUAL</option>
               </select>
-              {!validacionProducto ? (
-                <p className="text-danger">Debe seleccionar un producto</p>
-              ) : (
-                <></>
+              {!validacion.producto && (
+                <div className="invalid-feedback">
+                  Seleccione un producto válido.
+                </div>
               )}
             </div>
             <div className="mb-3">
               <label className="form-label">CAEDEC</label>
-              <TextAutoSugerenias></TextAutoSugerenias>
+              <TextAutoSugerenias></TextAutoSugerenias>              
             </div>
             <div className="mb-3">
               <label htmlFor="exampleInputPassword1" className="form-label">
                 Tipo
               </label>
               <select
-                className="form-select"
+                className={`form-select ${!validacion.tipo ? "is-invalid" : ""
+                  }`}
                 aria-label="Default select example"
                 onChange={handleTipo}
               >
@@ -275,10 +271,10 @@ export const Consultor = () => {
                 <option value="PEP">PEP</option>
                 <option value="CAEDEC">CAEDEC</option>
               </select>
-              {!validacionTipo ? (
-                <p className="text-danger">Debe seleccionar un tipo</p>
-              ) : (
-                <></>
+              {!validacion.tipo && (
+                <div className="invalid-feedback">
+                  Seleccione un tipo válido.
+                </div>
               )}
             </div>
             <button

@@ -5,6 +5,7 @@ import { useSolicitud } from "../context/SolicitudContext";
 import { Button, Modal } from "react-bootstrap";
 import axios from "axios";
 import NavFubode from "../componets/NavFubode";
+import CustomModal from "../componets/CustomModal ";
 const Login = () => {
   const { getFuncionario, funcionario, navegacion, setRol } = useSolicitud();
   const EMISOR = "fubode.vacaciones@gmail.com";
@@ -91,6 +92,16 @@ const Login = () => {
       navigate("/consultor");
     }
   }, [navigate]);
+
+  const [modalOpen, setModalOpen] = useState(false);
+
+  const handleOpenModal = () => {
+    setModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setModalOpen(false);
+  };
   return (
     <>
       <div>
@@ -156,6 +167,9 @@ const Login = () => {
           </Button>
         </Modal.Footer>
       </Modal>
+
+      <button onClick={handleOpenModal}>Abrir modal</button>
+      <CustomModal show={modalOpen} onHide={handleCloseModal} content="Contenido del modal" />
     </>
   );
 };

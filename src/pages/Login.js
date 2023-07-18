@@ -40,7 +40,11 @@ const Login = () => {
   };
 
   const handleRegistrar = async () => {
-    enviarCorreo("juan_montecinos@fubode.org","REACT","Pruebas de react");
+    var now = new Date();
+var timeZoneOffset = now.getTimezoneOffset() * 60 * 1000; // Obtener el desfase horario en milisegundos
+var gmtTime = new Date(now.getTime() + timeZoneOffset);
+console.log(now);
+    //enviarCorreo("juan_montecinos@fubode.org","REACT","Pruebas de react");
   };
 
   

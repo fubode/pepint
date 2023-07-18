@@ -6,6 +6,7 @@ import { supabase } from "../../supabase/client";
 import { useNavigate } from "react-router-dom";
 import { Button, Modal } from "react-bootstrap";
 import Paginacion from '../../componets/Paginacion';
+import Recargar from '../../componets/Consultor/Recargar';
 
 const Uif = () => {
 
@@ -35,6 +36,7 @@ const Uif = () => {
   return (
     <>
       <NavFubode />
+      <Recargar></Recargar>
       <div>
         {solicitudes.map((soli, key) => (
           <CardConsultor soli={soli} funcionario={funcionario} key={key} />

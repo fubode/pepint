@@ -7,6 +7,7 @@ import { TextAutoSugerenias } from "../../componets/Consultor/TextAutoSugerenias
 import { useNavigate } from "react-router-dom";
 import Paginacion from "../../componets/Paginacion";
 import NavFubode from "../../componets/NavFubode";
+import Recargar from "../../componets/Consultor/Recargar";
 
 export const Consultor = () => {
   const navigate = useNavigate();
@@ -93,7 +94,7 @@ export const Consultor = () => {
       nombre: textNombre.trim() !== "",
       tipo: textTipo !== "NINGUNO",
       producto: textProducto !== "NINGUNO",
-      caedec: Object.keys(caedecSeleccionado).length > 0
+      caedec: Object.keys(caedecSeleccionado).length > 0,
     };
 
     setValidacion(validaciones);
@@ -169,6 +170,7 @@ export const Consultor = () => {
               >
                 Nueva solicitud
               </button>
+              <Recargar></Recargar>
             </div>
           </div>
         </div>
@@ -194,8 +196,9 @@ export const Consultor = () => {
                 <div className="col-12">
                   <input
                     type="number"
-                    className={`form-control ${!validacion.ci ? "is-invalid" : ""
-                      }`}
+                    className={`form-control ${
+                      !validacion.ci ? "is-invalid" : ""
+                    }`}
                     id="ci"
                     name="ci"
                     placeholder="Introduzca su nro de ci"
@@ -203,7 +206,8 @@ export const Consultor = () => {
                   />
                   {!validacion.ci && (
                     <div className="invalid-feedback">
-                      El número de CI debe ser numérico y tener al menos 5 dígitos.
+                      El número de CI debe ser numérico y tener al menos 5
+                      dígitos.
                     </div>
                   )}
                 </div>
@@ -218,8 +222,9 @@ export const Consultor = () => {
               </label>
               <input
                 type="text"
-                className={`form-control text-uppercase ${!validacion.nombre ? "is-invalid" : ""
-                  }`}
+                className={`form-control text-uppercase ${
+                  !validacion.nombre ? "is-invalid" : ""
+                }`}
                 id="exampleInputPassword1"
                 onChange={handleNombre}
               />
@@ -234,8 +239,9 @@ export const Consultor = () => {
                 Producto
               </label>
               <select
-                className={`form-select ${!validacion.producto ? "is-invalid" : ""
-                  }`}
+                className={`form-select ${
+                  !validacion.producto ? "is-invalid" : ""
+                }`}
                 aria-label="Default select example"
                 onChange={handleProducto}
               >
@@ -255,15 +261,16 @@ export const Consultor = () => {
             </div>
             <div className="mb-3">
               <label className="form-label">CAEDEC</label>
-              <TextAutoSugerenias></TextAutoSugerenias>              
+              <TextAutoSugerenias></TextAutoSugerenias>
             </div>
             <div className="mb-3">
               <label htmlFor="exampleInputPassword1" className="form-label">
                 Tipo
               </label>
               <select
-                className={`form-select ${!validacion.tipo ? "is-invalid" : ""
-                  }`}
+                className={`form-select ${
+                  !validacion.tipo ? "is-invalid" : ""
+                }`}
                 aria-label="Default select example"
                 onChange={handleTipo}
               >

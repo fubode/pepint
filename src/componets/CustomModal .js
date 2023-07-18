@@ -22,13 +22,13 @@ const CustomModal = ({ show, onHide, fecha, soli, formatFechaHora }) => {
                 <div className='container-fluid m-4'>
                   <div class="container">
                     <div class="row">
-                      <div class="col-md-4">
-                        <h4>ENTIDAD: Fubode</h4>
+                      <div class="col-8">
+                        <h4>ENTIDAD: FUBODE IFD</h4>
                         <h5>SISTEMA DE AUTORIZACION ESPECIAL</h5>
                         <p><strong>FECHA Y HORA: </strong>{' ' + fecha}</p>
                         <p><strong>ESTADO DE LA SOLICITUD: </strong>{' ' + soli.estado}</p>
                       </div>
-                      <div class="col-md-4 offset-md-4">
+                      <div class="col-2">
                         <img src={logo} alt="Navbar Logo" style={{ width: '150px' }} />
                       </div>
                     </div>
@@ -44,7 +44,7 @@ const CustomModal = ({ show, onHide, fecha, soli, formatFechaHora }) => {
                       <p className='m-3'><strong>NRO DE CI: </strong>{soli.numero_doc}</p>
                       <p className='m-3'><strong>PRODUCTO: </strong>{soli.producto}</p>
                       <p className='m-3'><strong>CAEDEC: </strong>{soli.cod_caedec + " - " + soli.caedec}</p>
-                      <p className='m-3'><strong>USUARIO: </strong>{soli.codigo_solicitud}</p>
+                      <p className='m-3'><strong>USUARIO: </strong>{soli.nombre_completo}</p>
                     </div>
                   </div>
                   <br />
@@ -54,6 +54,9 @@ const CustomModal = ({ show, onHide, fecha, soli, formatFechaHora }) => {
                   </div>
                   <br />
                   <div>
+                    <br />
+                    <br />
+                    <br />
                     <br />
                     <div class="d-flex justify-content-center bottom-div">
                       <p><strong>FIRMA Y SELLO DEL RESPONSABLE</strong></p>

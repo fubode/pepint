@@ -114,8 +114,27 @@ export const SolicitudContextProvider = ({ children }) => {
       offset_value: paginacion.offset,
     });
 
-    if (error) console.error(error);
-    setSolicitudes(data);
+    if (error) {
+      console.error(error);
+      return;
+    } else {
+      console.log(data);
+      const nuevasPaginas = Math.round(
+        data[0].cantidad_solicitudes / paginacion.limit
+      );
+      console.log(nuevasPaginas);
+
+      setPaginacion((prevPaginacion) => ({
+        ...prevPaginacion,
+        paginas: nuevasPaginas,
+      }));
+      const nuevosDatos = data[0].cantidad_solicitudes;
+      setPaginacion((prevDatos) => ({
+        ...prevDatos,
+        datos: nuevosDatos,
+      }));
+      setSolicitudes(data);
+    }
   };
 
   const getSolicitudesUIF = async () => {
@@ -130,34 +149,63 @@ export const SolicitudContextProvider = ({ children }) => {
       console.error(error);
     } else {
       console.log(data);
-      const nuevasPaginas = Math.round(paginacion.datos / paginacion.limit);
+      const nuevasPaginas = Math.round(
+        data[0].cantidad_solicitudes / paginacion.limit
+      );
+      console.log(nuevasPaginas);
+
       setPaginacion((prevPaginacion) => ({
         ...prevPaginacion,
         paginas: nuevasPaginas,
+      }));
+      setSolicitudes(data);
+      const nuevosDatos = data[0].cantidad_solicitudes;
+      setPaginacion((prevDatos) => ({
+        ...prevDatos,
+        datos: nuevosDatos,
       }));
       setSolicitudes(data);
     }
   };
 
   const getSolicitudesGerencia = async () => {
-    const correo_solicitud = funcionario.correo;
+    const supa_correo = funcionario.correo;
     let { data, error } = await supabase.rpc("solicitudes_gerencia", {
-      correo_solicitud: correo_solicitud,
+      supa_correo: supa_correo,
       limit_value: paginacion.limit,
       offset_value: paginacion.offset,
     });
 
-    if (error) return;
+    if (error) {
+      console.error(error);
+      return;
+    } else {
       console.log(data);
+      const nuevasPaginas = Math.round(
+        data[0].cantidad_solicitudes / paginacion.limit
+      );
+      console.log(nuevasPaginas);
+
+      setPaginacion((prevPaginacion) => ({
+        ...prevPaginacion,
+        paginas: nuevasPaginas,
+      }));
       setSolicitudes(data);
+      const nuevosDatos = data[0].cantidad_solicitudes;
+      setPaginacion((prevDatos) => ({
+        ...prevDatos,
+        datos: nuevosDatos,
+      }));
+      setSolicitudes(data);
+    }
   };
 
-  const getCorreos = () => {
-    const nuevosCorreos = [
-      { correo: "marco_avendano@fubode.org" },
-      { correo: "juan_montecinos@fubode.org" },
-    ];
-    setCorreos(nuevosCorreos);
+  const getCorreos = async () => {
+    let { data, error } = await supabase.rpc("obtener_alta_gerencia");
+
+    if (error) console.error(error);
+    else console.log(data);
+    setCorreos(data);
   };
 
   const modificarSolicitud = async (
@@ -169,6 +217,9 @@ export const SolicitudContextProvider = ({ children }) => {
     const descripcion = detalle;
     const estado = estadoSolicitud;
     const fechaModificacion = new Date();
+    console.log(fechaModificacion);
+    var timeZoneOffset = fechaModificacion.getTimezoneOffset() * 60 * 1000;
+    var gmtTime = new Date(fechaModificacion.getTime() - timeZoneOffset);
     const correoFinal = funcionario.correo;
 
     const { data, error } = await supabase
@@ -176,15 +227,15 @@ export const SolicitudContextProvider = ({ children }) => {
       .update({
         descripcion: descripcion,
         estado: estado,
-        fecha_modificacion: fechaModificacion,
+        fecha_modificacion: gmtTime,
         correo_final: correoFinal,
       })
       .eq("codigo_solicitud", codigoSolicitud);
     console.log(data, error);
-    if(rol==7){
+    if (rol == 7) {
       getSolicitudesUIF();
     }
-    if(rol==8){
+    if (rol == 8) {
       getSolicitudesGerencia();
     }
   };
@@ -222,8 +273,7 @@ export const SolicitudContextProvider = ({ children }) => {
       "-" +
       solicitud.tipo +
       "-" +
-      (solicitudes.length + 1);
-    var today = new Date();
+      (paginacion.datos + 1);
     try {
       const user = (await supabase.auth.getUser()).data.user.id;
       solicitud.id_usuario = user;
@@ -305,7 +355,8 @@ export const SolicitudContextProvider = ({ children }) => {
         getCorreos,
         enviarSolicitudGerecia,
         solicitudesGerencia,
-        getSolicitudesGerencia
+        getSolicitudesGerencia,
+        correos
       }}
     >
       {children}

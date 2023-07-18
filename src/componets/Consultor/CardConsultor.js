@@ -5,7 +5,6 @@ import {
   FaCheck,
   FaCommentDots,
   FaEye,
-  FaPrint,
   FaTimes,
   FaUser,
   FaEnvelope,
@@ -54,7 +53,7 @@ export const CardConsultor = ({ soli, funcionario }) => {
   const handleTextareaChange = (event) => {
     setTextareaValue(event.target.value);
   };
-  const { modificarSolicitud, rol, correos, enviarSolicitudGerecia } =
+  const { modificarSolicitud,  correos,rol, enviarSolicitudGerecia,getSolicitudes,getSolicitudesUIF,getSolicitudesGerencia } =
     useSolicitud();
 
   const handleAceptar = () => setShowAceptar(!showAceptar);
@@ -93,26 +92,27 @@ export const CardConsultor = ({ soli, funcionario }) => {
       textDestino,
       "GERENCIA"
     );
+    setShowEnviar(false);
   };
 
   const handleVista = () => {
     setModalOpen(true);
-  }
+  };
   return (
     <>
-
       <div className="container">
         <div className="card border">
           <div className="row">
             <div
-              className={`col-1 d-flex align-items-center justify-content-center  ${soli.estado === "ACEPTADO"
+              className={`col-1 d-flex align-items-center justify-content-center  ${
+                soli.estado === "ACEPTADO"
                   ? "bg-success"
                   : soli.estado === "GERENCIA"
-                    ? "bg-info"
-                    : soli.estado === "RECHAZADO"
-                      ? "bg-danger"
-                      : "bg-warning"
-                }`}
+                  ? "bg-info"
+                  : soli.estado === "RECHAZADO"
+                  ? "bg-danger"
+                  : "bg-warning"
+              }`}
             >
               <div className="card-body">
                 {rol === 7 ? (
@@ -125,7 +125,9 @@ export const CardConsultor = ({ soli, funcionario }) => {
 
             <div className="col-10">
               <p className="mb-0">{soli.codigo_solicitud}</p>
-              <p className="mb-0">{soli.numero_doc + " - " + soli.nombre}</p>
+              <p className="mb-0">
+                {soli.numero_doc + " - " + soli.nombre_completo_uif}
+              </p>
               <p className="mb-0">{soli.producto}</p>
               <p className="mb-0">{soli.cod_caedec + " - " + soli.caedec}</p>
               <p className="mb-0">{formatFechaHora(soli.created_at)}</p>
@@ -173,15 +175,19 @@ export const CardConsultor = ({ soli, funcionario }) => {
                   )
                 ) : soli.estado === "ACEPTADO" ? (
                   <div className="col-1">
-                    <FaCommentDots className="mb-1" onClick={handleComentario} />
+                    <FaCommentDots
+                      className="mb-1"
+                      onClick={handleComentario}
+                    />
                     <FaEye className="mb-1" onClick={handleVista} />
-                    <FaPrint />
                   </div>
                 ) : soli.estado === "RECHAZADO" ? (
                   <div className="col-1">
-                    <FaCommentDots className="mb-1" onClick={handleComentario} />
+                    <FaCommentDots
+                      className="mb-1"
+                      onClick={handleComentario}
+                    />
                     <FaEye className="mb-1" onClick={handleVista} />
-                    <FaPrint />
                   </div>
                 ) : soli.estado === "GERENCIA" ? (
                   rol === 8 ? (
@@ -213,10 +219,10 @@ export const CardConsultor = ({ soli, funcionario }) => {
         show={modalOpen}
         onHide={handleCloseModal}
         content="Contenido del modal"
-        fecha={formatFechaHora(new Date)}
-        soli ={soli}
-        formatFechaHora ={formatFechaHora}
-        />
+        fecha={formatFechaHora(new Date())}
+        soli={soli}
+        formatFechaHora={formatFechaHora}
+      />
       <Modal show={showFuncionario} onHide={handleClose}>
         <Modal.Header className="bg-black text-white" closeButton>
           <Modal.Title>Datos del funcionario</Modal.Title>
@@ -282,14 +288,15 @@ export const CardConsultor = ({ soli, funcionario }) => {
 
       <Modal show={showComentario} onHide={handleClose}>
         <Modal.Header
-          className={`text-white ${soli.estado === "ACEPTADO"
+          className={`text-white ${
+            soli.estado === "ACEPTADO"
               ? "bg-success"
               : soli.estado === "GERENCIA"
-                ? "bg-info"
-                : soli.estado === "RECHAZADO"
-                  ? "bg-danger"
-                  : "bg-warning"
-            }`}
+              ? "bg-info"
+              : soli.estado === "RECHAZADO"
+              ? "bg-danger"
+              : "bg-warning"
+          }`}
           closeButton
         >
           <Modal.Title>{soli.estado}</Modal.Title>
@@ -316,15 +323,11 @@ export const CardConsultor = ({ soli, funcionario }) => {
               onChange={handleDestino}
             >
               <option value="NINGUNO">Seleccione el destino</option>
-              <option value="marko_avendano@fubode.org">
-                marko_avendano@fubode.org
-              </option>
-              <option value="juan_montecinos@fubode.org">
-                juan_montecinos@fubode.org
-              </option>
-              <option value="roberto_rios@fubode.org">
-                mroberto_riosfubode.org
-              </option>
+              {correos.map((correo, key) => (
+                <option value="marko_avendano@fubode.org">
+                  {correo.correo}
+                </option>
+              ))}
             </select>
             <textarea
               style={{ width: "100%" }}

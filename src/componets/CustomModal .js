@@ -26,7 +26,7 @@ const CustomModal = ({ show, onHide, fecha, soli, formatFechaHora }) => {
                         <h4>ENTIDAD: FUBODE IFD</h4>
                         <h5>SISTEMA DE AUTORIZACION ESPECIAL</h5>
                         <p><strong>FECHA Y HORA: </strong>{' ' + fecha}</p>
-                        <p><strong>ESTADO DE LA SOLICITUD: </strong>{' ' + soli.estado}</p>
+                        <p><strong>ESTADO DE LA SOLICITUD: </strong>{ soli.estado=='ACEPTADO'?(' AUTORIZADO'):(' '+soli.estado)}</p>
                       </div>
                       <div class="col-2">
                         <img src={logo} alt="Navbar Logo" style={{ width: '150px' }} />
@@ -40,7 +40,7 @@ const CustomModal = ({ show, onHide, fecha, soli, formatFechaHora }) => {
                       <p className='m-3'> <strong>CODIGO: </strong>{soli.codigo_solicitud}</p>
                       <p className='m-3'><strong>FECHA DE CONSULTA: </strong>{formatFechaHora(soli.created_at)}</p>
                       <p className='m-3'><strong>FECHA DE RESPUESTA: </strong>{formatFechaHora(soli.fecha_modificacion)}</p>
-                      <p className='m-3'><strong>NOMBRE COMPLETO: </strong>{soli.nombre}</p>
+                      <p className='m-3'><strong>NOMBRE COMPLETO: </strong>{soli.nombre_completo_uif}</p>
                       <p className='m-3'><strong>NRO DE CI: </strong>{soli.numero_doc}</p>
                       <p className='m-3'><strong>PRODUCTO: </strong>{soli.producto}</p>
                       <p className='m-3'><strong>CAEDEC: </strong>{soli.cod_caedec + " - " + soli.caedec}</p>

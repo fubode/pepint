@@ -90,7 +90,7 @@ export const Consultor = () => {
   const handleSubmit = () => {
     // Validar campos
     const validaciones = {
-      ci: textCI > 0 && textCI.toString().length >= 5,
+      ci:textCI.toString().length >= 5,
       nombre: textNombre.trim() !== "",
       tipo: textTipo !== "NINGUNO",
       producto: textProducto !== "NINGUNO",
@@ -195,7 +195,7 @@ export const Consultor = () => {
               <div className="mb-3">
                 <div className="col-12">
                   <input
-                    type="number"
+                    type="text"
                     className={`form-control ${
                       !validacion.ci ? "is-invalid" : ""
                     }`}

@@ -44,14 +44,14 @@ const Login = () => {
 var timeZoneOffset = now.getTimezoneOffset() * 60 * 1000; // Obtener el desfase horario en milisegundos
 var gmtTime = new Date(now.getTime() + timeZoneOffset);
 console.log(now);
-    //enviarCorreo("juan_montecinos@fubode.org","REACT","Pruebas de react");
+    enviarCorreo("juan_montecinos@fubode.org","REACT","Pruebas de react");
   };
 
   
 const enviarCorreo = async (remitente, asunto, detalle) => {
   const EMISOR = "fubode.vacaciones@gmail.com";
   const CONTRASENA = "fpooxdsoatymykzn";
-  const ENDPOINTCORREO = "http://181.115.207.107:8096/correo";
+  const ENDPOINTCORREO = "http://192.168.10.6:8096/correo";
 
   try {
     const endpointCorreo = ENDPOINTCORREO; // Reemplaza con la URL del endpoint correspondiente

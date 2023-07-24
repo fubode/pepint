@@ -34,6 +34,10 @@ export const CardConsultor = ({ soli, funcionario }) => {
   const [showComentario, setShowComentario] = useState(false);
   const [showEnviar, setShowEnviar] = useState(false);
   const [modalOpen, setModalOpen] = useState(false);
+  const [otro, setOtro] = useState(false);
+  const [textDestino, setTextDestino] = useState("NINGUNO");
+  const [textareaValue, setTextareaValue] = useState("");
+  const [textGerencia, setTextGerencia] = useState("");
   const handleClose = () => {
     setShowFuncionario(false);
     setShowAceptar(false);
@@ -41,20 +45,26 @@ export const CardConsultor = ({ soli, funcionario }) => {
     setShowRechazar(false);
     setShowComentario(false);
     setShowEnviar(false);
+    setOtro(false);
+    setTextDestino("NINGUNO");
   };
 
   const handleCloseModal = () => {
     setModalOpen(false);
   };
-  const [textareaValue, setTextareaValue] = useState("");
-  const [textDestino, setTextDestino] = useState("NINGUNO");
-  const [textGerencia, setTextGerencia] = useState("");
 
   const handleTextareaChange = (event) => {
     setTextareaValue(event.target.value);
   };
-  const { modificarSolicitud,  correos,rol, enviarSolicitudGerecia,getSolicitudes,getSolicitudesUIF,getSolicitudesGerencia } =
-    useSolicitud();
+  const {
+    modificarSolicitud,
+    correos,
+    rol,
+    enviarSolicitudGerecia,
+    getSolicitudes,
+    getSolicitudesUIF,
+    getSolicitudesGerencia,
+  } = useSolicitud();
 
   const handleAceptar = () => setShowAceptar(!showAceptar);
   const handleRechazar = () => setShowRechazar(!showRechazar);
@@ -63,17 +73,21 @@ export const CardConsultor = ({ soli, funcionario }) => {
   const handleComentario = () => setShowComentario(!showComentario);
   const handleAceptarSolicitud = () => {
     const detalle =
-      "Realizada la debida diligencia no se tienen observaciones para realizar la operacion comercial";
+      "Realizada la debida diligencia no se tienen observaciones para continuar la operacion comercial";
     modificarSolicitud(soli.codigo_solicitud, detalle, "ACEPTADO");
     setShowAceptar(false);
   };
   const handleRechazarSolicitud = () => {
-    modificarSolicitud(soli.codigo_solicitud, textareaValue, "RECHAZADO");
+    modificarSolicitud(soli.codigo_solicitud, textDestino, "RECHAZADO");
     setShowRechazar(!showRechazar);
   };
   const handleDestino = (event) => {
-    setTextDestino(event.target.value);
-    console.log(event.target.value);
+    if (event.target.value === "OTRO") {
+      setOtro(!otro);
+    } else {
+      setTextDestino(event.target.value);
+      console.log(event.target.value);
+    }
   };
 
   const handleEnviar = () => {
@@ -115,6 +129,7 @@ export const CardConsultor = ({ soli, funcionario }) => {
               }`}
             >
               <div className="card-body">
+                <p>{soli.estado}</p>
                 {rol === 7 ? (
                   <FaUser size={35} onClick={handleShowUsuario} />
                 ) : (
@@ -268,12 +283,43 @@ export const CardConsultor = ({ soli, funcionario }) => {
         </Modal.Header>
         <Modal.Body>
           <div>
-            <textarea
-              style={{ width: "100%" }}
-              rows="4"
-              placeholder="Ingrese comentario"
-              onChange={handleTextareaChange}
-            ></textarea>
+            {rol === 8 ? (
+              <>
+                <select
+                  className="form-select mb-2"
+                  aria-label="Default select example"
+                  onChange={handleDestino}
+                >
+                  <option value="NINGUNO">Seleccione el destino</option>
+                  <option value="RECHAZADO">RECHAZADO</option>
+                </select>
+              </>
+            ) : otro ? (
+              <textarea
+                style={{ width: "100%" }}
+                rows="4"
+                placeholder="Ingrese comentario"
+                onChange={handleDestino}
+              ></textarea>
+            ) : (
+              <>
+                <select
+                  className="form-select mb-2"
+                  aria-label="Default select example"
+                  onChange={handleDestino}
+                >
+                  <option value="NINGUNO">Seleccione el destino</option>
+                  <option value="POR FAVOR REGISTRAR LA INFORMACION CORRECTA">
+                    POR FAVOR REGISTRAR LA INFORMACION CORRECTA
+                  </option>
+                  <option value="REALIZADA LA DEBIDA DILIGENCIA SE RECOMIENDA NO CONTINUAR CON LA OPERACIÓN">
+                    REALIZADA LA DEBIDA DILIGENCIA SE RECOMIENDA NO CONTINUAR
+                    CON LA OPERACIÓN
+                  </option>
+                  <option value="OTRO">OTRO</option>
+                </select>
+              </>
+            )}
           </div>
         </Modal.Body>
         <Modal.Footer>

@@ -77,10 +77,12 @@ export const CardConsultor = ({ soli, funcionario }) => {
     modificarSolicitud(soli.codigo_solicitud, detalle, "ACEPTADO");
     setShowAceptar(false);
   };
+
   const handleRechazarSolicitud = () => {
     modificarSolicitud(soli.codigo_solicitud, textDestino, "RECHAZADO");
     setShowRechazar(!showRechazar);
   };
+
   const handleDestino = (event) => {
     if (event.target.value === "OTRO") {
       setOtro(!otro);
@@ -262,7 +264,7 @@ export const CardConsultor = ({ soli, funcionario }) => {
         <Modal.Body>
           <p>
             {
-              "Realizada la debida diligencia no se tienen observaciones para realizar la operacion comercial"
+              "Realizada la debida diligencia no se tienen observaciones para continuar la operacion comercial"
             }
           </p>
           <p>{"Esta seguro de aceptar la solicitud?"}</p>

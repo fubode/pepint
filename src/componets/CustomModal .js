@@ -26,7 +26,7 @@ const CustomModal = ({ show, onHide, fecha, soli, formatFechaHora }) => {
                         <h4>ENTIDAD: FUBODE IFD</h4>
                         <h5>SISTEMA DE AUTORIZACION ESPECIAL</h5>
                         <p><strong>FECHA Y HORA: </strong>{' ' + fecha}</p>
-                        <p><strong>ESTADO DE LA SOLICITUD: </strong>{ soli.estado=='ACEPTADO'?(' AUTORIZADO'):(' '+soli.estado)}</p>
+                        <p><strong>ESTADO DE LA SOLICITUD: </strong>{soli.estado == 'ACEPTADO' ? (' AUTORIZADO') : (' ' + soli.estado)}</p>
                       </div>
                       <div class="col-2">
                         <img src={logo} alt="Navbar Logo" style={{ width: '150px' }} />
@@ -48,10 +48,24 @@ const CustomModal = ({ show, onHide, fecha, soli, formatFechaHora }) => {
                     </div>
                   </div>
                   <br />
-                  <h5>OBSERVACIONES</h5>
+                  <h5>OBSERVACIONES POR LA UNIDAD DE CUMPLIMIENTO</h5>
                   <div className='border'>
                     <p>{soli.descripcion}</p>
                   </div>
+                  {
+                    soli.correo_final !== 'unidad_cumplimiento@fubode.org' ? (
+                      <>
+                        <br />
+                        <h5>OBSERVACIONES REALIZADAS POR ALTA GERENCIA</h5>
+                        <div className='border'>
+                        <p>{soli.estado == 'ACEPTADO' ? ('AUTORIZADO') : (soli.estado)}</p>
+                        </div>
+                      </>
+                    ) : (
+                      <>
+                      </>
+                    )
+                  }
                   <br />
                   <div>
                     <br />

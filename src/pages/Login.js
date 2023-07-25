@@ -5,24 +5,19 @@ import { useSolicitud } from "../context/SolicitudContext";
 import { Button, Modal } from "react-bootstrap";
 import axios from "axios";
 import NavFubode from "../componets/NavFubode";
-import CustomModal from "../componets/CustomModal ";
 const Login = () => {
-  const { getFuncionario, funcionario, navegacion, setRol } = useSolicitud();
-  const EMISOR = "fubode.vacaciones@gmail.com";
-  const CONTRASENA = "fpooxdsoatymykzn";
-  const ENDPOINT_CORREO = "http://192.168.10.6:8096/correo"; // IP público
+  const { getFuncionario} = useSolicitud();
 
   const navigate = useNavigate();
   const [show, setShow] = useState(false);
   const handleClose = () => setShow(false);
-  const handleShow = () => setShow(true);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     const em = e.target.email.value + "@fubode.org";
     const pas = e.target.password.value;
     try {
-      const { data, error } = await supabase.auth.signInWithPassword({
+      const { error } = await supabase.auth.signInWithPassword({
         email: em,
         password: pas,
       });
@@ -32,7 +27,6 @@ const Login = () => {
         throw error.message;
       }
       getFuncionario();
-      //navegacion();
     } catch (error) {
       setShow(!show);
       console.log(error);
@@ -40,10 +34,6 @@ const Login = () => {
   };
 
   const handleRegistrar = async () => {
-    var now = new Date();
-var timeZoneOffset = now.getTimezoneOffset() * 60 * 1000; // Obtener el desfase horario en milisegundos
-var gmtTime = new Date(now.getTime() + timeZoneOffset);
-console.log(now);
     enviarCorreo("juan_montecinos@fubode.org","REACT","Pruebas de react");
   };
 
@@ -74,7 +64,6 @@ const enviarCorreo = async (remitente, asunto, detalle) => {
 };
 
   useEffect(() => {
-    //console.log(supabase.auth.getSession());
     if (supabase.auth.getUser()) {
       console.log("login - login");
       navigate("/");
@@ -84,15 +73,6 @@ const enviarCorreo = async (remitente, asunto, detalle) => {
     }
   }, [navigate]);
 
-  const [modalOpen, setModalOpen] = useState(false);
-
-  const handleOpenModal = () => {
-    setModalOpen(true);
-  };
-
-  const handleCloseModal = () => {
-    setModalOpen(false);
-  };
   return (
     <>
       <div>
@@ -141,7 +121,7 @@ const enviarCorreo = async (remitente, asunto, detalle) => {
         </form>
 
         <button
-          className="btn btn-primary btn-lg btn-block"
+          className="btn btn-primary btn-lg btn-block d-none"
           onClick={handleRegistrar}
         >
           Registrar usuarios

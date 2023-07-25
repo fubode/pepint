@@ -1,16 +1,13 @@
-import React, { Component, useEffect, useState } from "react";
-import { supabase } from "../../supabase/client";
+import React, { useEffect, useState } from "react";
 import { CardConsultor } from "../../componets/Consultor/CardConsultor";
 import { Button, Modal } from "react-bootstrap";
 import { useSolicitud } from "../../context/SolicitudContext";
 import { TextAutoSugerenias } from "../../componets/Consultor/TextAutoSugerenias";
-import { useNavigate } from "react-router-dom";
 import Paginacion from "../../componets/Paginacion";
 import NavFubode from "../../componets/NavFubode";
 import Recargar from "../../componets/Consultor/Recargar";
 
 export const Consultor = () => {
-  const navigate = useNavigate();
   const [show, setShow] = useState(false);
   const [showMessage, setShowMesagge] = useState(false);
   const [textCI, setTextCI] = useState("");
@@ -73,8 +70,6 @@ export const Consultor = () => {
   };
 
   const handleEjemplo = () => {
-    //getFuncionario();
-    //navegacion();
     console.log(funcionario);
   };
 
@@ -132,22 +127,6 @@ export const Consultor = () => {
   };
 
   const handleRegistrar = async () => {
-    /*const { data, error } = await supabase.auth.signUp({
-      email: "doris_sagardia@fubode.org",
-      password: "fubode123*",
-    });
-    console.log(data, error);*/
-    const correo_solicitud = "unidad_cumplimiento@fubode.org";
-    const limit_value = 3;
-    const offset_value = 0;
-    let { data, error } = await supabase.rpc("solicitudes_correo", {
-      correo_solicitud,
-      limit_value,
-      offset_value,
-    });
-
-    if (error) console.error(error);
-    else console.log(data);
     //enviarCorreo("juan_montecinos@fubode.org", "PRUEBA REACT", "funciono");
   };
 
@@ -155,7 +134,7 @@ export const Consultor = () => {
     <>
       <div>
         <button
-          className="btn btn-primary btn-lg btn-block"
+          className="btn btn-primary btn-lg btn-block d-none"
           onClick={handleRegistrar}
         >
           Registrar usuarios

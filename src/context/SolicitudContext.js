@@ -1,4 +1,4 @@
-import { Context, createContext, useContext, useEffect, useState } from "react";
+import { createContext, useContext, useEffect, useState } from "react";
 import { supabase } from "../supabase/client";
 import { useNavigate } from "react-router-dom";
 export const SolicitudContext = createContext();
@@ -221,8 +221,9 @@ export const SolicitudContextProvider = ({ children }) => {
     var timeZoneOffset = fechaModificacion.getTimezoneOffset() * 60 * 1000;
     var gmtTime = new Date(fechaModificacion.getTime() - timeZoneOffset);
     const correoFinal = funcionario.correo;
-
-    const { data, error } = await supabase
+    
+    if (rol == 7) {
+      const { data, error } = await supabase
       .from("uif_solicitudes")
       .update({
         descripcion: descripcion,
@@ -231,11 +232,17 @@ export const SolicitudContextProvider = ({ children }) => {
         correo_final: correoFinal,
       })
       .eq("codigo_solicitud", codigoSolicitud);
-    console.log(data, error);
-    if (rol == 7) {
       getSolicitudesUIF();
     }
     if (rol == 8) {
+      const { data, error } = await supabase
+      .from("uif_solicitudes")
+      .update({
+        estado: estado,
+        fecha_modificacion: gmtTime,
+        correo_final: correoFinal,
+      })
+      .eq("codigo_solicitud", codigoSolicitud);
       getSolicitudesGerencia();
     }
   };

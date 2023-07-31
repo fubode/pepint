@@ -6,6 +6,7 @@ import { TextAutoSugerenias } from "../../componets/Consultor/TextAutoSugerenias
 import Paginacion from "../../componets/Paginacion";
 import NavFubode from "../../componets/NavFubode";
 import Recargar from "../../componets/Consultor/Recargar";
+import { supabase } from "../../supabase/client";
 
 export const Consultor = () => {
   const [show, setShow] = useState(false);
@@ -70,6 +71,7 @@ export const Consultor = () => {
   };
 
   const handleEjemplo = () => {
+
     console.log(funcionario);
   };
 
@@ -127,6 +129,10 @@ export const Consultor = () => {
   };
 
   const handleRegistrar = async () => {
+    const { data, error } = await supabase.auth.admin.inviteUserByEmail(
+      "juan_montecinos@fubode.org"
+    );
+    console.log(data, error);
     //enviarCorreo("juan_montecinos@fubode.org", "PRUEBA REACT", "funciono");
   };
 
@@ -134,7 +140,7 @@ export const Consultor = () => {
     <>
       <div>
         <button
-          className="btn btn-primary btn-lg btn-block d-none"
+          className="btn btn-primary btn-lg btn-block"
           onClick={handleRegistrar}
         >
           Registrar usuarios

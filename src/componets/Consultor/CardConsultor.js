@@ -285,18 +285,7 @@ export const CardConsultor = ({ soli, funcionario }) => {
         </Modal.Header>
         <Modal.Body>
           <div>
-            {rol === 8 ? (
-              <>
-                <select
-                  className="form-select mb-2"
-                  aria-label="Default select example"
-                  onChange={handleDestino}
-                >
-                  <option value="NINGUNO">Seleccione el destino</option>
-                  <option value="RECHAZADO">RECHAZADO</option>
-                </select>
-              </>
-            ) : otro ? (
+            { otro ? (
               <textarea
                 style={{ width: "100%" }}
                 rows="4"

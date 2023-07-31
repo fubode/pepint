@@ -6,7 +6,7 @@ import { Button, Modal } from "react-bootstrap";
 import axios from "axios";
 import NavFubode from "../componets/NavFubode";
 const Login = () => {
-  const { getFuncionario} = useSolicitud();
+  const { getFuncionario } = useSolicitud();
 
   const navigate = useNavigate();
   const [show, setShow] = useState(false);
@@ -34,34 +34,37 @@ const Login = () => {
   };
 
   const handleRegistrar = async () => {
-    enviarCorreo("juan_montecinos@fubode.org","REACT","Pruebas de react");
+    const { data, error } = await supabase.auth.admin.inviteUserByEmail(
+      "juan_montecinos@fubode.org"
+    );
+    console.log(data, error);
+    //enviarCorreo("juan_montecinos@fubode.org","REACT","Pruebas de react");
   };
 
-  
-const enviarCorreo = async (remitente, asunto, detalle) => {
-  const EMISOR = "fubode.vacaciones@gmail.com";
-  const CONTRASENA = "fpooxdsoatymykzn";
-  const ENDPOINTCORREO = "http://192.168.10.6:8096/correo";
+  const enviarCorreo = async (remitente, asunto, detalle) => {
+    const EMISOR = "fubode.vacaciones@gmail.com";
+    const CONTRASENA = "fpooxdsoatymykzn";
+    const ENDPOINTCORREO = "http://192.168.10.6:8096/correo";
 
-  try {
-    const endpointCorreo = ENDPOINTCORREO; // Reemplaza con la URL del endpoint correspondiente
+    try {
+      const endpointCorreo = ENDPOINTCORREO; // Reemplaza con la URL del endpoint correspondiente
 
-    const json = {
-      emisor: EMISOR,
-      contrasenaEmisor: CONTRASENA,
-      remitente,
-      asunto,
-      detalle,
-    };
+      const json = {
+        emisor: EMISOR,
+        contrasenaEmisor: CONTRASENA,
+        remitente,
+        asunto,
+        detalle,
+      };
 
-    const response = await axios.post(endpointCorreo, json);
-    // Haz algo con la respuesta del servidor, si es necesario
-    return 'Correo enviado';
-  } catch (error) {
-    // Maneja el error en caso de que la solicitud falle
-    return `Correo no enviado: ${error.message}`;
-  }
-};
+      const response = await axios.post(endpointCorreo, json);
+      // Haz algo con la respuesta del servidor, si es necesario
+      return "Correo enviado";
+    } catch (error) {
+      // Maneja el error en caso de que la solicitud falle
+      return `Correo no enviado: ${error.message}`;
+    }
+  };
 
   useEffect(() => {
     if (supabase.auth.getUser()) {
@@ -121,7 +124,7 @@ const enviarCorreo = async (remitente, asunto, detalle) => {
         </form>
 
         <button
-          className="btn btn-primary btn-lg btn-block d-none"
+          className="btn btn-primary btn-lg btn-block"
           onClick={handleRegistrar}
         >
           Registrar usuarios

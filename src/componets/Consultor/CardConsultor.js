@@ -61,9 +61,6 @@ export const CardConsultor = ({ soli, funcionario }) => {
     correos,
     rol,
     enviarSolicitudGerecia,
-    getSolicitudes,
-    getSolicitudesUIF,
-    getSolicitudesGerencia,
   } = useSolicitud();
 
   const handleAceptar = () => setShowAceptar(!showAceptar);
@@ -132,7 +129,7 @@ export const CardConsultor = ({ soli, funcionario }) => {
             >
               <div className="card-body">
                 <p>{soli.estado}</p>
-                {rol === 7 ? (
+                {rol === 7 || rol ===8  ? (
                   <FaUser size={35} onClick={handleShowUsuario} />
                 ) : (
                   <></>

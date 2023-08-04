@@ -33,6 +33,7 @@ export const Consultor = () => {
     funcionario,
     getSolicitudes,
     navegacion,
+    enviarCorreo,
   } = useSolicitud();
 
   const handleClose = () => {
@@ -102,7 +103,6 @@ export const Consultor = () => {
     );
 
     if (camposValidos) {
-      // Todos los campos son válidos, enviar solicitud
       console.log(
         textCI,
         textNombre,

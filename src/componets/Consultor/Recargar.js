@@ -22,11 +22,12 @@ const Recargar = () => {
     }
   }
   return (
-    <div className="container">
-      <div className="d-inline-flex border rounded m-2">
-        <FaSyncAlt className="m-2" onClick={handleActualizar} />
-      </div>
-    </div>
+    <div className="container d-flex justify-content-center align-items-center">
+  <div className="d-inline-flex border rounded m-2">
+    <FaSyncAlt className="m-2" onClick={handleActualizar} />
+  </div>
+</div>
+
     
 
   );

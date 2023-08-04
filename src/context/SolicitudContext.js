@@ -1,6 +1,7 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import { supabase } from "../supabase/client";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
 export const SolicitudContext = createContext();
 
 export const useSolicitud = () => {
@@ -221,28 +222,28 @@ export const SolicitudContextProvider = ({ children }) => {
     var timeZoneOffset = fechaModificacion.getTimezoneOffset() * 60 * 1000;
     var gmtTime = new Date(fechaModificacion.getTime() - timeZoneOffset);
     const correoFinal = funcionario.correo;
-    
+
     if (rol == 7) {
       const { data, error } = await supabase
-      .from("uif_solicitudes")
-      .update({
-        descripcion: descripcion,
-        estado: estado,
-        fecha_modificacion: gmtTime,
-        correo_final: correoFinal,
-      })
-      .eq("codigo_solicitud", codigoSolicitud);
+        .from("uif_solicitudes")
+        .update({
+          descripcion: descripcion,
+          estado: estado,
+          fecha_modificacion: gmtTime,
+          correo_final: correoFinal,
+        })
+        .eq("codigo_solicitud", codigoSolicitud);
       getSolicitudesUIF();
     }
     if (rol == 8) {
       const { data, error } = await supabase
-      .from("uif_solicitudes")
-      .update({
-        estado: estado,
-        fecha_modificacion: gmtTime,
-        correo_final: correoFinal,
-      })
-      .eq("codigo_solicitud", codigoSolicitud);
+        .from("uif_solicitudes")
+        .update({
+          estado: estado,
+          fecha_modificacion: gmtTime,
+          correo_final: correoFinal,
+        })
+        .eq("codigo_solicitud", codigoSolicitud);
       getSolicitudesGerencia();
     }
   };
@@ -290,6 +291,10 @@ export const SolicitudContextProvider = ({ children }) => {
       const { error } = await supabase
         .from("uif_solicitudes")
         .insert(solicitud);
+
+        if (!error){
+          //enviarCorreo("unidad_cumplimiento@fubode.org","SOLICITUD DE DEVIDA DILIGENCIA","Asusntos de devida diligencia");
+        }
     } catch (error) {
       console.log(error);
     } finally {
@@ -337,6 +342,33 @@ export const SolicitudContextProvider = ({ children }) => {
     navigate("/");
   };
 
+  const enviarCorreo = async (remitente, asunto, detalle) => {
+    const EMISOR = "fubode.vacaciones@gmail.com";
+    const CONTRASENA = "fpooxdsoatymykzn";
+    //const ENDPOINTCORREO = "http://181.115.207.107:8096/correo";
+    const ENDPOINTCORREO = "http://localhost:8096/correo";
+
+    console.log(ENDPOINTCORREO);
+    try {
+      const endpointCorreo = ENDPOINTCORREO; // Reemplaza con la URL del endpoint correspondiente
+
+      const json = {
+        emisor: EMISOR,
+        contrasenaEmisor: CONTRASENA,
+        remitente,
+        asunto,
+        detalle,
+      };
+
+      const response = await axios.post(endpointCorreo, json);
+      // Haz algo con la respuesta del servidor, si es necesario
+      console.log( "Correo enviado");
+    } catch (error) {
+      // Maneja el error en caso de que la solicitud falle
+      console.log(`Correo no enviado: ${error.message}`);
+    }
+  };
+
   return (
     <SolicitudContext.Provider
       value={{
@@ -363,7 +395,8 @@ export const SolicitudContextProvider = ({ children }) => {
         enviarSolicitudGerecia,
         solicitudesGerencia,
         getSolicitudesGerencia,
-        correos
+        correos,
+        enviarCorreo
       }}
     >
       {children}

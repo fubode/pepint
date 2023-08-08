@@ -1,7 +1,6 @@
 import React, { useEffect } from "react";
 import Login from "./pages/Login";
 import NotFoud from "./pages/NotFoud";
-import { TaskContextProvider } from "./context/TaskContext";
 import {Consultor} from "./pages/Consultor/Consultor";
 import { SolicitudContextProvider } from "./context/SolicitudContext";
 import Uif from "./pages/Uif/Uif";
@@ -12,7 +11,6 @@ function App() {
 
   return (
     <div className="App">
-      <TaskContextProvider>
         <SolicitudContextProvider>
         <Routes>
             <Route path="/" element={<Login />} />
@@ -22,7 +20,6 @@ function App() {
             <Route path="/*" element={<NotFoud />} />
           </Routes>
         </SolicitudContextProvider>
-      </TaskContextProvider>
     </div>
   );
 }

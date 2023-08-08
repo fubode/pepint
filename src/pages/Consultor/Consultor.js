@@ -33,7 +33,6 @@ export const Consultor = () => {
     funcionario,
     getSolicitudes,
     navegacion,
-    enviarCorreo,
   } = useSolicitud();
 
   const handleClose = () => {
@@ -70,12 +69,6 @@ export const Consultor = () => {
     setProducto(event.target.value);
     console.log(event.target.value);
   };
-
-  const handleEjemplo = () => {
-
-    console.log(funcionario);
-  };
-
   const handleCloseMessage = () => setShowMesagge(false);
 
   useEffect(() => {
@@ -125,6 +118,7 @@ export const Consultor = () => {
       createSolicitudes(solicitud);
       setShowMesagge(true);
       console.log(solicitudes);
+      
     }
   };
 
@@ -140,7 +134,7 @@ export const Consultor = () => {
     <>
       <div>
         <button
-          className="btn btn-primary btn-lg btn-block"
+          className="btn btn-primary btn-lg btn-block d-none"
           onClick={handleRegistrar}
         >
           Registrar usuarios
@@ -236,6 +230,8 @@ export const Consultor = () => {
                   DEPOSITO A PLAZO FIJO
                 </option>
                 <option value="BANCA COMUNAL">BANCA COMUNAL</option>
+                <option value="PROVEEDOR">PROVEEDOR</option>
+                <option value="CLIENTE INTERNO">CLIENTE INTERNO</option>
                 <option value="CREDITO INDIVIDUAL">CREDITO INDIVIDUAL</option>
               </select>
               {!validacion.producto && (

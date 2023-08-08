@@ -10,17 +10,15 @@ const Gerencia = () => {
   const {
     getFuncionario,
     funcionario,
-    getCorreos, correos,
+    getCorreos,
     solicitudes,
     getSolicitudesGerencia
   } = useSolicitud();
 
   useEffect(() => {
-    console.log("uif")
     getFuncionario();
     getCorreos();
     getSolicitudesGerencia();
-    console.log(correos);
   }, []);
   return (
     <>

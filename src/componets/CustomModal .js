@@ -20,15 +20,15 @@ const CustomModal = ({ show, onHide, fecha, soli, formatFechaHora }) => {
                 style={{ Width: "21.6cm", width: "100%", height: "27.94 cm" }}
               >
                 <div className='container-fluid m-4'>
-                  <div class="container">
-                    <div class="row">
-                      <div class="col-8">
+                  <div className="container">
+                    <div className="row">
+                      <div className="col-8">
                         <h4>ENTIDAD: FUBODE IFD</h4>
                         <h5>SISTEMA DE AUTORIZACION ESPECIAL</h5>
                         <p><strong>FECHA Y HORA: </strong>{' ' + fecha}</p>
                         <p><strong>ESTADO DE LA SOLICITUD: </strong>{soli.estado == 'ACEPTADO' ? (' AUTORIZADO') : (' ' + soli.estado)}</p>
                       </div>
-                      <div class="col-2">
+                      <div className="col-2">
                         <img src={logo} alt="Navbar Logo" style={{ width: '150px' }} />
                       </div>
                     </div>
@@ -58,7 +58,7 @@ const CustomModal = ({ show, onHide, fecha, soli, formatFechaHora }) => {
                         <br />
                         <h5>OBSERVACIONES REALIZADAS POR ALTA GERENCIA</h5>
                         <div className='border'>
-                        <p>{soli.estado == 'ACEPTADO' ? ('AUTORIZADO') : (soli.estado)}</p>
+                        <p>{soli.detalle_gerencia}</p>
                         </div>
                       </>
                     ) : (
@@ -72,7 +72,7 @@ const CustomModal = ({ show, onHide, fecha, soli, formatFechaHora }) => {
                     <br />
                     <br />
                     <br />
-                    <div class="d-flex justify-content-center bottom-div">
+                    <div className="d-flex justify-content-center bottom-div">
                       <p><strong>FIRMA Y SELLO DEL RESPONSABLE</strong></p>
                     </div>
 

@@ -21,7 +21,6 @@ const Paginacion = () => {
             default:
                 break;
         }
-        console.log(rol);
     }, [paginacion.offset]); // Ejecutar solo cuando el offset cambie
 
     const onPageChange = (pageNumber) => {

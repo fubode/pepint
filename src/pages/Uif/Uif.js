@@ -12,15 +12,13 @@ const Uif = () => {
     getFuncionario,
     funcionario,
     getSolicitudesUIF,
-    getCorreos, correos
+    getCorreos
   } = useSolicitud();
 
   useEffect(() => {
-    console.log("uif")
     getFuncionario();
     getCorreos();
     getSolicitudesUIF();
-    console.log(correos);
   }, []);
   return (
     <>

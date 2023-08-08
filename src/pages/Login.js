@@ -3,7 +3,6 @@ import { supabase } from "../supabase/client";
 import { useNavigate } from "react-router-dom";
 import { useSolicitud } from "../context/SolicitudContext";
 import { Button, Modal } from "react-bootstrap";
-import axios from "axios";
 
 import NavFubode from "../componets/NavFubode";
 const Login = () => {
@@ -39,7 +38,7 @@ const Login = () => {
       "juan_montecinos@fubode.org"
     );*/
     //console.log(data, error);
-    enviarCorreo("juan_montecinos@fubode.org","REACT527","Pruebas de react");
+    enviarCorreo("juan_montecinos@fubode.org","REACT527","Pruebas desde casa");
   };
 
   
@@ -48,10 +47,8 @@ const Login = () => {
 
   useEffect(() => {
     if (supabase.auth.getUser()) {
-      console.log("login - login");
       navigate("/");
     } else {
-      console.log("login - home");
       navigate("/consultor");
     }
   }, [navigate]);
@@ -79,7 +76,7 @@ const Login = () => {
                         className="form-control form-control-lg"
                       />
                       <label className="form-label" htmlFor="typeEmailX-2">
-                        Email
+                        Usuario
                       </label>
                     </div>
                     <div className="form-outline mb-4">
@@ -90,7 +87,7 @@ const Login = () => {
                         className="form-control form-control-lg"
                       />
                       <label className="form-label" htmlFor="typePasswordX-2">
-                        Password
+                        Contraseña
                       </label>
                     </div>
                     <button className="btn btn-primary btn-lg btn-block">
@@ -104,7 +101,7 @@ const Login = () => {
         </form>
 
         <button
-          className="btn btn-primary btn-lg btn-block"
+          className="btn btn-primary btn-lg btn-block d-none"
           onClick={handleRegistrar}
         >
           Registrar usuarios

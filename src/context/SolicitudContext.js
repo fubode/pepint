@@ -32,7 +32,6 @@ export const SolicitudContextProvider = ({ children }) => {
   };
 
   const [solicitudes, setSolicitudes] = useState(initialState.solicitudes);
-  const [adding, setAdding] = useState(initialState.adding);
   const [loading, setLoading] = useState(initialState.loading);
   const [caedec, setCaedec] = useState(initialState.caedec);
   const [caedecSeleccionado, setCaedecSeleccionado] = useState(
@@ -42,9 +41,6 @@ export const SolicitudContextProvider = ({ children }) => {
   const [rol, setRol] = useState(initialState.rol);
   const [solicitudesUIF, setSolicitudesUIF] = useState(
     initialState.solicitudesUIF
-  );
-  const [correosAltaGerencia, setCorreosAltaGerencia] = useState(
-    initialState.correosAltaGerencia
   );
   const [solicitudesGerencia, setSolicitudesGerencia] = useState(
     initialState.solicitudesGerencia
@@ -62,13 +58,11 @@ export const SolicitudContextProvider = ({ children }) => {
     });
     if (error) console.error(error);
     setFuncionario(data);
-    console.log(data);
   };
 
   useEffect(() => {
     let rolEncontrado = 0;
     if (funcionario && funcionario.roles) {
-      console.log(funcionario.roles);
       let roles = funcionario.roles;
       const rolesPermitidos = [6, 7, 8];
       const encontrado = roles.find((rol) =>
@@ -77,13 +71,9 @@ export const SolicitudContextProvider = ({ children }) => {
       if (encontrado) {
         rolEncontrado = encontrado.id_rol;
         setRol(rolEncontrado);
-        console.log(rolEncontrado);
       }
     }
-    console.log("navegacion");
-    console.log(rol);
     if (rolEncontrado !== 0) {
-      console.log(rolEncontrado);
       switch (rolEncontrado) {
         case 6:
           navigate("/consultor");
@@ -103,7 +93,7 @@ export const SolicitudContextProvider = ({ children }) => {
   }, [funcionario]);
 
   const getCaedec = async () => {
-    const { error, data } = await supabase.from("conf_caedec").select();
+    const { data } = await supabase.from("conf_caedec").select();
     setCaedec(data);
   };
 
@@ -114,22 +104,22 @@ export const SolicitudContextProvider = ({ children }) => {
       limit_value: paginacion.limit,
       offset_value: paginacion.offset,
     });
-
+    console.log(data);
     if (error) {
-      console.error(error);
       return;
     } else {
-      console.log(data);
-      const nuevasPaginas = Math.round(
-        data[0].cantidad_solicitudes / paginacion.limit
-      );
-      console.log(nuevasPaginas);
+      const nuevasPaginas =
+        data.length === 0
+          ? 0
+          : Math.round(data[0].cantidad_solicitudes / paginacion.limit);
 
       setPaginacion((prevPaginacion) => ({
         ...prevPaginacion,
         paginas: nuevasPaginas,
       }));
-      const nuevosDatos = data[0].cantidad_solicitudes;
+
+      const nuevosDatos = data.length === 0 ? 0 : data[0].cantidad_solicitudes;
+
       setPaginacion((prevDatos) => ({
         ...prevDatos,
         datos: nuevosDatos,
@@ -139,7 +129,7 @@ export const SolicitudContextProvider = ({ children }) => {
   };
 
   const getSolicitudesUIF = async () => {
-    const supa_correo = "unidad_cumplimiento@fubode.org"; //funcionario.correo;
+    const supa_correo = "unidad_cumplimiento@fubode.org";
     let { data, error } = await supabase.rpc("solicitudes_correo", {
       supa_correo: supa_correo,
       limit_value: paginacion.limit,
@@ -147,20 +137,18 @@ export const SolicitudContextProvider = ({ children }) => {
     });
 
     if (error) {
-      console.error(error);
     } else {
-      console.log(data);
-      const nuevasPaginas = Math.round(
-        data[0].cantidad_solicitudes / paginacion.limit
-      );
-      console.log(nuevasPaginas);
+      const nuevasPaginas =
+        data.length === 0
+          ? 0
+          : Math.round(data[0].cantidad_solicitudes / paginacion.limit);
 
       setPaginacion((prevPaginacion) => ({
         ...prevPaginacion,
         paginas: nuevasPaginas,
       }));
       setSolicitudes(data);
-      const nuevosDatos = data[0].cantidad_solicitudes;
+      const nuevosDatos = data.length === 0 ? 0 : data[0].cantidad_solicitudes;
       setPaginacion((prevDatos) => ({
         ...prevDatos,
         datos: nuevosDatos,
@@ -178,21 +166,19 @@ export const SolicitudContextProvider = ({ children }) => {
     });
 
     if (error) {
-      console.error(error);
       return;
     } else {
-      console.log(data);
-      const nuevasPaginas = Math.round(
-        data[0].cantidad_solicitudes / paginacion.limit
-      );
-      console.log(nuevasPaginas);
+      const nuevasPaginas =
+        data.length === 0
+          ? 0
+          : Math.round(data[0].cantidad_solicitudes / paginacion.limit);
 
       setPaginacion((prevPaginacion) => ({
         ...prevPaginacion,
         paginas: nuevasPaginas,
       }));
       setSolicitudes(data);
-      const nuevosDatos = data[0].cantidad_solicitudes;
+      const nuevosDatos = data.length === 0 ? 0 : data[0].cantidad_solicitudes;
       setPaginacion((prevDatos) => ({
         ...prevDatos,
         datos: nuevosDatos,
@@ -204,27 +190,25 @@ export const SolicitudContextProvider = ({ children }) => {
   const getCorreos = async () => {
     let { data, error } = await supabase.rpc("obtener_alta_gerencia");
 
-    if (error) console.error(error);
-    else console.log(data);
+    if (error) return
     setCorreos(data);
   };
 
   const modificarSolicitud = async (
     codigoSolicitud,
     detalle,
-    estadoSolicitud
+    estadoSolicitud,
+    solicitud
   ) => {
-    console.log(codigoSolicitud);
     const descripcion = detalle;
     const estado = estadoSolicitud;
     const fechaModificacion = new Date();
-    console.log(fechaModificacion);
     var timeZoneOffset = fechaModificacion.getTimezoneOffset() * 60 * 1000;
     var gmtTime = new Date(fechaModificacion.getTime() - timeZoneOffset);
     const correoFinal = funcionario.correo;
 
-    if (rol == 7) {
-      const { data, error } = await supabase
+    if (rol === 7) {
+      const { error } = await supabase
         .from("uif_solicitudes")
         .update({
           descripcion: descripcion,
@@ -233,17 +217,55 @@ export const SolicitudContextProvider = ({ children }) => {
           correo_final: correoFinal,
         })
         .eq("codigo_solicitud", codigoSolicitud);
+
+      if (!error) {
+        const detalleEmail = emailCosultorUnidadCumplimientoDetalle(
+          codigoSolicitud,
+          solicitud.nombre_completo_uif,
+          solicitud.numero_doc,
+          solicitud.producto,
+          formatFechaHora(solicitud.created_at),
+          formatFechaHora(new Date()),
+          detalle
+        );
+        enviarCorreo(
+          solicitud.correo,
+          //solicitud.correo,
+          "SOLICITUD DE DEVIDA DILIGENCIA",
+          detalleEmail
+        );
+      }
+
       getSolicitudesUIF();
     }
-    if (rol == 8) {
-      const { data, error } = await supabase
+    if (rol === 8) {
+      const { error } = await supabase
         .from("uif_solicitudes")
         .update({
           estado: estado,
           fecha_modificacion: gmtTime,
           correo_final: correoFinal,
+          detalle_gerencia:detalle
+
         })
         .eq("codigo_solicitud", codigoSolicitud);
+      if (!error) {
+        const detalleEmail = emailCosultorUnidadCumplimientoDetalle(
+          codigoSolicitud,
+          solicitud.nombre_completo_uif,
+          solicitud.numero_doc,
+          solicitud.producto,
+          formatFechaHora(solicitud.created_at),
+          formatFechaHora(new Date()),
+          detalle
+        );
+        enviarCorreo(
+          solicitud.correo,
+          //solicitud.correo,
+          "SOLICITUD DE DEVIDA DILIGENCIA",
+          detalleEmail
+        );
+      }
       getSolicitudesGerencia();
     }
   };
@@ -252,10 +274,9 @@ export const SolicitudContextProvider = ({ children }) => {
     codigoSolicitud,
     detalle,
     corroGerencia,
-    estado
+    estado,
+    solicitud
   ) => {
-    console.log(codigoSolicitud);
-
     const { data, error } = await supabase
       .from("uif_solicitudes")
       .update({
@@ -265,17 +286,27 @@ export const SolicitudContextProvider = ({ children }) => {
         correo_usuario_ag: corroGerencia,
       })
       .eq("codigo_solicitud", codigoSolicitud);
-    console.log(data, error);
+      
+    if (!error) {
+      const detalleEmail = emailUIFAltaGerenciaDetalle(
+        codigoSolicitud,
+        solicitud.nombre_completo_uif,
+        solicitud.numero_doc,
+        solicitud.producto,
+        formatFechaHora(solicitud.created_at),
+        formatFechaHora(new Date()),
+        detalle
+      );
+      enviarCorreo(
+        solicitud.correo,
+        "SOLICITUD DE DEVIDA DILIGENCIA",
+        detalleEmail
+      );
+    }
     getSolicitudesUIF();
   };
 
-  const rechazarSolicitud = (codigoSolicitud) => {
-    console.log(codigoSolicitud);
-  };
-
   const createSolicitudes = async (solicitud) => {
-    console.log(funcionario);
-    setAdding(true);
     const codigo =
       funcionario.cod_usuario +
       "-" +
@@ -292,21 +323,43 @@ export const SolicitudContextProvider = ({ children }) => {
         .from("uif_solicitudes")
         .insert(solicitud);
 
-        if (!error){
-          //enviarCorreo("unidad_cumplimiento@fubode.org","SOLICITUD DE DEVIDA DILIGENCIA","Asusntos de devida diligencia");
-        }
+      if (!error) {
+        const detalle = emailCosultorUnidadCumplimiento(
+          codigo,
+          solicitud.nombre_completo,
+          solicitud.numero_doc,
+          solicitud.producto,
+          formatFechaHora(new Date())
+        );
+        
+        enviarCorreo(
+          "unidad_cumplimiento@fubode.org",
+          "SOLICITUD DE DEVIDA DILIGENCIA",
+          detalle
+        );
+      }
     } catch (error) {
-      console.log(error);
     } finally {
-      setAdding(false);
       getSolicitudes();
     }
   };
 
+  function formatFechaHora(fecha) {
+    const date = new Date(fecha);
+
+    const day = date.getDate().toString().padStart(2, "0");
+    const month = (date.getMonth() + 1).toString().padStart(2, "0");
+    const year = date.getFullYear().toString().slice(-2);
+
+    const hours = date.getHours().toString().padStart(2, "0");
+    const minutes = date.getMinutes().toString().padStart(2, "0");
+    const seconds = date.getSeconds().toString().padStart(2, "0");
+
+    return `${day}-${month}-${year} ${hours}:${minutes}:${seconds}`;
+  }
+
   const navegacion = () => {
-    console.log("navegacion");
     if (rol !== 0) {
-      console.log(rol);
       switch (rol) {
         case 6:
           navigate("/consultor");
@@ -329,26 +382,23 @@ export const SolicitudContextProvider = ({ children }) => {
     const { error } = await supabase.auth.signOut();
     if (error) throw error;
     setSolicitudes(initialState.solicitudes);
-    setAdding(initialState.adding);
     setLoading(initialState.loading);
     setCaedec(initialState.caedec);
     setCaedecSeleccionado(initialState.caedecSeleccionado);
     setFuncionario(initialState.funcionario);
     setRol(initialState.rol);
     setSolicitudesUIF(initialState.solicitudesUIF);
-    setCorreosAltaGerencia(initialState.correosAltaGerencia);
     setSolicitudesGerencia(initialState.solicitudesGerencia);
     setPaginacion(initialState.paginacion);
     navigate("/");
   };
 
   const enviarCorreo = async (remitente, asunto, detalle) => {
-    const EMISOR = "fubode.vacaciones@gmail.com";
-    const CONTRASENA = "fpooxdsoatymykzn";
-    //const ENDPOINTCORREO = "http://181.115.207.107:8096/correo";
-    const ENDPOINTCORREO = "http://localhost:8096/correo";
+    const EMISOR = "unidadcumplimientoifd@gmail.com";
+    const CONTRASENA = "vmzkyupeqagdlbpv";
+    const ENDPOINTCORREO = "http://181.115.207.107:8096/correo";
+    //const ENDPOINTCORREO = "http://localhost:8096/correo";
 
-    console.log(ENDPOINTCORREO);
     try {
       const endpointCorreo = ENDPOINTCORREO; // Reemplaza con la URL del endpoint correspondiente
 
@@ -361,17 +411,105 @@ export const SolicitudContextProvider = ({ children }) => {
       };
 
       const response = await axios.post(endpointCorreo, json);
-      // Haz algo con la respuesta del servidor, si es necesario
-      console.log( "Correo enviado");
-    } catch (error) {
-      // Maneja el error en caso de que la solicitud falle
-      console.log(`Correo no enviado: ${error.message}`);
-    }
+    } catch (error) {}
+  };
+
+  const emailCosultorUnidadCumplimiento = (
+    codigo,
+    nombre,
+    ci,
+    producto,
+    fecha
+  ) => {
+    const emailDetalle =
+      "<p>Según solicitud con el código: <strong>" +
+      codigo +
+      "</strong>" +
+      "</p>" +
+      "<p>Solicito por favor Visto bueno/Autorización del señor <strong>" +
+      nombre.toUpperCase() +
+      " </strong>con CI <strong>" +
+      ci +
+      ",</strong> para continuar con la operación <strong>" +
+      producto +
+      "</strong>.</p>" +
+      "<p>Fecha: <strong>" +
+      fecha +
+      "</strong></p>";
+    return emailDetalle;
+  };
+
+  const emailCosultorUnidadCumplimientoDetalle = (
+    codigo,
+    nombre,
+    ci,
+    producto,
+    fechaInicio,
+    fechaFin,
+    detalle
+  ) => {
+    const emailDetalle =
+      "<p>Según solicitud con el código: <strong>" +
+      codigo +
+      "</strong>" +
+      "</p>" +
+      "<p>" +
+      detalle +
+      " con el  señor <strong>" +
+      nombre.toUpperCase() +
+      " </strong>con CI <strong>" +
+      ci +
+      "</strong> para continuar con la operación <strong>" +
+      producto +
+      "</strong>.</p>" +
+      "<p>Fecha:<strong>" +
+      fechaInicio +
+      "</strong></p>" +
+      "<p>Fecha:<strong>" +
+      fechaFin +
+      "</strong></p>";
+    return emailDetalle;
+  };
+
+  const emailUIFAltaGerenciaDetalle = (
+    codigo,
+    nombre,
+    ci,
+    producto,
+    fechaInicio,
+    fechaFin,
+    detalle
+  ) => {
+    const emailDetalle =
+      "<p>Según solicitud con el código: <strong>" +
+      codigo +
+      "</strong>" +
+      "</p>" +
+      "<p>Se solicita por favor su Autorización para continuar con la operación con el  señor <strong>" +
+      nombre.toUpperCase() +
+      " </strong>con CI <strong>" +
+      ci +
+      "</strong> para continuar con la operación <strong>" +
+      producto +
+      "</strong>.</p>" +
+      "<p>" +
+      detalle +
+      "</p>" +
+      "<p>Fecha:<strong>" +
+      fechaInicio +
+      "</strong></p>" +
+      "<p>Fecha:<strong>" +
+      fechaFin +
+      "</strong></p>";
+    return emailDetalle;
   };
 
   return (
     <SolicitudContext.Provider
       value={{
+        emailCosultorUnidadCumplimiento,
+        emailCosultorUnidadCumplimientoDetalle,
+        emailUIFAltaGerenciaDetalle,
         solicitudes,
         funcionario,
         loading,
@@ -396,7 +534,7 @@ export const SolicitudContextProvider = ({ children }) => {
         solicitudesGerencia,
         getSolicitudesGerencia,
         correos,
-        enviarCorreo
+        enviarCorreo,
       }}
     >
       {children}

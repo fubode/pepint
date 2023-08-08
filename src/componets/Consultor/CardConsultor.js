@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import { Button, Modal } from "react-bootstrap";
-import Navbar from "react-bootstrap/Navbar";
 import {
   FaCheck,
   FaCommentDots,
@@ -53,9 +52,6 @@ export const CardConsultor = ({ soli, funcionario }) => {
     setModalOpen(false);
   };
 
-  const handleTextareaChange = (event) => {
-    setTextareaValue(event.target.value);
-  };
   const {
     modificarSolicitud,
     correos,
@@ -71,12 +67,12 @@ export const CardConsultor = ({ soli, funcionario }) => {
   const handleAceptarSolicitud = () => {
     const detalle =
       "Realizada la debida diligencia no se tienen observaciones para continuar la operacion comercial";
-    modificarSolicitud(soli.codigo_solicitud, detalle, "ACEPTADO");
+    modificarSolicitud(soli.codigo_solicitud, detalle, "ACEPTADO",soli);
     setShowAceptar(false);
   };
 
   const handleRechazarSolicitud = () => {
-    modificarSolicitud(soli.codigo_solicitud, textDestino, "RECHAZADO");
+    modificarSolicitud(soli.codigo_solicitud, textDestino, "RECHAZADO",soli);
     setShowRechazar(!showRechazar);
   };
 
@@ -103,7 +99,7 @@ export const CardConsultor = ({ soli, funcionario }) => {
       soli.codigo_solicitud,
       textGerencia,
       textDestino,
-      "GERENCIA"
+      "GERENCIA",soli
     );
     setShowEnviar(false);
   };
@@ -358,7 +354,7 @@ export const CardConsultor = ({ soli, funcionario }) => {
             >
               <option value="NINGUNO">Seleccione el destino</option>
               {correos.map((correo, key) => (
-                <option value="marko_avendano@fubode.org">
+                <option value={correo.correo}>
                   {correo.correo}
                 </option>
               ))}

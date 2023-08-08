@@ -80,7 +80,9 @@ function NavFubode() {
                         </>
                       ) : (
                         <>
-                          <Password />
+                          {
+                          //<Password />
+                          }
                         </>
                       )}
                       <Button

@@ -101,7 +101,7 @@ const Login = () => {
         </form>
 
         <button
-          className="btn btn-primary btn-lg btn-block d-none"
+          className="btn btn-primary btn-lg btn-block"
           onClick={handleRegistrar}
         >
           Registrar usuarios

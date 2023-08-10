@@ -190,7 +190,7 @@ export const SolicitudContextProvider = ({ children }) => {
   const getCorreos = async () => {
     let { data, error } = await supabase.rpc("obtener_alta_gerencia");
 
-    if (error) return
+    if (error) return;
     setCorreos(data);
   };
 
@@ -226,12 +226,13 @@ export const SolicitudContextProvider = ({ children }) => {
           solicitud.producto,
           formatFechaHora(solicitud.created_at),
           formatFechaHora(new Date()),
-          detalle
+          detalle,
+          estado
         );
         enviarCorreo(
           solicitud.correo,
           //solicitud.correo,
-          "SOLICITUD DE DEVIDA DILIGENCIA",
+          "SOLICITUD DE DEBIDA DILIGENCIA",
           detalleEmail
         );
       }
@@ -245,8 +246,7 @@ export const SolicitudContextProvider = ({ children }) => {
           estado: estado,
           fecha_modificacion: gmtTime,
           correo_final: correoFinal,
-          detalle_gerencia:detalle
-
+          detalle_gerencia: detalle,
         })
         .eq("codigo_solicitud", codigoSolicitud);
       if (!error) {
@@ -262,7 +262,7 @@ export const SolicitudContextProvider = ({ children }) => {
         enviarCorreo(
           solicitud.correo,
           //solicitud.correo,
-          "SOLICITUD DE DEVIDA DILIGENCIA",
+          "SOLICITUD DE DEBIDA DILIGENCIA",
           detalleEmail
         );
       }
@@ -286,7 +286,7 @@ export const SolicitudContextProvider = ({ children }) => {
         correo_usuario_ag: corroGerencia,
       })
       .eq("codigo_solicitud", codigoSolicitud);
-      
+
     if (!error) {
       const detalleEmail = emailUIFAltaGerenciaDetalle(
         codigoSolicitud,
@@ -299,7 +299,7 @@ export const SolicitudContextProvider = ({ children }) => {
       );
       enviarCorreo(
         solicitud.correo,
-        "SOLICITUD DE DEVIDA DILIGENCIA",
+        "SOLICITUD DE DEBIDA DILIGENCIA",
         detalleEmail
       );
     }
@@ -331,10 +331,10 @@ export const SolicitudContextProvider = ({ children }) => {
           solicitud.producto,
           formatFechaHora(new Date())
         );
-        
+
         enviarCorreo(
           "unidad_cumplimiento@fubode.org",
-          "SOLICITUD DE DEVIDA DILIGENCIA",
+          "SOLICITUD DE DEBIDA DILIGENCIA",
           detalle
         );
       }
@@ -426,11 +426,11 @@ export const SolicitudContextProvider = ({ children }) => {
       codigo +
       "</strong>" +
       "</p>" +
-      "<p>Solicito por favor Visto bueno/Autorización del señor <strong>" +
+      "<p>Solicito por favor su Visto bueno/Autorización para el/la señor (a)  <strong>" +
       nombre.toUpperCase() +
-      " </strong>con CI <strong>" +
+      " </strong> con número de CI <strong>" +
       ci +
-      ",</strong> para continuar con la operación <strong>" +
+      ",</strong> para continuar con la operación de  <strong>" +
       producto +
       "</strong>.</p>" +
       "<p>Fecha: <strong>" +
@@ -446,28 +446,33 @@ export const SolicitudContextProvider = ({ children }) => {
     producto,
     fechaInicio,
     fechaFin,
-    detalle
+    detalle,
+    estado
   ) => {
     const emailDetalle =
-      "<p>Según solicitud con el código: <strong>" +
-      codigo +
-      "</strong>" +
-      "</p>" +
-      "<p>" +
-      detalle +
-      " con el  señor <strong>" +
-      nombre.toUpperCase() +
-      " </strong>con CI <strong>" +
-      ci +
-      "</strong> para continuar con la operación <strong>" +
-      producto +
-      "</strong>.</p>" +
-      "<p>Fecha:<strong>" +
-      fechaInicio +
-      "</strong></p>" +
-      "<p>Fecha:<strong>" +
-      fechaFin +
-      "</strong></p>";
+      estado === "ACEPTADO"
+        ? "<p>Según solicitud con el código: <strong>" +
+          codigo +
+          "</strong>" +
+          "</p>" +
+          "<p>" +
+          detalle +
+          " con el  señor <strong>" +
+          nombre.toUpperCase() +
+          " </strong>con CI <strong>" +
+          ci +
+          "</strong> para continuar con la operación <strong>" +
+          producto +
+          "</strong>.</p>" +
+          "<p>Fecha:<strong>" +
+          fechaInicio +
+          "</strong></p>" +
+          "<p>Fecha:<strong>" +
+          fechaFin +
+          "</strong></p>"
+        : estado === "RECHAZADO"
+        ? ""
+        : "";
     return emailDetalle;
   };
 

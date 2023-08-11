@@ -230,8 +230,8 @@ export const SolicitudContextProvider = ({ children }) => {
           estado
         );
         enviarCorreo(
+          //"juan_montecinos@fubode.org",
           solicitud.correo,
-          //solicitud.correo,
           "SOLICITUD DE DEBIDA DILIGENCIA",
           detalleEmail
         );
@@ -250,14 +250,15 @@ export const SolicitudContextProvider = ({ children }) => {
         })
         .eq("codigo_solicitud", codigoSolicitud);
       if (!error) {
-        const detalleEmail = emailCosultorUnidadCumplimientoDetalle(
+        const detalleEmail = emailAGCosultorDetalle(
           codigoSolicitud,
           solicitud.nombre_completo_uif,
           solicitud.numero_doc,
           solicitud.producto,
           formatFechaHora(solicitud.created_at),
           formatFechaHora(new Date()),
-          detalle
+          detalle,
+          solicitud.tipo
         );
         enviarCorreo(
           solicitud.correo,
@@ -288,16 +289,18 @@ export const SolicitudContextProvider = ({ children }) => {
       .eq("codigo_solicitud", codigoSolicitud);
 
     if (!error) {
-      const detalleEmail = emailUIFAltaGerenciaDetalle(
+      const detalleEmail = emailCosultorUnidadCumplimientoDetalle(
         codigoSolicitud,
         solicitud.nombre_completo_uif,
         solicitud.numero_doc,
         solicitud.producto,
         formatFechaHora(solicitud.created_at),
         formatFechaHora(new Date()),
-        detalle
+        detalle,
+        estado
       );
       enviarCorreo(
+        //"juan_montecinos@fubode.org",
         solicitud.correo,
         "SOLICITUD DE DEBIDA DILIGENCIA",
         detalleEmail
@@ -455,15 +458,10 @@ export const SolicitudContextProvider = ({ children }) => {
           codigo +
           "</strong>" +
           "</p>" +
-          "<p>" +
-          detalle +
-          " con el  señor <strong>" +
+          "<p>Realizada la Debida Diligencia puede continuar con la operación del señor (a) <strong>" +
           nombre.toUpperCase() +
-          " </strong>con CI <strong>" +
+          " </strong> con número de CI <strong>" +
           ci +
-          "</strong> para continuar con la operación <strong>" +
-          producto +
-          "</strong>.</p>" +
           "<p>Fecha:<strong>" +
           fechaInicio +
           "</strong></p>" +
@@ -471,7 +469,85 @@ export const SolicitudContextProvider = ({ children }) => {
           fechaFin +
           "</strong></p>"
         : estado === "RECHAZADO"
-        ? ""
+        ? "<p>Según solicitud con el código: <strong>" +
+          codigo +
+          "</strong>" +
+          "</p>" +
+          "<p>Realizada la Debida Diligencia se recomienda NO continuar con la operación de <strong>" +
+          nombre.toUpperCase() +
+          " </strong> con número de CI <strong>" +
+          ci +
+          "<p>Fecha:<strong>" +
+          fechaInicio +
+          "</strong></p>" +
+          "<p>Fecha:<strong>" +
+          fechaFin +
+          "</strong></p>"
+        : estado === "GERENCIA"
+        ? "<p>Según solicitud con el código: <strong>" +
+          codigo +
+          "</strong>" +
+          "</p>" +
+          "<p>Se solicita por favor su Autorización para continuar con la operación del señor (a)  <strong>" +
+          nombre.toUpperCase() +
+          " </strong> con número de CI <strong>" +
+          ci +
+          "<p>Fecha:<strong>" +
+          fechaInicio +
+          "</strong></p>" +
+          "<p>Fecha:<strong>" +
+          fechaFin +
+          "</strong></p>"
+        : "";
+    return emailDetalle;
+  };
+
+  const emailAGCosultorDetalle = (
+    codigo,
+    nombre,
+    ci,
+    producto,
+    fechaInicio,
+    fechaFin,
+    detalle,
+    estado,
+    tipo
+  ) => {
+    const emailDetalle =
+      estado === "ACEPTADO"
+        ? "<p>Según solicitud con el código: <strong>" +
+          codigo +
+          "</strong>" +
+          "</p>" +
+          "<p>De acuerdo a solicitud <strong>" +
+          tipo +
+          " </strong> y realizada la Debida Diligencia se Autoriza continuar con la 	operación del señor (a)  <strong>" +
+          nombre.toUpperCase() +
+          " </strong> con número de CI <strong>" +
+          ci +
+          "<p>Fecha:<strong>" +
+          fechaInicio +
+          "</strong></p>" +
+          "<p>Fecha:<strong>" +
+          fechaFin +
+          "</strong></p>"
+        : estado === "RECHAZADO"
+        ? "<p>Según solicitud con el código: <strong>" +
+          codigo +
+          "</strong>" +
+          "</p>" +
+          "<p>De acuerdo a solicitud <strong>" +
+          tipo +
+          " </strong> y según información de Debida Diligencia NO se Autoriza 	continuar con la operación del señor (a)  <strong>" +
+          nombre.toUpperCase() +
+          " </strong> con número de CI <strong>" +
+          ci +
+          "<p>Fecha:<strong>" +
+          fechaInicio +
+          "</strong></p>" +
+          "<p>Fecha:<strong>" +
+          fechaFin +
+          "</strong></p>"
         : "";
     return emailDetalle;
   };
@@ -490,16 +566,10 @@ export const SolicitudContextProvider = ({ children }) => {
       codigo +
       "</strong>" +
       "</p>" +
-      "<p>Se solicita por favor su Autorización para continuar con la operación con el  señor <strong>" +
+      "<p>Se solicita por favor su Autorización para continuar con la operación del señor (a)  <strong>" +
       nombre.toUpperCase() +
-      " </strong>con CI <strong>" +
+      " </strong> con número de CI <strong>" +
       ci +
-      "</strong> para continuar con la operación <strong>" +
-      producto +
-      "</strong>.</p>" +
-      "<p>" +
-      detalle +
-      "</p>" +
       "<p>Fecha:<strong>" +
       fechaInicio +
       "</strong></p>" +

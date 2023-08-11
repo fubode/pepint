@@ -17,48 +17,56 @@ const CustomModal = ({ show, onHide, fecha, soli, formatFechaHora }) => {
               <div
                 className="print-content"
                 ref={contentRef}
-                style={{ Width: "21.6cm", width: "100%", height: "27.94 cm" }}
+                style={{ width: "21.6cm", height: "27.94cm" }}
               >
                 <div className='container-fluid m-4'>
                   <div className="container">
                     <div className="row">
-                      <div className="col-8">
-                        <h4>ENTIDAD: FUBODE IFD</h4>
-                        <h5>SISTEMA DE AUTORIZACION ESPECIAL</h5>
-                        <p><strong>FECHA Y HORA: </strong>{' ' + fecha}</p>
-                        <p><strong>ESTADO DE LA SOLICITUD: </strong>{soli.estado == 'ACEPTADO' ? (' AUTORIZADO') : (' ' + soli.estado)}</p>
-                      </div>
                       <div className="col-2">
-                        <img src={logo} alt="Navbar Logo" style={{ width: '150px' }} />
+                        <p className='m-0 leelawadee-font'><strong>FECHA Y HORA: </strong></p>
+                        <p className='m-0 leelawadee-font'>{fecha}</p>
+                        <p className='m-0 leelawadee-font'><strong>ESTADO: </strong></p>
+                        <p className='m-0 leelawadee-font'>{soli.estado == 'ACEPTADO' ? (' AUTORIZADO') : (' ' + soli.estado)}</p>
+                      </div>
+                      <div className="col-8 text-center">
+                        <h5>SISTEMA DE</h5>
+                        <h5>AUTORIZACION ESPECIAL</h5>
+                      </div>
+
+                      <div className="col-2">
+                        <img src={logo} alt="Navbar Logo" style={{ width: '100px' }} />
                       </div>
                     </div>
                   </div>
                   <div className='m-3'>
-                    <br />
-                    <h5>DATOS DE LA SOLICITUD</h5>
-                    <div className='border pr-4'>
-                      <p className='m-3'> <strong>CODIGO: </strong>{soli.codigo_solicitud}</p>
-                      <p className='m-3'><strong>FECHA DE CONSULTA: </strong>{formatFechaHora(soli.created_at)}</p>
-                      <p className='m-3'><strong>FECHA DE RESPUESTA: </strong>{formatFechaHora(soli.fecha_modificacion)}</p>
-                      <p className='m-3'><strong>NOMBRE COMPLETO: </strong>{soli.nombre_completo_uif}</p>
-                      <p className='m-3'><strong>NRO DE CI: </strong>{soli.numero_doc}</p>
-                      <p className='m-3'><strong>PRODUCTO: </strong>{soli.producto}</p>
-                      <p className='m-3'><strong>CAEDEC: </strong>{soli.cod_caedec + " - " + soli.caedec}</p>
-                      <p className='m-3'><strong>USUARIO: </strong>{soli.nombre_completo}</p>
+                    <h5 className="leelawadee-font"><strong>DATOS DE LA SOLICITUD</strong></h5>
+                    <div className='border pr-4' style={{ padding: '4px', margin: '0', width: '100%' }}>
+                      <p className='m-0 leelawadee-font'><strong>CODIGO: </strong>{soli.codigo_solicitud}</p>
+                      <p className='m-0 leelawadee-font'><strong>FECHA DE CONSULTA: </strong>{formatFechaHora(soli.created_at)}</p>
+                      <p className='m-0 leelawadee-font'><strong>FECHA DE RESPUESTA: </strong>{formatFechaHora(soli.fecha_modificacion)}</p>
+                      <p className='m-0 leelawadee-font'><strong>NOMBRE COMPLETO: </strong>{soli.nombre_completo_uif}</p>
+                      <p className='m-0 leelawadee-font'><strong>NRO DE CI: </strong>{soli.numero_doc}</p>
+                      <p className='m-0 leelawadee-font'><strong>PRODUCTO: </strong>{soli.producto}</p>
+                      <p className='m-0 leelawadee-font'><strong>CAEDEC: </strong>{soli.cod_caedec + " - " + soli.caedec}</p>
+                      <p className='m-0 leelawadee-font'><strong>USUARIO: </strong>{soli.nombre_completo}</p>
                     </div>
                   </div>
-                  <br />
-                  <h5>OBSERVACIONES POR LA UNIDAD DE CUMPLIMIENTO</h5>
-                  <div className='border'>
-                    <p>{soli.descripcion}</p>
+
+                  <div className='m-3'>
+                    <h5 className="leelawadee-font"><strong>OBSERVACIONES POR LA UNIDAD DE CUMPLIMIENTO</strong></h5>
+                    <div className='border pr-4' style={{ padding: '4px', margin: '0', width: '100%' }}>
+                      <p className="leelawadee-font" style={{ margin: 0, padding: '4px' }}>{soli.descripcion}</p>
+                    </div>
                   </div>
+
                   {
                     soli.correo_final !== 'unidad_cumplimiento@fubode.org' ? (
                       <>
-                        <br />
-                        <h5>OBSERVACIONES REALIZADAS POR ALTA GERENCIA</h5>
-                        <div className='border'>
-                        <p>{soli.detalle_gerencia}</p>
+                        <div className='m-3'>
+                        <h5 className="leelawadee-font"><strong>OBSERVACIONES REALIZADAS POR ALTA GERENCIA</strong></h5>
+                          <div className='border pr-4' style={{ padding: '4px', margin: '0', width: '100%' }}>
+                            <p className="leelawadee-font" style={{ margin: 0, padding: '4px' }}>{soli.detalle_gerencia}</p>
+                          </div>
                         </div>
                       </>
                     ) : (
@@ -66,19 +74,12 @@ const CustomModal = ({ show, onHide, fecha, soli, formatFechaHora }) => {
                       </>
                     )
                   }
-                  <br />
-                  <div>
-                    <br />
-                    <br />
-                    <br />
-                    <br />
-                    <div className="d-flex justify-content-center bottom-div">
-                      <p><strong>FIRMA Y SELLO DEL RESPONSABLE</strong></p>
-                    </div>
-
+                  <div className="d-flex justify-content-center bottom-div">
+                    <p className="leelawadee-font mt-5"><strong>FIRMA Y SELLO DEL RESPONSABLE</strong></p>
                   </div>
                 </div>
               </div>
+
             </Col>
           </Row>
         </Container>

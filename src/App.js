@@ -6,6 +6,7 @@ import { SolicitudContextProvider } from "./context/SolicitudContext";
 import Uif from "./pages/Uif/Uif";
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import  Gerencia  from "./pages/Gerencia/Gerencia";
+import './index.css'
 
 function App() {
 

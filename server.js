@@ -7,7 +7,7 @@ const app = express();
 
 const options = {
   key: fs.readFileSync('D:\\FUBODE DEV\\key.pem'), // Ruta completa al archivo key.pem
-  cert: fs.readFileSync('D:\\FUBODE DEV\\key.pem'), // Ruta completa al archivo key.pem
+  cert: fs.readFileSync('D:\\FUBODE DEV\\cert.pem'), // Ruta completa al archivo key.pem
 };
 
 app.use(express.static('build')); // Ajusta esto en caso de que tu carpeta de compilación sea diferente

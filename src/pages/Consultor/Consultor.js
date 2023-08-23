@@ -135,7 +135,7 @@ export const Consultor = () => {
     <>
       <div>
         <button
-          className="btn btn-primary btn-lg btn-block"
+          className="btn btn-primary btn-lg btn-block  d-none"
           onClick={handleRegistrar}
         >
           Registrar usuarios

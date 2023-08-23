@@ -6,7 +6,7 @@ import { Button, Modal } from "react-bootstrap";
 
 import NavFubode from "../componets/NavFubode";
 const Login = () => {
-  const { getFuncionario,enviarCorreo } = useSolicitud();
+  const { getFuncionario,navegacion } = useSolicitud();
 
   const navigate = useNavigate();
   const [show, setShow] = useState(false);
@@ -27,6 +27,7 @@ const Login = () => {
         throw error.message;
       }
       getFuncionario();
+      
     } catch (error) {
       setShow(!show);
       console.log(error);
@@ -101,7 +102,7 @@ const Login = () => {
         </form>
 
         <button
-          className="btn btn-primary btn-lg btn-block"
+          className="btn btn-primary btn-lg btn-block d-none"
           onClick={handleRegistrar}
         >
           Registrar usuarios

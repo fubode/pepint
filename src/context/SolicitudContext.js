@@ -52,7 +52,6 @@ export const SolicitudContextProvider = ({ children }) => {
 
   const getFuncionario = async () => {
     const usuario_supa = (await supabase.auth.getUser()).data.user.id;
-
     let { data, error } = await supabase.rpc("obtener_usuario", {
       usuario_supa,
     });
@@ -362,6 +361,7 @@ export const SolicitudContextProvider = ({ children }) => {
   }
 
   const navegacion = () => {
+    console.log(rol)
     if (rol !== 0) {
       switch (rol) {
         case 6:

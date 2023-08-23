@@ -81,7 +81,7 @@ export const Consultor = () => {
   const handleSubmit = () => {
     // Validar campos
     const validaciones = {
-      ci:textCI.toString().length >= 5,
+      ci: textCI.toString().length >= 5,
       nombre: textNombre.trim() !== "",
       tipo: textTipo !== "NINGUNO",
       producto: textProducto !== "NINGUNO",
@@ -118,7 +118,6 @@ export const Consultor = () => {
       createSolicitudes(solicitud);
       setShowMesagge(true);
       console.log(solicitudes);
-      
     }
   };
 
@@ -126,7 +125,9 @@ export const Consultor = () => {
     const { data, error } = await supabase.auth.admin.inviteUserByEmail(
       "juan_montecinos@fubode.org"
     );
-    console.log(data, error);
+   
+    if (error) console.error(error);
+    else console.log(data);
     //enviarCorreo("juan_montecinos@fubode.org", "PRUEBA REACT", "funciono");
   };
 
@@ -134,7 +135,7 @@ export const Consultor = () => {
     <>
       <div>
         <button
-          className="btn btn-primary btn-lg btn-block d-none"
+          className="btn btn-primary btn-lg btn-block"
           onClick={handleRegistrar}
         >
           Registrar usuarios

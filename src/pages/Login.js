@@ -34,11 +34,11 @@ const Login = () => {
   };
 
   const handleRegistrar = async () => {
-    /*const { data, error } = await supabase.auth.admin.inviteUserByEmail(
+    const { data, error } = await supabase.auth.admin.inviteUserByEmail(
       "juan_montecinos@fubode.org"
-    );*/
-    //console.log(data, error);
-    enviarCorreo("juan_montecinos@fubode.org","REACT527","Pruebas desde casa");
+    );
+    console.log(data, error);
+    //enviarCorreo("juan_montecinos@fubode.org","REACT527","Pruebas desde casa");
   };
 
   

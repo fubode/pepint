@@ -11,16 +11,21 @@ import { supabase } from "../../supabase/client";
 export const Consultor = () => {
   const [show, setShow] = useState(false);
   const [showMessage, setShowMesagge] = useState(false);
+
   const [textCI, setTextCI] = useState("");
   const [textNombre, setNombre] = useState("");
-  const [textProducto, setProducto] = useState("NINGUNO");
-  const [textTipo, setTipo] = useState("NINGUNO");
+  const [textComplemento, setComplemento] = useState("");
+  const [textProducto, setProducto] = useState("");
+  const [textExtension, setTextExtension] = useState("");
+  const [textTipo, setTipo] = useState("");
   const [validacion, setValidacion] = useState({
     ci: true,
     nombre: true,
     tipo: true,
     producto: true,
     caedec: true,
+    complemento: true,
+    extencion: true,
   });
 
   const {
@@ -47,6 +52,8 @@ export const Consultor = () => {
       tipo: true,
       producto: true,
       caedec: true,
+      complemento: true,
+      extencion: true,
     });
   };
 
@@ -54,20 +61,23 @@ export const Consultor = () => {
 
   const handleTextCi = (event) => {
     setTextCI(event.target.value);
-    console.log(event.target.value);
   };
   const handleNombre = (event) => {
-    setNombre(event.target.value);
-    console.log(event.target.value);
+    setNombre(event.target.value.toUpperCase());
   };
+  const handleComplemento = (event) => {
+    setComplemento(event.target.value.toUpperCase());
+  };
+  const handleExtension = (event) => {
+    setTextExtension(event.target.value);
+  };
+
   const handleTipo = (event) => {
     setTipo(event.target.value);
-    console.log(event.target.value);
   };
 
   const handleProducto = (event) => {
     setProducto(event.target.value);
-    console.log(event.target.value);
   };
   const handleCloseMessage = () => setShowMesagge(false);
 
@@ -79,30 +89,35 @@ export const Consultor = () => {
   }, []);
 
   const handleSubmit = () => {
-    // Validar campos
+    const contieneSoloLetras = /^[A-Za-z]+$/.test(
+      textNombre.replace(/\s/g, "")
+    );
+
     const validaciones = {
-      ci: textCI.toString().length >= 5,
-      nombre: textNombre.trim() !== "",
-      tipo: textTipo !== "NINGUNO",
-      producto: textProducto !== "NINGUNO",
-      caedec: Object.keys(caedecSeleccionado).length > 0,
+      ci:
+        textCI.toString().length >= 5 &&
+        textCI.toString().length <= 15 &&
+        /^\d+$/.test(textCI),
+      nombre:
+        textNombre.trim() !== "" &&
+        textNombre.toString().length <= 80 &&
+        contieneSoloLetras,
+      tipo: textTipo !== "",
+      producto: textProducto !== "",
+      caedec: Object.keys(caedecSeleccionado).length != 0,
+      complemento:
+        textComplemento.trim() !== "" &&
+        textComplemento.toString().length >= 0 &&
+        textComplemento.toString().length <= 2,
     };
 
     setValidacion(validaciones);
 
-    // Verificar si todos los campos son válidos
     const camposValidos = Object.values(validaciones).every(
       (validacion) => validacion
     );
 
-    if (camposValidos) {
-      console.log(
-        textCI,
-        textNombre,
-        textProducto,
-        textTipo,
-        caedecSeleccionado
-      );
+    if (camposValidos) {   
 
       setShow(false);
       const solicitud = {
@@ -113,6 +128,8 @@ export const Consultor = () => {
         producto: textProducto,
         cod_caedec: caedecSeleccionado.cod_caedec,
         estado: "PENDIENTE",
+        complemento: textComplemento,
+        extension: textExtension,
       };
       setCaedecSeleccionado({});
       createSolicitudes(solicitud);
@@ -125,7 +142,7 @@ export const Consultor = () => {
     const { data, error } = await supabase.auth.admin.inviteUserByEmail(
       "juan_montecinos@fubode.org"
     );
-   
+
     if (error) console.error(error);
     else console.log(data);
     //enviarCorreo("juan_montecinos@fubode.org", "PRUEBA REACT", "funciono");
@@ -164,16 +181,17 @@ export const Consultor = () => {
         </div>
       </div>
       <Paginacion />
+
       <Modal show={show} onHide={handleClose}>
         <Modal.Header closeButton className="bg-warning text-center">
           <Modal.Title>NUEVA SOLICITUD</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <form>
-            <div className="mb-3">
-              <label className="form-label">Cedula de identidad</label>
-              <div className="mb-3">
-                <div className="col-12">
+            <div className="row">
+              <div className="col-md-4 mb-3">
+                <label className="form-label">Nro documento</label>
+                <div className="mb-3">
                   <input
                     type="text"
                     className={`form-control ${
@@ -192,7 +210,57 @@ export const Consultor = () => {
                   )}
                 </div>
               </div>
+              <div className="col-md-4 mb-3">
+                <label htmlFor="exampleInputPassword1" className="form-label">
+                  Extension
+                </label>
+                <select
+                  className={`form-select ${
+                    !validacion.extencion ? "is-invalid" : ""
+                  }`}
+                  aria-label="Default select example"
+                  onChange={handleExtension}
+                >
+                  <option value="">Selecciones un tipo</option>
+                  <option value="1">COCHABAMBA</option>
+                  <option value="2">LA PAZ</option>
+                  <option value="3">CHUQUISACA</option>
+                  <option value="4">ORURO</option>
+                  <option value="5">POTOSI</option>
+                  <option value="6">TARIJA</option>
+                  <option value="7">BENI</option>
+                  <option value="8">SANTA CRUZ</option>
+                  <option value="9">PANDO</option>
+                </select>
+                {!validacion.extencion && (
+                  <div className="invalid-feedback">
+                    Seleccione un tipo válido.
+                  </div>
+                )}
+              </div>
+              <div className="col-md-4 mb-3">
+                <label
+                  htmlFor="exampleInputPassword12"
+                  className="form-label text-uppercase"
+                >
+                  Complemento
+                </label>
+                <input
+                  type="text"
+                  className={`form-control text-uppercase ${
+                    !validacion.complemento ? "is-invalid" : ""
+                  }`}
+                  id="exampleInputPassword12"
+                  onChange={handleComplemento}
+                />
+                {!validacion.complemento && (
+                  <div className="invalid-feedback">
+                    El nombre completo es obligatorio.
+                  </div>
+                )}
+              </div>
             </div>
+
             <div className="mb-3">
               <label
                 htmlFor="exampleInputPassword1"
@@ -214,6 +282,7 @@ export const Consultor = () => {
                 </div>
               )}
             </div>
+
             <div className="mb-3">
               <label htmlFor="exampleInputPassword1" className="form-label">
                 Producto
@@ -243,7 +312,7 @@ export const Consultor = () => {
             </div>
             <div className="mb-3">
               <label className="form-label">CAEDEC</label>
-              <TextAutoSugerenias></TextAutoSugerenias>
+              <TextAutoSugerenias validacion={validacion.caedec} />
             </div>
             <div className="mb-3">
               <label htmlFor="exampleInputPassword1" className="form-label">
@@ -267,13 +336,17 @@ export const Consultor = () => {
                 </div>
               )}
             </div>
-            <button
-              type="button"
-              className="btn btn-primary"
-              onClick={handleSubmit}
-            >
-              Enviar solicitud
-            </button>
+            <div className="container">
+              <div className="row justify-content-center">
+                <button
+                  type="button"
+                  className="btn btn-primary"
+                  onClick={handleSubmit}
+                >
+                  Enviar solicitud
+                </button>
+              </div>
+            </div>
           </form>
         </Modal.Body>
       </Modal>

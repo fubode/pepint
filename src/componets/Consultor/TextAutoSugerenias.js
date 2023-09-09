@@ -1,8 +1,7 @@
 import React, { useState } from "react";
 import { useSolicitud } from "../../context/SolicitudContext";
 
-
-export const TextAutoSugerenias = (validacion) => {
+export const TextAutoSugerenias = ({validacion}) => {
   const [inputValue, setInputValue] = useState("");
   const [sugerencias, setSugerencias] = useState([]);
 
@@ -10,7 +9,7 @@ export const TextAutoSugerenias = (validacion) => {
 
   const handleInputChange = (e) => {
     const valor = e.target.value;
-    
+
     setInputValue(valor);
 
     // Filtrar caedec por codigo y descripcion
@@ -20,7 +19,7 @@ export const TextAutoSugerenias = (validacion) => {
         .includes(valor.toLowerCase())
     );
     setSugerencias(coincidencias);
-    if(valor===""){
+    if (valor === "") {
       setSugerencias([]);
       setCaedecSeleccionado({});
     }
@@ -35,12 +34,19 @@ export const TextAutoSugerenias = (validacion) => {
   return (
     <div>
       <input
-        className="form-control text-uppercase"
+        className={`form-control text-uppercase${
+          !validacion ? "is-invalid" : ""
+        }`}
         type="text"
         value={inputValue}
         onChange={handleInputChange}
         placeholder="ESCRIBE CODIGO O DESCRIPCION DEL CAEDEC"
       />
+      {!validacion && (
+        <div className="invalid-feedback">
+          <p className="text-danger">El caedec es obligatorio.</p>
+        </div>
+      )}
       <ul>
         {sugerencias.map((caedecInfo, index) => (
           <li key={index} onClick={() => handleSuggestionClick(caedecInfo)}>
@@ -49,17 +55,17 @@ export const TextAutoSugerenias = (validacion) => {
         ))}
       </ul>
       <div>
-      {Object.keys(caedecSeleccionado).length !== 0 && (
+        {Object.keys(caedecSeleccionado).length !== 0 && (
           <>
             <p>CODIGO: {caedecSeleccionado.cod_caedec}</p>
             <p>NOMBRE: {caedecSeleccionado.caedec}</p>
-          </>          
-        )}  
+          </>
+        )}
         {Object.keys(caedecSeleccionado).length === 0 && (
           <>
             <p>Debe seleccionar un caedec</p>
-          </>          
-        )}       
+          </>
+        )}
       </div>
     </div>
   );

@@ -52,12 +52,8 @@ export const CardConsultor = ({ soli, funcionario }) => {
     setModalOpen(false);
   };
 
-  const {
-    modificarSolicitud,
-    correos,
-    rol,
-    enviarSolicitudGerecia,
-  } = useSolicitud();
+  const { modificarSolicitud, correos, rol, enviarSolicitudGerecia } =
+    useSolicitud();
 
   const handleAceptar = () => setShowAceptar(!showAceptar);
   const handleRechazar = () => setShowRechazar(!showRechazar);
@@ -67,12 +63,12 @@ export const CardConsultor = ({ soli, funcionario }) => {
   const handleAceptarSolicitud = () => {
     const detalle =
       "Realizada la debida diligencia no se tienen observaciones para continuar la operacion comercial";
-    modificarSolicitud(soli.codigo_solicitud, detalle, "ACEPTADO",soli);
+    modificarSolicitud(soli.codigo_solicitud, detalle, "ACEPTADO", soli);
     setShowAceptar(false);
   };
 
   const handleRechazarSolicitud = () => {
-    modificarSolicitud(soli.codigo_solicitud, textDestino, "RECHAZADO",soli);
+    modificarSolicitud(soli.codigo_solicitud, textDestino, "RECHAZADO", soli);
     setShowRechazar(!showRechazar);
   };
 
@@ -99,13 +95,54 @@ export const CardConsultor = ({ soli, funcionario }) => {
       soli.codigo_solicitud,
       textGerencia,
       textDestino,
-      "GERENCIA",soli
+      "GERENCIA",
+      soli
     );
     setShowEnviar(false);
   };
 
   const handleVista = () => {
     setModalOpen(true);
+  };
+
+  const ciCompleto = (numero_doc, extension, complemento) => {
+    let ext = "";
+    switch (extension) {
+      case "1":
+        ext = "CB";
+        break;
+      case "2":
+        ext = "LP";
+        break;
+      case "3":
+        ext = "CH";
+        break;
+      case "4":
+        ext = "OR";
+        break;
+      case "5":
+        ext = "PT";
+        break;
+      case "6":
+        ext = "TJ";
+        break;
+      case "7":
+        ext = "BE";
+        break;
+      case "8":
+        ext = "SC";
+        break;
+      case "9":
+        ext = "PA";
+        break;
+      default:
+        break;
+    }
+    return (
+      numero_doc +
+      (ext === "" ? "" : " " + ext) +
+      (complemento === "" ? "" : "-" + complemento)
+    );
   };
   return (
     <>
@@ -125,7 +162,7 @@ export const CardConsultor = ({ soli, funcionario }) => {
             >
               <div className="card-body">
                 <p>{soli.estado}</p>
-                {rol === 7 || rol ===8  ? (
+                {rol === 7 || rol === 8 ? (
                   <FaUser size={35} onClick={handleShowUsuario} />
                 ) : (
                   <></>
@@ -136,12 +173,13 @@ export const CardConsultor = ({ soli, funcionario }) => {
             <div className="col-10">
               <p className="mb-0">{soli.codigo_solicitud}</p>
               <p className="mb-0">
-                {soli.numero_doc + " - " + soli.nombre_completo_uif}
+                {ciCompleto(soli.numero_doc, soli.exten, soli.complemento) +
+                  " - " +
+                  soli.nombre_completo_uif}
               </p>
               <p className="mb-0">{soli.producto}</p>
               <p className="mb-0">{soli.cod_caedec + " - " + soli.caedec}</p>
               <p className="mb-0">{formatFechaHora(soli.created_at)}</p>
-
               {soli.estado === "PENDIENTE" ? (
                 <div>
                   <p className="mb-0">{soli.correo_usuario_uif}</p>
@@ -278,7 +316,7 @@ export const CardConsultor = ({ soli, funcionario }) => {
         </Modal.Header>
         <Modal.Body>
           <div>
-            { otro ? (
+            {otro ? (
               <textarea
                 style={{ width: "100%" }}
                 rows="4"
@@ -354,9 +392,7 @@ export const CardConsultor = ({ soli, funcionario }) => {
             >
               <option value="NINGUNO">Seleccione el destino</option>
               {correos.map((correo, key) => (
-                <option value={correo.correo}>
-                  {correo.correo}
-                </option>
+                <option value={correo.correo}>{correo.correo}</option>
               ))}
             </select>
             <textarea

@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import Login from "./pages/Login";
 import NotFoud from "./pages/NotFoud";
 import {Consultor} from "./pages/Consultor/Consultor";

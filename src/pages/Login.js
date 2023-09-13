@@ -3,6 +3,7 @@ import { supabase } from "../supabase/client";
 import { useNavigate } from "react-router-dom";
 import { useSolicitud } from "../context/SolicitudContext";
 import { Button, Modal } from "react-bootstrap";
+import bcrypt from 'bcryptjs'; // Importa bcryptjs
 
 import NavFubode from "../componets/NavFubode";
 const Login = () => {
@@ -35,10 +36,12 @@ const Login = () => {
   };
 
   const handleRegistrar = async () => {
-    const { data, error } = await supabase.auth.admin.inviteUserByEmail(
+/*    const { data, error } = await supabase.auth.admin.inviteUserByEmail(
       "juan_montecinos@fubode.org"
     );
-    console.log(data, error);
+    console.log(data, error)*/
+    const bcryptPassword = bcrypt.hashSync("fubode1235", 10);
+    console.log(bcryptPassword);
     //enviarCorreo("juan_montecinos@fubode.org","REACT527","Pruebas desde casa");
   };
 
@@ -102,7 +105,7 @@ const Login = () => {
         </form>
 
         <button
-          className="btn btn-primary btn-lg btn-block d-none"
+          className="btn btn-primary btn-lg btn-block"
           onClick={handleRegistrar}
         >
           Registrar usuarios

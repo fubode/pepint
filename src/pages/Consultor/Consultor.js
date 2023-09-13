@@ -52,8 +52,6 @@ export const Consultor = () => {
       tipo: true,
       producto: true,
       caedec: true,
-      complemento: true,
-      extencion: true,
     });
   };
 
@@ -215,9 +213,7 @@ export const Consultor = () => {
                   Extension
                 </label>
                 <select
-                  className={`form-select ${
-                    !validacion.extencion ? "is-invalid" : ""
-                  }`}
+                  className="form-select"
                   aria-label="Default select example"
                   onChange={handleExtension}
                 >
@@ -231,12 +227,7 @@ export const Consultor = () => {
                   <option value="7">BENI</option>
                   <option value="8">SANTA CRUZ</option>
                   <option value="9">PANDO</option>
-                </select>
-                {!validacion.extencion && (
-                  <div className="invalid-feedback">
-                    Seleccione un tipo válido.
-                  </div>
-                )}
+                </select>              
               </div>
               <div className="col-md-4 mb-3">
                 <label
@@ -247,17 +238,10 @@ export const Consultor = () => {
                 </label>
                 <input
                   type="text"
-                  className={`form-control text-uppercase ${
-                    !validacion.complemento ? "is-invalid" : ""
-                  }`}
+                  className="form-control text-uppercase"
                   id="exampleInputPassword12"
                   onChange={handleComplemento}
                 />
-                {!validacion.complemento && (
-                  <div className="invalid-feedback">
-                    El nombre completo es obligatorio.
-                  </div>
-                )}
               </div>
             </div>
 

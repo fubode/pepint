@@ -10,7 +10,6 @@ import { FaUser } from "react-icons/fa";
 import logo from "../assets/img/fubode-768x450.webp";
 import { useSolicitud } from "../context/SolicitudContext";
 import { useState } from "react";
-import { Modal } from "bootstrap";
 import Password from "./Password";
 
 function NavFubode() {
@@ -18,7 +17,7 @@ function NavFubode() {
 
   const { funcionario, salir } = useSolicitud();
 
-  const [show, setShow] = useState(true);
+  const [show, setShow] = useState(false);
 
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
@@ -35,7 +34,7 @@ function NavFubode() {
             </div>
             <div className="flex-grow-1 text-center">
               <h5 className="m-0">
-              SISTEMA DE AUTORIZACION ESPECIAL
+                SISTEMA DE AUTORIZACION ESPECIAL
               </h5>
             </div>
             {Object.keys(funcionario).length > 0 && (
@@ -71,7 +70,7 @@ function NavFubode() {
                       {!show ? (
                         <>
                           <Button
-                            onClick={salir}
+                            onClick={setShow(!show)}
                             variant="primary"
                             className="mt-3"
                           >
@@ -81,7 +80,7 @@ function NavFubode() {
                       ) : (
                         <>
                           {
-                          //<Password />
+                            <Password />
                           }
                         </>
                       )}

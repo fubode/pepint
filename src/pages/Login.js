@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { supabase } from "../supabase/client";
 import { useNavigate } from "react-router-dom";
 import { useSolicitud } from "../context/SolicitudContext";
@@ -6,17 +6,63 @@ import { Button, Modal } from "react-bootstrap";
 import bcrypt from 'bcryptjs'; // Importa bcryptjs
 
 import NavFubode from "../componets/NavFubode";
+
 const Login = () => {
-  const { getFuncionario,navegacion } = useSolicitud();
+  const { getFuncionario, navegacion } = useSolicitud();
 
   const navigate = useNavigate();
   const [show, setShow] = useState(false);
+  const [messageError, setMessageError] = useState("");
   const handleClose = () => setShow(false);
+
+
+  const [captcha, setCaptcha] = useState('');
+  const canvasRef = useRef(null);
+
+  // Función para generar un captcha aleatorio
+  const generateCaptcha = () => {
+    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    let captchaText = '';
+    for (let i = 0; i < 4; i++) {
+      const randomIndex = Math.floor(Math.random() * characters.length);
+      captchaText += characters[randomIndex];
+    }
+    return captchaText;
+  };
+
+  // Genera un nuevo captcha al cargar el componente
+  useEffect(() => {
+    const newCaptcha = generateCaptcha();
+    setCaptcha(newCaptcha);
+    drawCaptcha(newCaptcha);
+  }, []);
+
+  // Función para dibujar el captcha en el canvas
+  const drawCaptcha = (text) => {
+    const canvas = canvasRef.current;
+    if (canvas) {
+      const context = canvas.getContext('2d');
+      context.clearRect(0, 0, canvas.width, canvas.height);
+      context.font = '30px Arial';
+      context.fillText(text, 10, 30);
+    }
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     const em = e.target.email.value + "@fubode.org";
     const pas = e.target.password.value;
+    const userCaptcha = e.target.captcha.value; // Obtén el valor ingresado por el usuario
+
+    if (userCaptcha !== captcha) {
+      setMessageError("capcha incorrecto");
+      setShow(!show);
+      const newCaptcha = generateCaptcha();
+      setCaptcha(newCaptcha);
+      drawCaptcha(newCaptcha);
+      return;
+    }
+
     try {
       const { error } = await supabase.auth.signInWithPassword({
         email: em,
@@ -24,30 +70,30 @@ const Login = () => {
       });
 
       if (error) {
+        setMessageError("El usuario o la contraseña son incorrectos");
         setShow(!show);
         throw error.message;
       }
       getFuncionario();
-      
     } catch (error) {
+      setMessageError(error);
       setShow(!show);
-      console.log(error);
     }
   };
 
   const handleRegistrar = async () => {
-/*    const { data, error } = await supabase.auth.admin.inviteUserByEmail(
-      "juan_montecinos@fubode.org"
-    );
-    console.log(data, error)*/
-    const bcryptPassword = bcrypt.hashSync("fubode1235", 10);
-    console.log(bcryptPassword);
-    //enviarCorreo("juan_montecinos@fubode.org","REACT527","Pruebas desde casa");
+    const bcryptPassword = bcrypt.hashSync("fubode123", 10);
+    const nuevo_password = bcryptPassword;
+    const vcorreo = 'pablo_bustamante@fubode.org';
+    let { data, error } = await supabase
+      .rpc('actualizar_password_correo', {
+        nuevo_password,
+        vcorreo
+      });
+    console.log(data, error);
+    if (error) console.error(error);
+    else console.log(data);
   };
-
-  
-
-
 
   useEffect(() => {
     if (supabase.auth.getUser()) {
@@ -94,6 +140,18 @@ const Login = () => {
                         Contraseña
                       </label>
                     </div>
+                    <div className="form-outline mb-4">
+                      <canvas ref={canvasRef} width="150" height="40"></canvas>
+                    </div>
+                    <div className="form-outline mb-4">
+                      <input
+                        type="text"
+                        name="captcha"
+                        placeholder="Introduce el captcha"
+                        id="typeCaptchaX"
+                        className="form-control form-control-lg"
+                      />
+                    </div>
                     <button className="btn btn-primary btn-lg btn-block">
                       INGRESAR
                     </button>
@@ -115,7 +173,7 @@ const Login = () => {
         <Modal.Header closeButton>
           <Modal.Title>ERROR!</Modal.Title>
         </Modal.Header>
-        <Modal.Body>El usuario o la contraseña son incorrectos</Modal.Body>
+        <Modal.Body>{messageError}</Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" onClick={handleClose}>
             Cerrar

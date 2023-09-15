@@ -26,7 +26,7 @@ const Uif = () => {
   }
 
   const updateExpireTime = () =>{
-    const expireTime = Date.now()+360000;
+    const expireTime = Date.now()+300000;
     localStorage.setItem("expireTime",expireTime)
   }
 
@@ -34,7 +34,7 @@ const Uif = () => {
   useEffect(() => {
     const interval = setInterval(()=>{
       checkForInactivity();
-    },10000);
+    },5000);
     
     return () => clearInterval(interval);
   }, [])

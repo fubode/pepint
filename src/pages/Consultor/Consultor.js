@@ -24,8 +24,6 @@ export const Consultor = () => {
     tipo: true,
     producto: true,
     caedec: true,
-    complemento: true,
-    extencion: true,
   });
 
   const {
@@ -103,10 +101,6 @@ export const Consultor = () => {
       tipo: textTipo !== "",
       producto: textProducto !== "",
       caedec: Object.keys(caedecSeleccionado).length != 0,
-      complemento:
-        textComplemento.trim() !== "" &&
-        textComplemento.toString().length >= 0 &&
-        textComplemento.toString().length <= 2,
     };
 
     setValidacion(validaciones);

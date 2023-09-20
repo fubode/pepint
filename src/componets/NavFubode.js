@@ -65,7 +65,7 @@ function NavFubode() {
                         </Card.Body>
                       </Card>
 
-                      {!show ? (
+                      {/*!show ? (
                         <>
                           <Button
                             onClick={setShow(!show)}
@@ -81,7 +81,7 @@ function NavFubode() {
                             <Password />
                           }
                         </>
-                      )}
+                        )*/}
                       <Button
                         onClick={salir}
                         variant="primary"

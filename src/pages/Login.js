@@ -8,7 +8,7 @@ import bcrypt from 'bcryptjs'; // Importa bcryptjs
 import NavFubode from "../componets/NavFubode";
 
 const Login = () => {
-  const { getFuncionario, navegacion } = useSolicitud();
+  const { getFuncionario, navegacion,enviarCorreo } = useSolicitud();
 
   const navigate = useNavigate();
   const [show, setShow] = useState(false);
@@ -82,6 +82,7 @@ const Login = () => {
   };
 
   const handleRegistrar = async () => {
+    /*
     const bcryptPassword = bcrypt.hashSync("fubode123", 10);
     const nuevo_password = bcryptPassword;
     const vcorreo = 'pablo_bustamante@fubode.org';
@@ -92,7 +93,12 @@ const Login = () => {
       });
     console.log(data, error);
     if (error) console.error(error);
-    else console.log(data);
+    else console.log(data);*/
+    const detalle = "prueba";
+      enviarCorreo( "juan_montecinos@fubode.org",
+      "SOLICITUD DE DEBIDA DILIGENCIA",
+      detalle);
+
   };
 
   useEffect(() => {
@@ -161,12 +167,12 @@ const Login = () => {
             </div>
           </div>
         </form>
-
+      
         <button
-          className="btn btn-primary btn-lg btn-block"
+          className="btn btn-primary btn-lg btn-block "
           onClick={handleRegistrar}
         >
-          Registrar usuarios
+          Registrar usuariosss
         </button>
       </div>
       <Modal show={show} onHide={handleClose}>

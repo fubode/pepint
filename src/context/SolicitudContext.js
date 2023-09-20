@@ -328,6 +328,7 @@ export const SolicitudContextProvider = ({ children }) => {
         .insert(solicitud);
 
       if (!error) {
+
         const detalle = emailCosultorUnidadCumplimiento(
           codigo,
           solicitud.nombre_completo,
@@ -341,6 +342,8 @@ export const SolicitudContextProvider = ({ children }) => {
           "SOLICITUD DE DEBIDA DILIGENCIA",
           detalle
         );
+      }else{
+        console.log(error);
       }
     } catch (error) {
     } finally {
@@ -401,7 +404,8 @@ export const SolicitudContextProvider = ({ children }) => {
   const enviarCorreo = async (remitente, asunto, detalle) => {
     const EMISOR = "unidadcumplimientoifd@gmail.com";
     const CONTRASENA = "vmzkyupeqagdlbpv";
-    const ENDPOINTCORREO = "http://181.115.207.107:8096/correo";
+    //const ENDPOINTCORREO = "http://192.168.10.6:8096/correo";
+    const ENDPOINTCORREO = "https://smfm.fubode.org/correo";
     //const ENDPOINTCORREO = "http://localhost:8096/correo";
 
     try {

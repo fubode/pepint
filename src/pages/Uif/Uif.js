@@ -12,7 +12,8 @@ const Uif = () => {
     getFuncionario,
     funcionario,
     getSolicitudesUIF,
-    getCorreos
+    getCorreos,
+    salir
   } = useSolicitud();
 
   const navigate = useNavigate();
@@ -21,7 +22,8 @@ const Uif = () => {
     const expireTime = localStorage.getItem("expireTime");
     const currentDate = Date.now();
     if(expireTime < currentDate){
-      navigate("/");
+      salir()
+      //navigate("/");
     }
   }
 

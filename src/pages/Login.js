@@ -21,7 +21,7 @@ const Login = () => {
 
   // Función para generar un captcha aleatorio
   const generateCaptcha = () => {
-    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    const characters = 'abcdefghijklmnopqrstuvwxyz0123456789';
     let captchaText = '';
     for (let i = 0; i < 4; i++) {
       const randomIndex = Math.floor(Math.random() * characters.length);
@@ -93,11 +93,12 @@ const Login = () => {
       });
     console.log(data, error);
     if (error) console.error(error);
-    else console.log(data);*/
+    else console.log(data);
     const detalle = "prueba";
-      enviarCorreo( "juan_montecinos@fubode.org",
-      "SOLICITUD DE DEBIDA DILIGENCIA",
-      detalle);
+    enviarCorreo( "juan_montecinos@fubode.org",
+    "SOLICITUD DE DEBIDA DILIGENCIA",
+    detalle);
+    */
 
   };
 
@@ -161,15 +162,15 @@ const Login = () => {
                     <button className="btn btn-primary btn-lg btn-block">
                       INGRESAR
                     </button>
+                    <p>v 1.0.0</p>
                   </div>
                 </div>
               </div>
             </div>
           </div>
         </form>
-      
         <button
-          className="btn btn-primary btn-lg btn-block "
+          className="btn btn-primary btn-lg btn-block d-none"
           onClick={handleRegistrar}
         >
           Registrar usuariosss

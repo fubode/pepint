@@ -230,8 +230,8 @@ export const SolicitudContextProvider = ({ children }) => {
           detalle,
           estado
         );
+        //"juan_montecinos@fubode.org",
         enviarCorreo(
-          //"juan_montecinos@fubode.org",
           solicitud.correo,
           "SOLICITUD DE DEBIDA DILIGENCIA",
           detalleEmail
@@ -250,6 +250,16 @@ export const SolicitudContextProvider = ({ children }) => {
           detalle_gerencia: detalle,
         })
         .eq("codigo_solicitud", codigoSolicitud);
+
+        console.log(codigoSolicitud,
+          solicitud.nombre_completo_uif,
+          solicitud.numero_doc,
+          solicitud.producto,
+          formatFechaHora(solicitud.created_at),
+          formatFechaHora(new Date()),
+          detalle,
+          estado,
+          solicitud.tipo);
       if (!error) {
         const detalleEmail = emailAGCosultorDetalle(
           codigoSolicitud,
@@ -259,11 +269,18 @@ export const SolicitudContextProvider = ({ children }) => {
           formatFechaHora(solicitud.created_at),
           formatFechaHora(new Date()),
           detalle,
+          estado,
           solicitud.tipo
         );
+        //solicitud.correo,
         enviarCorreo(
           solicitud.correo,
-          //solicitud.correo,
+          "SOLICITUD DE DEBIDA DILIGENCIA",
+          detalleEmail
+        );
+        //'201400076@est.umss.edu',
+        enviarCorreo(
+          "unidad_cumplimiento@fubode.org",
           "SOLICITUD DE DEBIDA DILIGENCIA",
           detalleEmail
         );
@@ -290,7 +307,8 @@ export const SolicitudContextProvider = ({ children }) => {
       .eq("codigo_solicitud", codigoSolicitud);
 
     if (!error) {
-      const detalleEmail = emailCosultorUnidadCumplimientoDetalle(
+      //const detalleEmail = emailCosultorUnidadCumplimientoDetalle(
+      const detalleEmail = emailUIFAltaGerenciaDetalle(
         codigoSolicitud,
         solicitud.nombre_completo_uif,
         solicitud.numero_doc,
@@ -300,12 +318,29 @@ export const SolicitudContextProvider = ({ children }) => {
         detalle,
         estado
       );
+      const detalleEmail2 = emailCosultorUnidadCumplimientoDetalle(
+        codigoSolicitud,
+        solicitud.nombre_completo_uif,
+        solicitud.numero_doc,
+        solicitud.producto,
+        formatFechaHora(solicitud.created_at),
+        formatFechaHora(new Date()),
+        detalle,
+        estado
+      );
+      //"juan_montecinos@fubode.org",
+      enviarCorreo(
+        corroGerencia,
+        "SOLICITUD DE DEBIDA DILIGENCIA",
+        detalleEmail
+      );
       enviarCorreo(
         //"juan_montecinos@fubode.org",
         solicitud.correo,
         "SOLICITUD DE DEBIDA DILIGENCIA",
-        detalleEmail
+        detalleEmail2
       );
+
     }
     getSolicitudesUIF();
   };
@@ -337,6 +372,7 @@ export const SolicitudContextProvider = ({ children }) => {
           formatFechaHora(new Date())
         );
 
+        //"201400076@est.umss.edu",
         enviarCorreo(
           "unidad_cumplimiento@fubode.org",
           "SOLICITUD DE DEBIDA DILIGENCIA",
@@ -494,10 +530,7 @@ export const SolicitudContextProvider = ({ children }) => {
             codigo +
             "</strong>" +
             "</p>" +
-            "<p>Se solicita por favor su Autorización para continuar con la operación del señor (a)  <strong>" +
-            nombre.toUpperCase() +
-            " </strong> con número de CI <strong>" +
-            ci +
+            "<p>La solicitud fue remitada a alta gerencia para su evaluacion  <strong>" +
             "<p>Fecha:<strong>" +
             fechaInicio +
             "</strong></p>" +

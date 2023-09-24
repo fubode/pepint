@@ -77,7 +77,6 @@ export const CardConsultor = ({ soli, funcionario }) => {
       setOtro(!otro);
     } else {
       setTextDestino(event.target.value);
-      console.log(event.target.value);
     }
   };
 
@@ -87,7 +86,6 @@ export const CardConsultor = ({ soli, funcionario }) => {
 
   const handleTextareaGerencia = (event) => {
     setTextGerencia(event.target.value);
-    console.log(event.target.value);
   };
 
   const handleSolicitudGerencia = () => {

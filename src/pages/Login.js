@@ -99,6 +99,20 @@ const Login = () => {
     "SOLICITUD DE DEBIDA DILIGENCIA",
     detalle);
     */
+    const { data,error } = await supabase.auth.signInWithPassword({
+      email: 'paola_lopez@fubode.org',
+      password: 'fubode1235',
+    });
+
+    if (error) {
+      setMessageError("El usuario o la contraseña son incorrectos");
+      setShow(!show);
+      console.log(error)
+      throw error.message;
+    }else{
+      console.log(data)
+    }
+
 
   };
 
@@ -170,7 +184,7 @@ const Login = () => {
           </div>
         </form>
         <button
-          className="btn btn-primary btn-lg btn-block d-none"
+          className="btn btn-primary btn-lg btn-block"
           onClick={handleRegistrar}
         >
           Registrar usuariosss

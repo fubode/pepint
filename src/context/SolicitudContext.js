@@ -54,6 +54,7 @@ export const SolicitudContextProvider = ({ children }) => {
 
   const getFuncionario = async () => {
     const usuario_supa = (await supabase.auth.getUser()).data.user.id;
+    console.log(usuario_supa)
     let { data, error } = await supabase.rpc("obtener_usuario", {
       usuario_supa,
     });
@@ -86,10 +87,12 @@ export const SolicitudContextProvider = ({ children }) => {
           navigate("/gerencia");
           break;
         default:
+          console.log('no encontro nad')
           navigate("/login");
           break;
       }
     } else {
+      console.log('no se encontro el rol')
     }
   }, [funcionario]);
 
@@ -373,15 +376,12 @@ export const SolicitudContextProvider = ({ children }) => {
         );
 
         //"201400076@est.umss.edu",
-        enviarCorreo(
-          "unidad_cumplimiento@fubode.org",
-          "SOLICITUD DE DEBIDA DILIGENCIA",
-          detalle
-        );
+        enviarCorreo("unidad_cumplimiento@fubode.org", "SOLICITUD DE DEBIDA DILIGENCIA", detalle);
       }else{
         console.log(error);
       }
     } catch (error) {
+      console.log(error);
     } finally {
       getSolicitudes();
     }

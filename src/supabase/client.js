@@ -1,6 +1,6 @@
 import { createClient } from "@supabase/supabase-js";
 export const supabase = createClient(
-    "https://sif.fubode.org/",
+    "https://srv01.fubode.org/",
     "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.ewogICAgInJvbGUiOiAiYW5vbiIsCiAgICAiaXNzIjogInN1cGFiYXNlIiwKICAgICJpYXQiOiAxNjg3NDkyODAwLAogICAgImV4cCI6IDE4NDUzNDU2MDAKfQ._J9SYY9X4XxenSPmYAo-aGLWbpKjiLOuCQ72EGYlVr4"
     );
     /*

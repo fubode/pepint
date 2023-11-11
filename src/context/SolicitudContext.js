@@ -376,7 +376,7 @@ export const SolicitudContextProvider = ({ children }) => {
         );
 
         //"201400076@est.umss.edu",
-        enviarCorreo("unidad_cumplimiento@fubode.org", "SOLICITUD DE DEBIDA DILIGENCIA", detalle);
+        //enviarCorreo("unidad_cumplimiento@fubode.org", "SOLICITUD DE DEBIDA DILIGENCIA", detalle);
       }else{
         console.log(error);
       }
@@ -438,6 +438,7 @@ export const SolicitudContextProvider = ({ children }) => {
   };
 
   const enviarCorreo = async (remitente, asunto, detalle) => {
+    /*
     const EMISOR = "unidadcumplimientoifd@gmail.com";
     const CONTRASENA = "vmzkyupeqagdlbpv";
     //const ENDPOINTCORREO = "http://192.168.10.6:8096/correo";
@@ -456,7 +457,7 @@ export const SolicitudContextProvider = ({ children }) => {
       };
 
       const response = await axios.post(endpointCorreo, json);
-    } catch (error) { }
+    } catch (error) { }*/
   };
 
   const emailCosultorUnidadCumplimiento = (

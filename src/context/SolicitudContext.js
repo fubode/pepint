@@ -23,7 +23,7 @@ export const SolicitudContextProvider = ({ children }) => {
     correosAltaGerencia: [],
     solicitudesGerencia: [],
     paginacion: {
-      limit: 3,
+      limit: 10,
       offset: 0,
       paginas: 6,
       datos: 17,

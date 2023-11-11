@@ -28,7 +28,7 @@ const Uif = () => {
   }
 
   const updateExpireTime = () =>{
-    const expireTime = Date.now()+300000;
+    const expireTime = Date.now()+900000;
     localStorage.setItem("expireTime",expireTime)
   }
 

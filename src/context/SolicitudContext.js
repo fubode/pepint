@@ -23,7 +23,7 @@ export const SolicitudContextProvider = ({ children }) => {
     correosAltaGerencia: [],
     solicitudesGerencia: [],
     paginacion: {
-      limit: 10,
+      limit: 15,
       offset: 0,
       paginas: 6,
       datos: 17,
@@ -102,9 +102,10 @@ export const SolicitudContextProvider = ({ children }) => {
   };
 
   const getSolicitudes = async () => {
-    const usuario_supa = (await supabase.auth.getUser()).data.user.id;
+    const cod_solicitud = funcionario.cod_usuario;
+    console.log()
     let { data, error } = await supabase.rpc("uif_solicitudes", {
-      usuario_supa,
+      cod_solicitud,
       limit_value: paginacion.limit,
       offset_value: paginacion.offset,
     });
@@ -356,10 +357,12 @@ export const SolicitudContextProvider = ({ children }) => {
       "-" +
       (paginacion.datos + 1);
     try {
+      const codigo_solicitud = funcionario.cod_usuario;
       const user = (await supabase.auth.getUser()).data.user.id;
       solicitud.id_usuario = user;
       solicitud.codigo_solicitud = codigo;
       solicitud.correo_usuario_uif = "unidad_cumplimiento@fubode.org";
+      solicitud.codigo_user = codigo_solicitud;
 
       const { error } = await supabase
         .from("uif_solicitudes")
@@ -376,7 +379,7 @@ export const SolicitudContextProvider = ({ children }) => {
         );
 
         //"201400076@est.umss.edu",
-        //enviarCorreo("unidad_cumplimiento@fubode.org", "SOLICITUD DE DEBIDA DILIGENCIA", detalle);
+        enviarCorreo("unidad_cumplimiento@fubode.org", "SOLICITUD DE DEBIDA DILIGENCIA", detalle);
       }else{
         console.log(error);
       }
@@ -438,7 +441,7 @@ export const SolicitudContextProvider = ({ children }) => {
   };
 
   const enviarCorreo = async (remitente, asunto, detalle) => {
-    /*
+    
     const EMISOR = "unidadcumplimientoifd@gmail.com";
     const CONTRASENA = "vmzkyupeqagdlbpv";
     //const ENDPOINTCORREO = "http://192.168.10.6:8096/correo";
@@ -457,7 +460,7 @@ export const SolicitudContextProvider = ({ children }) => {
       };
 
       const response = await axios.post(endpointCorreo, json);
-    } catch (error) { }*/
+    } catch (error) { }
   };
 
   const emailCosultorUnidadCumplimiento = (

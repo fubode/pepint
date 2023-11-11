@@ -18,12 +18,16 @@ export const Consultor = () => {
   const [textProducto, setProducto] = useState("");
   const [textExtension, setTextExtension] = useState("");
   const [textTipo, setTipo] = useState("");
+  const [textMonto, setTextMonto] = useState("");
+  const [textDetalleActividad, setTextDetalleActividad] = useState("");
   const [validacion, setValidacion] = useState({
     ci: true,
     nombre: true,
     tipo: true,
     producto: true,
     caedec: true,
+    monto: true,
+    detalleActividad: true,
   });
 
   const {
@@ -44,12 +48,16 @@ export const Consultor = () => {
     setNombre("");
     setProducto("");
     setTipo("");
+    setTextMonto("");
+    setTextDetalleActividad("");
     setValidacion({
       ci: true,
       nombre: true,
       tipo: true,
       producto: true,
       caedec: true,
+      monto: true,
+      detalleActividad: true,
     });
   };
 
@@ -75,6 +83,16 @@ export const Consultor = () => {
   const handleProducto = (event) => {
     setProducto(event.target.value);
   };
+
+  const handleMonto = (event) => {
+    setTextMonto(event.target.value);
+  };
+  const handleDetalleActividad = (event) => {
+    setTextDetalleActividad(event.target.value);
+  };
+
+
+
   const handleCloseMessage = () => setShowMesagge(false);
 
   useEffect(() => {
@@ -91,9 +109,7 @@ export const Consultor = () => {
 
     const validaciones = {
       ci:
-        textCI.toString().length >= 5 &&
-        textCI.toString().length <= 15 &&
-        /^\d+$/.test(textCI),
+        /^[\w-]{5,15}$/.test(textCI),
       nombre:
         textNombre.trim() !== "" &&
         textNombre.toString().length <= 80 &&
@@ -101,6 +117,9 @@ export const Consultor = () => {
       tipo: textTipo !== "",
       producto: textProducto !== "",
       caedec: Object.keys(caedecSeleccionado).length != 0,
+      monto: textMonto === "" || (/^\d+(\.\d{1,2})?$/.test(textMonto) && parseFloat(textMonto) > 0),
+      detalleActividad:
+        textDetalleActividad.length <= 100,
     };
 
     setValidacion(validaciones);
@@ -109,7 +128,7 @@ export const Consultor = () => {
       (validacion) => validacion
     );
 
-    if (camposValidos) {   
+    if (camposValidos) {
 
       setShow(false);
       const solicitud = {
@@ -122,6 +141,8 @@ export const Consultor = () => {
         estado: "PENDIENTE",
         complemento: textComplemento,
         extension: textExtension,
+        monto:textMonto,
+        detalle_actividad: textDetalleActividad,
       };
       setCaedecSeleccionado({});
       createSolicitudes(solicitud);
@@ -186,9 +207,8 @@ export const Consultor = () => {
                 <div className="mb-3">
                   <input
                     type="text"
-                    className={`form-control ${
-                      !validacion.ci ? "is-invalid" : ""
-                    }`}
+                    className={`form-control ${!validacion.ci ? "is-invalid" : ""
+                      }`}
                     id="ci"
                     name="ci"
                     placeholder="Introduzca su nro de ci"
@@ -221,7 +241,7 @@ export const Consultor = () => {
                   <option value="7">BENI</option>
                   <option value="8">SANTA CRUZ</option>
                   <option value="9">PANDO</option>
-                </select>              
+                </select>
               </div>
               <div className="col-md-4 mb-3">
                 <label
@@ -248,9 +268,8 @@ export const Consultor = () => {
               </label>
               <input
                 type="text"
-                className={`form-control text-uppercase ${
-                  !validacion.nombre ? "is-invalid" : ""
-                }`}
+                className={`form-control text-uppercase ${!validacion.nombre ? "is-invalid" : ""
+                  }`}
                 id="exampleInputPassword1"
                 onChange={handleNombre}
               />
@@ -266,9 +285,8 @@ export const Consultor = () => {
                 Producto
               </label>
               <select
-                className={`form-select ${
-                  !validacion.producto ? "is-invalid" : ""
-                }`}
+                className={`form-select ${!validacion.producto ? "is-invalid" : ""
+                  }`}
                 aria-label="Default select example"
                 onChange={handleProducto}
               >
@@ -297,9 +315,8 @@ export const Consultor = () => {
                 Tipo
               </label>
               <select
-                className={`form-select ${
-                  !validacion.tipo ? "is-invalid" : ""
-                }`}
+                className={`form-select ${!validacion.tipo ? "is-invalid" : ""
+                  }`}
                 aria-label="Default select example"
                 onChange={handleTipo}
               >
@@ -314,6 +331,48 @@ export const Consultor = () => {
                 </div>
               )}
             </div>
+
+            <div className="mb-3">
+              <label
+                htmlFor="exampleInputPassword1"
+                className="form-label text-uppercase"
+              >
+                Monto de la solicitud
+              </label>
+              <input
+                type="text"
+                className={`form-control text-uppercase ${!validacion.monto ? "is-invalid" : ""
+                  }`}
+                id="exampleInputPassword1"
+                onChange={handleMonto}
+              />
+              {!validacion.monto && (
+                <div className="invalid-feedback">
+                  Solo puede colocar montos numericos maximo 2 decimales
+                </div>
+              )}
+            </div>
+            <div className="mb-3">
+              <label
+                htmlFor="exampleInputPassword1"
+                className="form-label text-uppercase"
+              >
+                DETALLE DE LA ACTIVIDAD ECONOMICA
+              </label>
+              <textarea
+                className={`form-control text-uppercase ${!validacion.detalleActividad ? "is-invalid" : ""
+                  }`}
+                id="exampleInputPassword1"
+                onChange={handleDetalleActividad}
+                maxLength={100}
+              />
+              {!validacion.detalleActividad && (
+                <div className="invalid-feedback">
+                  Solo puede tener como maximo 100 caracteres
+                </div>
+              )}
+            </div>
+
             <div className="container">
               <div className="row justify-content-center">
                 <button

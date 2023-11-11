@@ -7,6 +7,8 @@ import {
   FaTimes,
   FaUser,
   FaEnvelope,
+  FaInfoCircle,
+  FaMoneyBillAlt,
 } from "react-icons/fa";
 import { useSolicitud } from "../../context/SolicitudContext";
 import CustomModal from "../CustomModal ";
@@ -31,6 +33,7 @@ export const CardConsultor = ({ soli, funcionario }) => {
   const [showFuncionario, setShowFuncionario] = useState(false);
   const [showRechazar, setShowRechazar] = useState(false);
   const [showComentario, setShowComentario] = useState(false);
+  const [showActividad, setShowActividad] = useState(false);
   const [showEnviar, setShowEnviar] = useState(false);
   const [modalOpen, setModalOpen] = useState(false);
   const [otro, setOtro] = useState(false);
@@ -46,6 +49,7 @@ export const CardConsultor = ({ soli, funcionario }) => {
     setShowEnviar(false);
     setOtro(false);
     setTextDestino("NINGUNO");
+    setShowActividad(false);
   };
 
   const handleCloseModal = () => {
@@ -83,6 +87,10 @@ export const CardConsultor = ({ soli, funcionario }) => {
   const handleEnviar = () => {
     setShowEnviar(true);
   };
+
+  const handleActividad = () => {
+    setShowActividad(true);
+  }
 
   const handleTextareaGerencia = (event) => {
     setTextGerencia(event.target.value);
@@ -148,15 +156,14 @@ export const CardConsultor = ({ soli, funcionario }) => {
         <div className="card border">
           <div className="row">
             <div
-              className={`col-1 d-flex align-items-center justify-content-center  ${
-                soli.estado === "ACEPTADO"
+              className={`col-1 d-flex align-items-center justify-content-center  ${soli.estado === "ACEPTADO"
                   ? "bg-success"
                   : soli.estado === "GERENCIA"
-                  ? "bg-info"
-                  : soli.estado === "RECHAZADO"
-                  ? "bg-danger"
-                  : "bg-warning"
-              }`}
+                    ? "bg-info"
+                    : soli.estado === "RECHAZADO"
+                      ? "bg-danger"
+                      : "bg-warning"
+                }`}
             >
               <div className="card-body">
                 <p>{soli.estado}</p>
@@ -209,6 +216,13 @@ export const CardConsultor = ({ soli, funcionario }) => {
             </div>
             <div className="col-1 d-flex align-items-center justify-content-center">
               <div className="d-flex flex-column align-items-center">
+                {
+                  (soli.detalle_actividad != '' || soli.monto != '') &&
+                  <div className="col-1">
+                    <FaMoneyBillAlt onClick={handleActividad} />
+                  </div>
+                }
+
                 {soli.estado === "PENDIENTE" ? (
                   rol === 7 ? (
                     <div className="col-1">
@@ -354,21 +368,38 @@ export const CardConsultor = ({ soli, funcionario }) => {
 
       <Modal show={showComentario} onHide={handleClose}>
         <Modal.Header
-          className={`text-white ${
-            soli.estado === "ACEPTADO"
+          className={`text-white ${soli.estado === "ACEPTADO"
               ? "bg-success"
               : soli.estado === "GERENCIA"
-              ? "bg-info"
-              : soli.estado === "RECHAZADO"
-              ? "bg-danger"
-              : "bg-warning"
-          }`}
+                ? "bg-info"
+                : soli.estado === "RECHAZADO"
+                  ? "bg-danger"
+                  : "bg-warning"
+            }`}
           closeButton
         >
           <Modal.Title>{soli.estado}</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <p>{soli.descripcion}</p>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="danger" onClick={handleClose}>
+            Close
+          </Button>
+        </Modal.Footer>
+      </Modal>
+
+      <Modal show={showActividad} onHide={handleClose}>
+        <Modal.Header
+          className={"text-white bg-info"}
+          closeButton
+        >
+          <Modal.Title>Datos economicos</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          {soli.detalle_actividad && <p>ACTIVIDAD ECONOMICA: {soli.detalle_actividad}</p>}
+          {soli.monto && <p>MONTO SOLICITADO: {soli.monto}</p>}
         </Modal.Body>
         <Modal.Footer>
           <Button variant="danger" onClick={handleClose}>

@@ -18,6 +18,6 @@ app.get('*', (req, res) => {
 
 const httpsServer = https.createServer(options, app);
 
-httpsServer.listen(3006, () => {
+httpsServer.listen(3001, () => {
   console.log('Servidor HTTPS en ejecución en el puerto 3001');
 });

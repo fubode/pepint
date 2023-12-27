@@ -54,7 +54,7 @@ export const SolicitudContextProvider = ({ children }) => {
 
   const getFuncionario = async () => {
     const usuario_supa = (await supabase.auth.getUser()).data.user.id;
-    console.log(usuario_supa)
+    //console.log(usuario_supa)
     let { data, error } = await supabase.rpc("obtener_usuario", {
       usuario_supa,
     });
@@ -92,7 +92,7 @@ export const SolicitudContextProvider = ({ children }) => {
           break;
       }
     } else {
-      console.log('no se encontro el rol')
+      //console.log('no se encontro el rol')
     }
   }, [funcionario]);
 
@@ -109,7 +109,7 @@ export const SolicitudContextProvider = ({ children }) => {
       limit_value: paginacion.limit,
       offset_value: paginacion.offset,
     });
-    console.log(data);
+    //console.log(data);
     if (error) {
       return;
     } else {
@@ -405,7 +405,7 @@ export const SolicitudContextProvider = ({ children }) => {
   }
 
   const navegacion = () => {
-    console.log(rol)
+    //console.log(rol)
     if (rol !== 0) {
       switch (rol) {
         case 6:

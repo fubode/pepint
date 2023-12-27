@@ -26,7 +26,7 @@ const Gerencia = () => {
       <Recargar></Recargar>
       <div>
         {solicitudes.map((soli, key) => (
-          <CardConsultor soli={soli} funcionario={funcionario} key={key} />
+          <CardConsultor soli={soli} funcionario={funcionario} key={soli.codigo_solicitud} />
         ))}
       </div>
       <Paginacion />

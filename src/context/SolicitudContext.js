@@ -461,6 +461,7 @@ export const SolicitudContextProvider = ({ children }) => {
 
       const response = await axios.post(endpointCorreo, json);
     } catch (error) { }
+    
   };
 
   const emailCosultorUnidadCumplimiento = (
@@ -534,7 +535,7 @@ export const SolicitudContextProvider = ({ children }) => {
             codigo +
             "</strong>" +
             "</p>" +
-            "<p>La solicitud fue remitada a alta gerencia para su evaluacion  <strong>" +
+            "<p>La solicitud fue remitida a alta gerencia para su evaluacion  <strong>" +
             "<p>Fecha:<strong>" +
             fechaInicio +
             "</strong></p>" +

@@ -176,7 +176,7 @@ const Login = () => {
                     <button className="btn btn-primary btn-lg btn-block">
                       INGRESAR
                     </button>
-                    <p>v 1.0.0</p>
+                    <p>v 1.0.1</p>
                   </div>
                 </div>
               </div>

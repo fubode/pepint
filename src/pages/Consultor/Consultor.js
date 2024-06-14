@@ -188,7 +188,7 @@ export const Consultor = () => {
         <div className="container d-flex justify-content-center align-items-center h-100">
           <div className="row m-1">
             {solicitudes.map((soli, key) => (
-              <CardConsultor soli={soli} funcionario={funcionario} key={key} />
+              <CardConsultor soli={soli} funcionario={funcionario} key={soli.codigo_solicitud} />
             ))}
           </div>
         </div>

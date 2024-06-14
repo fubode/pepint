@@ -1,7 +1,7 @@
 import { createClient } from "@supabase/supabase-js";
 export const supabase = createClient(
-    "https://sif.fubode.org/",
-    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.ewogICJyb2xlIjogImFub24iLAogICJpc3MiOiAic3VwYWJhc2UiLAogICJpYXQiOiAxNzE4MTY0ODAwLAogICJleHAiOiAxODc1OTMxMjAwCn0.Cxp0jE_KX0XFOvrRTdGgH5y9ZozZ9tI0Gnr2ez_NNDA'
+    "https://srv01.fubode.org/",
+    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.ewogICJyb2xlIjogImFub24iLAogICJpc3MiOiAic3VwYWJhc2UiLAogICJpYXQiOiAxNzAzNTYzMjAwLAogICJleHAiOiAxODYxNDE2MDAwCn0.qqmwmv_LwbTolkBrAyY_f2IFNLhKCDosNM1jcKZdYNM'
     );
     
     /*
